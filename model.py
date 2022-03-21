@@ -39,3 +39,30 @@ def noise_arm(Q, R):
     return q, r
 
 
+def switch_arm(sp, x, t):
+    b = 0.523
+    q23 = 0.8
+    r23 = 1.2
+    q32 = 0.9
+    r32 = 1.5
+
+    ep = 1 if x>=b else 0
+    if sp == 1:
+        pi1 = -1*ep + 1
+        pi2 = 1*ep
+        pi3 = 0*ep
+    elif sp == 2:
+        pi1 = -1*ep + 1
+        pi2 = q23**(t**r23-(t-1)**r23) * ep
+        pi3 = (1-q23**(t**r23-(t-1)**r23)) * ep
+    elif sp == 3:
+        pi1 = -1 * ep + 1
+        pi2 = (1-q32**(t**r32-(t-1)**r32)) * ep
+        pi3 = q32**(t**r32-(t-1)**r32) * ep
+    else:
+        raise ValueError('Invalid mode.')
+
+    mode_list = [1, 2, 3]
+    s = np.random.choice(mode_list, 1, p=[pi1, pi2, pi3])
+
+    return s
