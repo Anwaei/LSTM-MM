@@ -1,5 +1,7 @@
 import numpy as np
 
+batch_size = 1000
+
 T = 10
 dt = 0.01
 
@@ -17,3 +19,9 @@ q23 = 0.8
 r23 = 1.2
 q32 = 0.9
 r32 = 1.5
+
+x1_c = 0.9
+x2_c = 3.5
+
+x0 = np.array([0, 2.4])
+s0 = 1

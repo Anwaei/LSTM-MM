@@ -2,13 +2,16 @@ import numpy as np
 import paras_arm as pa
 
 
-def dynamic_arm(x_p, q, sc):
+def dynamic_arm(sc, x_p, q):
     """
+    :param sc: current mode, in {1,2,3}
     :param x_p: np.array (2,)
     :param q: np.array (2,)
-    :param sc: current mode, in {1,2,3}
     :return:
     """
+
+    if sc not in [1, 2, 3]:
+        raise ValueError("Invalid mode.")
 
     dt = pa.dt
     g = pa.g
@@ -38,6 +41,10 @@ def noise_arm():
 
 
 def tpm_arm(x, t):
+
+    if type(t) is not int:
+        raise ValueError("Invalid sojourn time.")
+
     b = pa.b
     q23 = pa.q23
     r23 = pa.r23
@@ -59,12 +66,33 @@ def tpm_arm(x, t):
     return tpm
 
 
-def switch_arm(sp, x, t):
+def switch_arm(sp, xp, tp):
     mode_list = [1, 2, 3]
     if sp not in mode_list:
         raise ValueError("Invalid mode.")
-    tpm = tpm_arm(x, t)
-    tp = [tpm[sp-1, 0], tpm[sp-1, 1], tpm[sp-1, 2]]
-    s = np.random.choice(mode_list, 1, p=tp)
-    return s
+    if type(tp) is not int:
+        raise ValueError("Invalid sojourn time.")
+    tpm = tpm_arm(xp, tp)
+    probability = [tpm[sp-1, 0], tpm[sp-1, 1], tpm[sp-1, 2]]
+    sc = np.random.choice(mode_list, 1, p=probability)
+    return sc
 
+
+def constraint_arm(x):
+    x1_c = pa.x1_c
+    x2_c = pa.x2_c
+
+    if abs(x[0]) <= x1_c and abs(x[1]) <= x2_c:
+        if_reach_constraint = 0
+    else:
+        if x[0] > x1_c:
+            x[0] = x1_c
+        if x[0] < -x1_c:
+            x[0] = -x1_c
+        if x[1] > x2_c:
+            x[1] = x2_c
+        if x[1] < -x2_c:
+            x[1] = -x2_c
+        if_reach_constraint = 1
+
+    return x, if_reach_constraint
