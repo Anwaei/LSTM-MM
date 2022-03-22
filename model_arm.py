@@ -36,13 +36,13 @@ def noise_arm():
     Q = pa.Q
     R = pa.R
     q = np.random.multivariate_normal([0, 0], Q)
-    r = np.random.multivariate_normal(0, R)
+    r = np.random.multivariate_normal([0], R)
     return q, r
 
 
 def tpm_arm(x, t):
 
-    if type(t) is not int:
+    if (type(t) is not int) and (type(t) is not np.int32):
         raise ValueError("Invalid sojourn time.")
 
     b = pa.b
@@ -52,7 +52,7 @@ def tpm_arm(x, t):
     r32 = pa.r32
 
     tpm = np.zeros([3, 3])
-    ep = 1 if x >= b else 0
+    ep = 1 if x[0] >= b else 0
     tpm[0][0] = -1*ep + 1
     tpm[0][1] = 1*ep
     tpm[0][2] = 0
@@ -70,11 +70,11 @@ def switch_arm(sp, xp, tp):
     mode_list = [1, 2, 3]
     if sp not in mode_list:
         raise ValueError("Invalid mode.")
-    if type(tp) is not int:
+    if (type(tp) is not int) and (type(tp) is not np.int32):
         raise ValueError("Invalid sojourn time.")
     tpm = tpm_arm(xp, tp)
     probability = [tpm[sp-1, 0], tpm[sp-1, 1], tpm[sp-1, 2]]
-    sc = np.random.choice(mode_list, 1, p=probability)
+    sc = np.random.choice(mode_list, 1, p=probability)[0]
     return sc
 
 

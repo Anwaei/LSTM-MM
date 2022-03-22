@@ -1,6 +1,8 @@
 import numpy as np
 
-batch_size = 1000
+data_path = 'data/data_arm.npz'
+
+batch_size = 100
 
 T = 10
 dt = 0.01
@@ -11,8 +13,8 @@ B = 5
 m = [1, 2.5, 5]
 J = [1, 2.5, 5]
 
-Q = np.diag[0.1, 0.1]
-R = np.diag[0.1]
+Q = np.diag([0.1, 0.1])
+R = np.diag([0.1])
 
 b = 0.523  # Boundary of s1/s2
 q23 = 0.8
