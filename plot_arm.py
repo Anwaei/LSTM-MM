@@ -16,20 +16,35 @@ def read_data(data):
 
 def plot_single_trajectory(data):
     x_all, z_all, s_all, t_all, tpm_all, ifreach_all, time_steps_all = read_data(data)
-    index = 1
+    index = np.random.randint(0, time_steps_all.shape[0])
     x_s = x_all[index, :, :]
-    z_s = z_all[index, :, :]
-    s_s = s_all[index, :, :]
-    t_s = t_all[index, :, :]
+    z_s = z_all[index, 0, :]
+    s_s = s_all[index, 0, :]
+    t_s = t_all[index, 0, :]
     tpm_s = tpm_all[index, :, :]
-    ifreach_s = ifreach_all[index, :, :]
-    time_steps_s = time_steps_all[index, :, :]
+    ifreach_s = ifreach_all[index, 0, :]
+    time_steps_s = time_steps_all[index, 0, :]
 
     plt.figure(1)
-    plt.plot(t_s, x_s[:, 0, :], t_s, x_s[:, 1, :], t_s, z_s)
+    plt.plot(time_steps_s, x_s[0, :], time_steps_s, x_s[1, :])
     plt.xlabel('Time')
     plt.ylabel('Value')
-    plt.legend(['State 1', 'State 2', 'Measurement'])
+    plt.legend(['State 1', 'State 2'])
+
+    plt.figure(2)
+    plt.plot(time_steps_s, ifreach_s)
+    plt.xlabel('Time')
+    plt.ylabel('If reach the constraint')
+
+    plt.figure(3)
+    plt.plot(time_steps_s, s_s)
+    plt.xlabel('Time')
+    plt.ylabel('Mode')
+
+    plt.figure(4)
+    plt.plot(time_steps_s, t_s)
+    plt.xlabel('Time')
+    plt.ylabel('Sojourn time')
 
     plt.show()
 

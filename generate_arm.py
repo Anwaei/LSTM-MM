@@ -20,9 +20,9 @@ if __name__ == '__main__':
     ifreach_all = np.zeros([batch_size, 1, K], dtype='int')
     time_steps_all = np.zeros([batch_size, 1, K])
 
-    tk = 1
-    time_current = 0
     for n in tqdm(range(batch_size)):
+        tk = 1
+        time_current = 0
         for k in range(K):
             time_current = time_current + dt
             qk, rk = ma.noise_arm()
