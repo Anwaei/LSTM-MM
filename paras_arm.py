@@ -61,3 +61,12 @@ Initial
 
 x0 = np.array([0, 2.4])
 s0 = 1
+
+"""""""""""""""""""""
+Network
+"""""""""""""""""""""
+units_mlp_x = [10, 10]
+units_lstm = [10, 10]
+units_mlp_c = [15, 15, 15]
+
+T_max = [20, 20]  # Mode 2 and 3, no mode 1
