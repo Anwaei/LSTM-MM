@@ -18,10 +18,10 @@ def dynamic_arm(sc, x_p, q):
     l0 = pa.l0
     B = pa.B
     m = pa.m[sc - 1]
-    J = pa.m[sc - 1]
+    J = pa.J[sc - 1]
 
     x1 = x_p[0] + x_p[1]*dt + q[0]
-    x2 = x_p[1] - g*l0*m/J*np.sin(x_p[0])*dt - B/J*dt + q[1]
+    x2 = x_p[1] - g*l0*m/J*np.sin(x_p[0])*dt - B/J*x_p[1]*dt + q[1]
 
     x = np.array([x1, x2])
 
@@ -35,6 +35,7 @@ def measurement_arm(x, r):
 def noise_arm():
     Q = pa.Q
     R = pa.R
+    # q = np.zeros(2)
     q = np.random.multivariate_normal([0, 0], Q)
     r = np.random.multivariate_normal([0], R)
     return q, r
