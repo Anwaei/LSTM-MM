@@ -25,7 +25,7 @@ Transition
 """""""""""""""""""""
 
 # Boundary of s1/s2
-b = 0.53
+b = 0.2
 # b = 0.53
 
 # Parameters of s2<->s3
@@ -37,7 +37,7 @@ b = 0.53
 q23 = 0.8
 r23 = 0.5
 q32 = 0.7
-r32 = 0.3
+r32 = 0.4
 
 # Non switch situation
 # q23 = 1
@@ -66,7 +66,9 @@ s0 = 1
 Network
 """""""""""""""""""""
 units_mlp_x = [10, 10]
+units_mlp_s = [10, 10]
 units_lstm = [10, 10]
-units_mlp_c = [15, 15, 15]
+units_mlp_c = [15, 15]  # Except last layer
 
-T_max = [20, 20]  # Mode 2 and 3, no mode 1
+T_max_parallel = [50, 50]  # Mode 2 and 3, no mode 1
+T_max_integral = 100
