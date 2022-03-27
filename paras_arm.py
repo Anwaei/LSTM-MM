@@ -72,3 +72,5 @@ units_mlp_c = [15, 15]  # Except last layer
 
 T_max_parallel = [50, 50]  # Mode 2 and 3, no mode 1
 T_max_integral = 100
+
+train_prop = 0.7  # Proportion of training data

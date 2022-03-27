@@ -2,12 +2,13 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
-import plot_arm as pa
+import paras_arm as pa
+import plot_arm as pta
 
 
 def create_model(units_mlp_x, units_mlp_s, units_lstm, units_mlp_c, t_max):
-    input_x = layers.Input(2)
-    input_s = layers.Input(3)
+    input_x = layers.Input(None, 2)
+    input_s = layers.Input(None, 3)
     input_z = layers.Input(None, 1)
 
     for k in range(len(units_mlp_x)):
@@ -60,7 +61,7 @@ def process_data(data, t_max):
     :param t_max: int
     :return: train_input, train_output, test_input, test_output
     """
-    x_all, z_all, s_all, t_all, tpm_all, ifreach_all, time_steps_all = pa.read_data(data)
+    x_all, z_all, s_all, t_all, tpm_all, ifreach_all, time_steps_all = pta.read_data(data)
 
     s_oh = keras.utils.to_categorical(s_all-1)
 
@@ -75,5 +76,21 @@ def process_data(data, t_max):
     input_s = s_oh[:, 0, :, :]
     output_t = t_oh[:, 0, :, :]
 
+    batch_size = pa.batch_size
+    batch_size_train = int(batch_size//pa.train_prop)
 
+    train_input_x = input_x[0:batch_size_train, :, :]
+    train_input_z = input_z[0:batch_size_train, :, :]
+    train_input_s = input_s[0:batch_size_train, :, :]
+    train_output_t = output_t[0:batch_size_train, :, :]
+    train_input = [train_input_x, train_input_z, train_input_s]
+    train_output = train_output_t
 
+    test_input_x = input_x[batch_size_train+1:-1, :, :]
+    test_input_z = input_z[batch_size_train+1:-1, :, :]
+    test_input_s = input_s[batch_size_train+1:-1, :, :]
+    test_output_t = output_t[batch_size_train+1:-1, :, :]
+    test_input = [test_input_x, test_input_z, test_input_s]
+    test_output = test_output_t
+
+    return train_input, train_output, test_input, test_output
