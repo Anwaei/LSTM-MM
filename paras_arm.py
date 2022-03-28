@@ -2,7 +2,7 @@ import numpy as np
 
 data_path = 'data/data_arm.npz'
 
-batch_size = 10
+batch_size = 5000
 
 T = 10
 dt = 0.01
@@ -71,6 +71,6 @@ units_lstm = [10, 10]
 units_mlp_c = [15, 15]  # Except last layer
 
 T_max_parallel = [50, 50]  # Mode 2 and 3, no mode 1
-T_max_integral = 100
+T_max_integrated = 100
 
 train_prop = 0.7  # Proportion of training data

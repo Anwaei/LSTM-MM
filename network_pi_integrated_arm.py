@@ -6,24 +6,24 @@ import paras_arm as pa
 import plot_arm as pta
 
 
-def create_model(units_mlp_x, units_mlp_s, units_lstm, units_mlp_c, t_max):
-    input_x = layers.Input(None, 2)
-    input_s = layers.Input(None, 3)
-    input_z = layers.Input(None, 1)
+def create_model(units_mlp_x, units_mlp_s, units_lstm, units_mlp_c):
+    input_x = layers.Input(shape=(None, 2))
+    input_s = layers.Input(shape=(None, 3))
+    input_z = layers.Input(shape=(None, 1))
 
     for k in range(len(units_mlp_x)):
         unit = units_mlp_x[k]
         if k == 0:
-            out_x = layers.Dense(unit, activation='tanh')(input_x)
+            out_x = layers.TimeDistributed(layers.Dense(unit, activation='tanh'))(input_x)
         else:
-            out_x = layers.Dense(unit, activation='tanh')(out_x)
+            out_x = layers.TimeDistributed(layers.Dense(unit, activation='tanh'))(out_x)
 
     for k in range(len(units_mlp_s)):
         unit = units_mlp_s[k]
         if k == 0:
-            out_s = layers.Dense(unit, activation='tanh')(input_s)
+            out_s = layers.TimeDistributed(layers.Dense(unit, activation='tanh'))(input_s)
         else:
-            out_s = layers.Dense(unit, activation='tanh')(out_s)
+            out_s = layers.TimeDistributed(layers.Dense(unit, activation='tanh'))(out_s)
 
     for k in range(len(units_lstm)):
         unit = units_lstm[k]
@@ -35,16 +35,18 @@ def create_model(units_mlp_x, units_mlp_s, units_lstm, units_mlp_c, t_max):
             elif k < len(units_lstm) - 1:
                 out_z = layers.LSTM(units=unit, return_sequences=True)(out_z)
             else:
-                out_z = layers.LSTM(units=unit, return_sequences=False)(out_z)
+                out_z = layers.LSTM(units=unit, return_sequences=True)(out_z)
 
-    out_c = layers.concatenate(out_x, out_s, out_z)
+    out_c = layers.concatenate([out_x, out_s, out_z])
 
     for k in range(len(units_mlp_c)):
         unit = units_mlp_c[k]
-        out_c = layers.Dense(unit, activation='sigmoid')(out_c)
+        out_c = layers.TimeDistributed(layers.Dense(unit, activation='sigmoid'))(out_c)
 
-    out_c = layers.Dense(t_max, activation='sigmoid')(out_c)
-    out_final = layers.Softmax(out_c)
+    # out_c = layers.Dense(t_max, activation='sigmoid')(out_c)
+    # out_final = layers.Softmax(out_c)
+    t_max = pa.T_max_integrated
+    out_final = layers.TimeDistributed(layers.Dense(t_max, activation='softmax'))(out_c)
 
     net = keras.Model(inputs=[input_x, input_s, input_z], outputs=out_final)
 
@@ -77,20 +79,39 @@ def process_data(data, t_max):
     output_t = t_oh[:, 0, :, :]
 
     batch_size = pa.batch_size
-    batch_size_train = int(batch_size//pa.train_prop)
+    batch_size_train = int(batch_size*pa.train_prop)
 
     train_input_x = input_x[0:batch_size_train, :, :]
     train_input_z = input_z[0:batch_size_train, :, :]
     train_input_s = input_s[0:batch_size_train, :, :]
     train_output_t = output_t[0:batch_size_train, :, :]
-    train_input = [train_input_x, train_input_z, train_input_s]
+    train_input = [train_input_x, train_input_s, train_input_z]
     train_output = train_output_t
 
-    test_input_x = input_x[batch_size_train+1:-1, :, :]
-    test_input_z = input_z[batch_size_train+1:-1, :, :]
-    test_input_s = input_s[batch_size_train+1:-1, :, :]
-    test_output_t = output_t[batch_size_train+1:-1, :, :]
-    test_input = [test_input_x, test_input_z, test_input_s]
+    test_input_x = input_x[batch_size_train:, :, :]
+    test_input_z = input_z[batch_size_train:, :, :]
+    test_input_s = input_s[batch_size_train:, :, :]
+    test_output_t = output_t[batch_size_train:, :, :]
+    test_input = [test_input_x, test_input_s, test_input_z]
     test_output = test_output_t
 
     return train_input, train_output, test_input, test_output
+
+
+if __name__ == '__main__':
+    data_path = pa.data_path
+    data = np.load(data_path)
+    train_input, train_output, test_input, test_output = process_data(data, pa.T_max_integrated)
+
+    net = create_model(pa.units_mlp_x, pa.units_mlp_s, pa.units_lstm, pa.units_mlp_c)
+    net.compile(optimizer='rmsprop',
+                loss=tf.keras.losses.CategoricalCrossentropy(),
+                metrics=[tf.keras.metrics.CategoricalCrossentropy()])
+
+    print("========= Start training =========")
+    net.fit(x=train_input, y=train_output, epochs=10)
+
+    print("========= Evaluate =========")
+    net.evaluate(test_input, test_output)
+
+    pass
