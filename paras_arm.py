@@ -97,6 +97,6 @@ units_pi_int = {'mlp_x': units_mlp_x,
                 'lstm': units_lstm,
                 'mlp_c': units_mlp_c}
 
-
+bs = 64
 
 train_prop = 0.7  # Proportion of training data

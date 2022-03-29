@@ -24,7 +24,7 @@ def create_model(units_mlp_x, units_lstm, units_mlp_c):
             out_z = layers.LSTM(units=unit, return_sequences=False)(input_z)
         else:
             if k == 0:
-                out_z = layers.LSTM(units=unit, return_sequences=True)(input_z)
+                out_z = layers.LSTM(units=unit, return_sequences=True, batch_input_shape=(pa.bs, None, 1))(input_z)
             elif k < len(units_lstm) - 1:
                 out_z = layers.LSTM(units=unit, return_sequences=True)(out_z)
             else:
@@ -125,28 +125,25 @@ if __name__ == '__main__':
 
     units2 = pa.units_pi_para2
     net2 = create_model(units2['mlp_x'], units2['lstm'], units2['mlp_c'])
-    units3 = pa.units_pi_para3
-    net3 = create_model(units3['mlp_x'], units3['lstm'], units3['mlp_c'])
-
     net2.compile(optimizer='rmsprop',
                  loss=loss_cce_mode2,
                  metrics=loss_cce_mode2)
     net2.summary()
 
+    print("========= Start training net2 =========")
+    net2.fit(x=train_input_2, y=train_output_2, epochs=10, batch_size=pa.bs)
+    print("========= Evaluate net2 =========")
+    net2.evaluate(test_input_2, test_output_2)
+
+    units3 = pa.units_pi_para3
+    net3 = create_model(units3['mlp_x'], units3['lstm'], units3['mlp_c'])
     net3.compile(optimizer='rmsprop',
                  loss=loss_cce_mode3,
                  metrics=loss_cce_mode3)
     net3.summary()
 
-    print("========= Start training net2 =========")
-    net2.fit(x=train_input_2, y=train_output_2, epochs=10, batch_size=50)
-
     print("========= Start training net3 =========")
-    net3.fit(x=train_input_3, y=train_output_2, epochs=10, batch_size=50)
-
-    print("========= Evaluate net2 =========")
-    net2.evaluate(test_input_2, test_output_2)
-
+    net3.fit(x=train_input_3, y=train_output_2, epochs=10, batch_size=pa.bs)
     print("========= Evaluate net3 =========")
     net3.evaluate(test_input_2, test_output_2)
 
