@@ -99,19 +99,28 @@ def process_data(data, t_max):
 
 
 if __name__ == '__main__':
+
+    gpu_devices = tf.config.experimental.list_physical_devices('GPU')
+    for device in gpu_devices:
+        tf.config.experimental.set_memory_growth(device, True)
+
     data_path = pa.data_path
     data = np.load(data_path)
     train_input, train_output, test_input, test_output = process_data(data, pa.T_max_integrated)
 
-    net = create_model(pa.units_mlp_x, pa.units_mlp_s, pa.units_lstm, pa.units_mlp_c)
+    units = pa.units_pi_int
+    net = create_model(units['mlp_x'], units['mlp_s'], units['lstm'], units['mlp_c'])
     net.compile(optimizer='rmsprop',
                 loss=tf.keras.losses.CategoricalCrossentropy(),
                 metrics=[tf.keras.metrics.CategoricalCrossentropy()])
+    net.summary()
 
     print("========= Start training =========")
-    net.fit(x=train_input, y=train_output, epochs=10)
+    net.fit(x=train_input, y=train_output, epochs=20, batch_size=50)
 
     print("========= Evaluate =========")
     net.evaluate(test_input, test_output)
+
+    net.save(pa.net_path_pi_int)
 
     pass

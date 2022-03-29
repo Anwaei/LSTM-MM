@@ -53,7 +53,7 @@ def tpm_arm(x, t):
     r32 = pa.r32
 
     tpm = np.zeros([3, 3])
-    ep = 1 if abs(x[0]) >= b else 0
+    ep = 1 if x[0] >= b else 0
     tpm[0][0] = -1*ep + 1
     tpm[0][1] = 1*ep
     tpm[0][2] = 0
