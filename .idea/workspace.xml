@@ -2,16 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="aa7150d1-0451-4a86-bc82-7f8928bd5b91" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/network_npi_integrated_arm.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/network_npi_parallel_arm.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/data/data_arm.npz" beforeDir="false" afterPath="$PROJECT_DIR$/data/data_arm.npz" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/net_arm_pi_para2/saved_model.pb" beforeDir="false" afterPath="$PROJECT_DIR$/nets/net_arm_pi_para2/saved_model.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/net_arm_pi_para2/variables/variables.data-00000-of-00001" beforeDir="false" afterPath="$PROJECT_DIR$/nets/net_arm_pi_para2/variables/variables.data-00000-of-00001" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/net_arm_pi_para2/variables/variables.index" beforeDir="false" afterPath="$PROJECT_DIR$/nets/net_arm_pi_para2/variables/variables.index" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/net_arm_pi_para3/saved_model.pb" beforeDir="false" afterPath="$PROJECT_DIR$/nets/net_arm_pi_para3/saved_model.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/net_arm_pi_para3/variables/variables.data-00000-of-00001" beforeDir="false" afterPath="$PROJECT_DIR$/nets/net_arm_pi_para3/variables/variables.data-00000-of-00001" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/net_arm_pi_para3/variables/variables.index" beforeDir="false" afterPath="$PROJECT_DIR$/nets/net_arm_pi_para3/variables/variables.index" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/network_pi_parallel_arm.py" beforeDir="false" afterPath="$PROJECT_DIR$/network_pi_parallel_arm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/paras_arm.py" beforeDir="false" afterPath="$PROJECT_DIR$/paras_arm.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,25 +15,45 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/generate_arm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-419">
-              <caret column="18" selection-start-column="18" selection-end-column="18" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/network_pi_parallel_arm.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="407">
-              <caret line="95" lean-forward="true" selection-start-line="95" selection-end-line="95" />
+            <state relative-caret-position="-230">
+              <caret line="14" column="40" lean-forward="true" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="40" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/network_pi_parallel_arm.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="321">
+              <caret line="128" column="37" lean-forward="true" selection-start-line="128" selection-start-column="37" selection-end-line="128" selection-end-column="37" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/network_npi_integrated_arm.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="456">
+              <caret line="66" column="38" lean-forward="true" selection-start-line="66" selection-start-column="38" selection-end-line="66" selection-end-column="38" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/network_npi_parallel_arm.py">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -63,8 +77,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/network_pi_integrated_arm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2090">
-              <caret line="115" column="17" selection-start-line="115" selection-start-column="17" selection-end-line="115" selection-end-column="17" />
+            <state relative-caret-position="226">
+              <caret line="83" column="52" lean-forward="true" selection-end-line="126" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -75,7 +89,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model_arm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="19">
+            <state relative-caret-position="931">
               <caret line="50" column="16" selection-start-line="50" selection-start-column="16" selection-end-line="50" selection-end-column="16" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -138,6 +152,8 @@
         <option value="$PROJECT_DIR$/network_pi_integrated_arm.py" />
         <option value="$PROJECT_DIR$/paras_arm.py" />
         <option value="$PROJECT_DIR$/network_pi_parallel_arm.py" />
+        <option value="$PROJECT_DIR$/network_npi_parallel_arm.py" />
+        <option value="$PROJECT_DIR$/network_npi_integrated_arm.py" />
       </list>
     </option>
   </component>
@@ -169,6 +185,11 @@
               <item name="LSTM-MM" type="b2602c69:ProjectViewProjectNode" />
               <item name="LSTM-MM" type="462c0819:PsiDirectoryNode" />
               <item name="nets" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LSTM-MM" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LSTM-MM" type="462c0819:PsiDirectoryNode" />
+              <item name="network_pi_parallel_arm.py" type="8704e2dd:PyFileNode" />
             </path>
           </expand>
           <select />
@@ -427,13 +448,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/network_pi_integrated_arm.py">
+    <entry file="file://$PROJECT_DIR$/model_arm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2090">
-          <caret line="115" column="17" selection-start-line="115" selection-start-column="17" selection-end-line="115" selection-end-column="17" />
+        <state relative-caret-position="931">
+          <caret line="50" column="16" selection-start-line="50" selection-start-column="16" selection-end-line="50" selection-end-column="16" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/paras_arm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="15" column="5" selection-start-line="15" selection-start-column="5" selection-end-line="15" selection-end-column="5" />
         </state>
       </provider>
     </entry>
@@ -447,10 +475,33 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model_arm.py">
+    <entry file="file://$PROJECT_DIR$/network_pi_parallel_arm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="50" column="16" selection-start-line="50" selection-start-column="16" selection-end-line="50" selection-end-column="16" />
+        <state relative-caret-position="321">
+          <caret line="128" column="37" lean-forward="true" selection-start-line="128" selection-start-column="37" selection-end-line="128" selection-end-column="37" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/network_npi_parallel_arm.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/network_pi_integrated_arm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="226">
+          <caret line="83" column="52" lean-forward="true" selection-end-line="126" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/network_npi_integrated_arm.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="66" column="38" lean-forward="true" selection-start-line="66" selection-start-column="38" selection-end-line="66" selection-end-column="38" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
@@ -459,22 +510,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/generate_arm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-419">
-          <caret column="18" selection-start-column="18" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/paras_arm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="15" column="5" selection-start-line="15" selection-start-column="5" selection-end-line="15" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/network_pi_parallel_arm.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="407">
-          <caret line="95" lean-forward="true" selection-start-line="95" selection-end-line="95" />
+        <state relative-caret-position="-230">
+          <caret line="14" column="40" lean-forward="true" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="40" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
