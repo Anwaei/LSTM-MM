@@ -2,8 +2,8 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
-import paras_arm as pa
-import plot_arm as pta
+import arm_paras as ap
+import arm_plot as aplot
 
 
 def create_model(units_mlp_x, units_mlp_s, units_lstm, units_mlp_c):
@@ -45,7 +45,7 @@ def create_model(units_mlp_x, units_mlp_s, units_lstm, units_mlp_c):
 
     # out_c = layers.Dense(t_max, activation='sigmoid')(out_c)
     # out_final = layers.Softmax(out_c)
-    t_max = pa.T_max_integrated
+    t_max = ap.T_max_integrated
     out_final = layers.TimeDistributed(layers.Dense(t_max, activation='softmax'))(out_c)
 
     net = keras.Model(inputs=[input_x, input_s, input_z], outputs=out_final)
@@ -63,7 +63,7 @@ def process_data(data, t_max):
     :param t_max: int
     :return: train_input, train_output, test_input, test_output
     """
-    x_all, z_all, s_all, t_all, tpm_all, ifreach_all, time_steps_all = pta.read_data(data)
+    x_all, z_all, s_all, t_all, tpm_all, ifreach_all, time_steps_all = aplot.read_data(data)
 
     s_oh = keras.utils.to_categorical(s_all-1)
 
@@ -79,7 +79,7 @@ def process_data(data, t_max):
     output_t = t_oh[:, 0, :, :]
 
     batch_size = input_x.shape[0]
-    batch_size_train = int(batch_size*pa.train_prop)
+    batch_size_train = int(batch_size * ap.train_prop)
 
     train_input_x = input_x[0:batch_size_train, :, :]
     train_input_z = input_z[0:batch_size_train, :, :]
@@ -104,11 +104,11 @@ if __name__ == '__main__':
     for device in gpu_devices:
         tf.config.experimental.set_memory_growth(device, True)
 
-    data_path = pa.data_path
+    data_path = ap.data_path
     data = np.load(data_path)
-    train_input, train_output, test_input, test_output = process_data(data, pa.T_max_integrated)
+    train_input, train_output, test_input, test_output = process_data(data, ap.T_max_integrated)
 
-    units = pa.units_pi_int
+    units = ap.units_pi_int
     net = create_model(units['mlp_x'], units['mlp_s'], units['lstm'], units['mlp_c'])
     net.compile(optimizer='rmsprop',
                 loss=tf.keras.losses.CategoricalCrossentropy(),
@@ -121,6 +121,6 @@ if __name__ == '__main__':
     print("========= Evaluate =========")
     net.evaluate(test_input, test_output)
 
-    net.save(pa.net_path_pi_int)
+    net.save(ap.net_path_pi_int)
 
     pass

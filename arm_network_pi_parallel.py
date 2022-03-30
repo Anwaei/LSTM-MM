@@ -2,8 +2,8 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
-import paras_arm as pa
-import plot_arm as pta
+import arm_paras as ap
+import arm_plot as aplot
 
 
 def create_model(units_mlp_x, units_lstm, units_mlp_c):
@@ -24,7 +24,7 @@ def create_model(units_mlp_x, units_lstm, units_mlp_c):
             out_z = layers.LSTM(units=unit, return_sequences=False)(input_z)
         else:
             if k == 0:
-                out_z = layers.LSTM(units=unit, return_sequences=True, batch_input_shape=(pa.bs, None, 1))(input_z)
+                out_z = layers.LSTM(units=unit, return_sequences=True, batch_input_shape=(ap.bs, None, 1))(input_z)
             elif k < len(units_lstm) - 1:
                 out_z = layers.LSTM(units=unit, return_sequences=True)(out_z)
             else:
@@ -38,7 +38,7 @@ def create_model(units_mlp_x, units_lstm, units_mlp_c):
 
     # out_c = layers.Dense(t_max, activation='sigmoid')(out_c)
     # out_final = layers.Softmax(out_c)
-    t_max = pa.T_max_integrated
+    t_max = ap.T_max_integrated
     out_c = layers.TimeDistributed(layers.Dense(t_max, activation='softmax'))(out_c)
 
     label_s = layers.TimeDistributed(layers.Activation('linear'))(input_s)
@@ -60,7 +60,7 @@ def process_data(data, t_max):
     :param t_max: int
     :return: train_input, train_output, test_input, test_output
     """
-    x_all, z_all, s_all, t_all, tpm_all, ifreach_all, time_steps_all = pta.read_data(data)
+    x_all, z_all, s_all, t_all, tpm_all, ifreach_all, time_steps_all = aplot.read_data(data)
 
     s_oh = keras.utils.to_categorical(s_all-1)
 
@@ -76,7 +76,7 @@ def process_data(data, t_max):
     output_t = t_oh[:, 0, :, :]
 
     batch_size = input_x.shape[0]
-    batch_size_train = int(batch_size*pa.train_prop)
+    batch_size_train = int(batch_size * ap.train_prop)
 
     train_input_x = input_x[0:batch_size_train, :, :]
     train_input_z = input_z[0:batch_size_train, :, :]
@@ -117,13 +117,13 @@ if __name__ == '__main__':
     for device in gpu_devices:
         tf.config.experimental.set_memory_growth(device, True)
 
-    data_path = pa.data_path
+    data_path = ap.data_path
     data = np.load(data_path)
 
-    train_input_2, train_output_2, test_input_2, test_output_2 = process_data(data, pa.T_max_parallel[1])
-    train_input_3, train_output_3, test_input_3, test_output_3 = process_data(data, pa.T_max_parallel[2])
+    train_input_2, train_output_2, test_input_2, test_output_2 = process_data(data, ap.T_max_parallel[1])
+    train_input_3, train_output_3, test_input_3, test_output_3 = process_data(data, ap.T_max_parallel[2])
 
-    units2 = pa.units_pi_para2
+    units2 = ap.units_pi_para2
     net2 = create_model(units2['mlp_x'], units2['lstm'], units2['mlp_c'])
     net2.compile(optimizer='rmsprop',
                  loss=loss_cce_mode2,
@@ -131,11 +131,11 @@ if __name__ == '__main__':
     net2.summary()
 
     print("========= Start training net2 =========")
-    net2.fit(x=train_input_2, y=train_output_2, epochs=10, batch_size=pa.bs)
+    net2.fit(x=train_input_2, y=train_output_2, epochs=10, batch_size=ap.bs)
     print("========= Evaluate net2 =========")
     net2.evaluate(test_input_2, test_output_2)
 
-    units3 = pa.units_pi_para3
+    units3 = ap.units_pi_para3
     net3 = create_model(units3['mlp_x'], units3['lstm'], units3['mlp_c'])
     net3.compile(optimizer='rmsprop',
                  loss=loss_cce_mode3,
@@ -143,9 +143,9 @@ if __name__ == '__main__':
     net3.summary()
 
     print("========= Start training net3 =========")
-    net3.fit(x=train_input_3, y=train_output_2, epochs=10, batch_size=pa.bs)
+    net3.fit(x=train_input_3, y=train_output_2, epochs=10, batch_size=ap.bs)
     print("========= Evaluate net3 =========")
     net3.evaluate(test_input_2, test_output_2)
 
-    net2.save(pa.net_path_pi_para2)
-    net3.save(pa.net_path_pi_para3)
+    net2.save(ap.net_path_pi_para2)
+    net3.save(ap.net_path_pi_para3)

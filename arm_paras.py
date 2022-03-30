@@ -1,12 +1,12 @@
 import numpy as np
 
-data_path = 'data/data_arm.npz'
-net_path_pi_int = 'nets/net_arm_pi_int'
-net_path_pi_para2 = 'nets/net_arm_pi_para2'
-net_path_pi_para3 = 'nets/net_arm_pi_para3'
-net_path_npi_int = 'nets/net_arm_npi_int'
-net_path_npi_para2 = 'nets/net_arm_npi_para2'
-net_path_npi_para3 = 'nets/net_arm_npi_para3'
+data_path = 'data/arm_data.npz'
+net_path_pi_int = 'nets/arm_net_pi_int'
+net_path_pi_para2 = 'nets/arm_net_pi_para2'
+net_path_pi_para3 = 'nets/arm_net_pi_para3'
+net_path_npi_int = 'nets/arm_net_npi_int'
+net_path_npi_para2 = 'nets/arm_net_npi_para2'
+net_path_npi_para3 = 'nets/arm_net_npi_para3'
 
 batch_size = 20000
 

@@ -1,5 +1,5 @@
 import numpy as np
-import paras_arm as pa
+import arm_paras as ap
 
 
 def dynamic_arm(sc, x_p, q):
@@ -13,12 +13,12 @@ def dynamic_arm(sc, x_p, q):
     if sc not in [1, 2, 3]:
         raise ValueError("Invalid mode.")
 
-    dt = pa.dt
-    g = pa.g
-    l0 = pa.l0
-    B = pa.B
-    m = pa.m[sc - 1]
-    J = pa.J[sc - 1]
+    dt = ap.dt
+    g = ap.g
+    l0 = ap.l0
+    B = ap.B
+    m = ap.m[sc - 1]
+    J = ap.J[sc - 1]
 
     x1 = x_p[0] + x_p[1]*dt + q[0]
     x2 = x_p[1] - g*l0*m/J*np.sin(x_p[0])*dt - B/J*x_p[1]*dt + q[1]
@@ -33,8 +33,8 @@ def measurement_arm(x, r):
 
 
 def noise_arm():
-    Q = pa.Q
-    R = pa.R
+    Q = ap.Q
+    R = ap.R
     # q = np.zeros(2)
     q = np.random.multivariate_normal([0, 0], Q)
     r = np.random.multivariate_normal([0], R)
@@ -46,11 +46,11 @@ def tpm_arm(x, t):
     if (type(t) is not int) and (type(t) is not np.int32):
         raise ValueError("Invalid sojourn time.")
 
-    b = pa.b
-    q23 = pa.q23
-    r23 = pa.r23
-    q32 = pa.q32
-    r32 = pa.r32
+    b = ap.b
+    q23 = ap.q23
+    r23 = ap.r23
+    q32 = ap.q32
+    r32 = ap.r32
 
     tpm = np.zeros([3, 3])
     ep = 1 if x[0] >= b else 0
@@ -80,8 +80,8 @@ def switch_arm(sp, xp, tp):
 
 
 def constraint_arm(x):
-    x1_c = pa.x1_c
-    x2_c = pa.x2_c
+    x1_c = ap.x1_c
+    x2_c = ap.x2_c
 
     if abs(x[0]) <= x1_c and abs(x[1]) <= x2_c:
         if_reach_constraint = 0

@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-import paras_arm as pa
+import arm_paras as ap
 
 
 def read_data(data):
@@ -50,6 +50,6 @@ def plot_single_trajectory(data):
 
 
 if __name__ == '__main__':
-    data_path = pa.data_path
+    data_path = ap.data_path
     data = np.load(data_path)
     plot_single_trajectory(data)
