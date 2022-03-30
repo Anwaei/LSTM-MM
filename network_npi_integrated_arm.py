@@ -65,26 +65,28 @@ def process_data(data):
     s_oh = keras.utils.to_categorical(s_all-1)
 
     input_x = np.swapaxes(x_all, 1, 2)
+    input_x = input_x[:, 0:-1, :]
     input_z = np.swapaxes(z_all, 1, 2)
-    input_s = s_oh[:, 0, :-1, :]
+    input_z = input_z[:, 0:-1, :]
+    input_s = s_oh[:, 0, 0:-1, :]
     output_s = s_oh[:, 0, 1:, :]
 
-    batch_size = pa.batch_size
+    batch_size = input_x.shape[0]
     batch_size_train = int(batch_size*pa.train_prop)
 
     train_input_x = input_x[0:batch_size_train, :, :]
     train_input_z = input_z[0:batch_size_train, :, :]
     train_input_s = input_s[0:batch_size_train, :, :]
-    train_output_t = output_t[0:batch_size_train, :, :]
+    train_output_s = output_s[0:batch_size_train, :, :]
     train_input = [train_input_x, train_input_s, train_input_z]
-    train_output = train_output_t
+    train_output = train_output_s
 
     test_input_x = input_x[batch_size_train:, :, :]
     test_input_z = input_z[batch_size_train:, :, :]
     test_input_s = input_s[batch_size_train:, :, :]
-    test_output_t = output_t[batch_size_train:, :, :]
+    test_output_s = output_s[batch_size_train:, :, :]
     test_input = [test_input_x, test_input_s, test_input_z]
-    test_output = test_output_t
+    test_output = test_output_s
 
     return train_input, train_output, test_input, test_output
 
@@ -97,9 +99,9 @@ if __name__ == '__main__':
 
     data_path = pa.data_path
     data = np.load(data_path)
-    train_input, train_output, test_input, test_output = process_data(data, pa.T_max_integrated)
+    train_input, train_output, test_input, test_output = process_data(data)
 
-    units = pa.units_pi_int
+    units = pa.units_npi_int
     net = create_model(units['mlp_x'], units['mlp_s'], units['lstm'], units['mlp_c'])
     net.compile(optimizer='rmsprop',
                 loss=tf.keras.losses.CategoricalCrossentropy(),

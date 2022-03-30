@@ -97,6 +97,16 @@ units_pi_int = {'mlp_x': units_mlp_x,
                 'lstm': units_lstm,
                 'mlp_c': units_mlp_c}
 
+units_mlp_x = [10, 10, 10]
+units_mlp_s = [10, 10]
+units_lstm = [10, 10, 10]
+units_mlp_c = [15, 25, 50]  # Except last layer
+units_npi_int = {'mlp_x': units_mlp_x,
+                 'mlp_s': units_mlp_s,
+                 'lstm': units_lstm,
+                 'mlp_c': units_mlp_c}
+
+
 bs = 64
 
 train_prop = 0.7  # Proportion of training data
