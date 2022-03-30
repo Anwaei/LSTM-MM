@@ -75,7 +75,7 @@ def process_data(data, t_max):
     input_s = s_oh[:, 0, :, :]
     output_t = t_oh[:, 0, :, :]
 
-    batch_size = pa.batch_size
+    batch_size = input_x.shape[0]
     batch_size_train = int(batch_size*pa.train_prop)
 
     train_input_x = input_x[0:batch_size_train, :, :]

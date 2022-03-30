@@ -4,8 +4,9 @@ data_path = 'data/data_arm.npz'
 net_path_pi_int = 'nets/net_arm_pi_int'
 net_path_pi_para2 = 'nets/net_arm_pi_para2'
 net_path_pi_para3 = 'nets/net_arm_pi_para3'
-net_path_nopi_int = 'nets/net_arm_nopi_int'
-net_path_nopi_para = 'nets/net_arm_nopi_para'
+net_path_npi_int = 'nets/net_arm_npi_int'
+net_path_npi_para2 = 'nets/net_arm_npi_para2'
+net_path_npi_para3 = 'nets/net_arm_npi_para3'
 
 batch_size = 20000
 
@@ -85,6 +86,20 @@ units_mlp_x = [10, 10, 10]
 units_lstm = [10, 10, 10]
 units_mlp_c = [15, 25, 50]  # Except last layer
 units_pi_para3 = {'mlp_x': units_mlp_x,
+                  'lstm': units_lstm,
+                  'mlp_c': units_mlp_c}
+
+units_mlp_x = [10, 10, 10]
+units_lstm = [10, 10, 10]
+units_mlp_c = [15, 25, 50]  # Except last layer
+units_npi_para2 = {'mlp_x': units_mlp_x,
+                  'lstm': units_lstm,
+                  'mlp_c': units_mlp_c}
+
+units_mlp_x = [10, 10, 10]
+units_lstm = [10, 10, 10]
+units_mlp_c = [15, 25, 50]  # Except last layer
+units_npi_para3 = {'mlp_x': units_mlp_x,
                   'lstm': units_lstm,
                   'mlp_c': units_mlp_c}
 
