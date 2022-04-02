@@ -26,10 +26,14 @@ J = [1, 2.5, 5]
 Q = np.diag([0.001, 0.001])
 R = np.diag([0.1])
 
+nx = 2
+nz = 1
+
 """""""""""""""""""""
 Transition
 """""""""""""""""""""
 
+M = 3
 # Boundary of s1/s2
 b = -0.2
 # b = 0.53
@@ -125,3 +129,9 @@ units_npi_int = {'mlp_x': units_mlp_x,
 bs = 64
 
 train_prop = 0.7  # Proportion of training data
+
+"""""""""""""""""""""
+Filtering
+"""""""""""""""""""""
+
+Np = 10000
