@@ -5,6 +5,8 @@
       <w>lstm</w>
       <w>nopi</w>
       <w>rmsprop</w>
+      <w>softmax</w>
+      <w>tanh</w>
     </words>
   </dictionary>
 </component>
