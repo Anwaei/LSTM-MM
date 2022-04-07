@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import stats
 
 data_path = 'data/arm_data.npz'
 net_path_pi_int = 'nets/arm_net_pi_int'
@@ -71,6 +72,7 @@ Initial
 
 x0 = np.array([0, 2.0])
 s0 = 1
+Q0 = np.diag([0.001, 0.001])
 
 """""""""""""""""""""
 Network
@@ -124,7 +126,6 @@ units_npi_int = {'mlp_x': units_mlp_x,
                  'mlp_s': units_mlp_s,
                  'lstm': units_lstm,
                  'mlp_c': units_mlp_c}
-
 
 bs = 64
 
