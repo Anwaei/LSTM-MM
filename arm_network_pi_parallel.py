@@ -14,35 +14,37 @@ def create_model(units_mlp_x, units_lstm, units_mlp_c):
     for k in range(len(units_mlp_x)):
         unit = units_mlp_x[k]
         if k == 0:
-            out_x = layers.TimeDistributed(layers.Dense(unit, activation='tanh'))(input_x)
+            out_x = layers.TimeDistributed(layers.Dense(unit, activation='tanh',
+                                                        name='x_dense' + str(k)),
+                                           name='x_wrapped_dense' + str(k))(input_x)
         else:
-            out_x = layers.TimeDistributed(layers.Dense(unit, activation='tanh'))(out_x)
+            out_x = layers.TimeDistributed(layers.Dense(unit, activation='tanh',
+                                                        name='x_dense' + str(k)),
+                                           name='x_wrapped_dense' + str(k))(out_x)
 
     for k in range(len(units_lstm)):
         unit = units_lstm[k]
         if len(units_lstm) == 1:
-            out_z = layers.LSTM(units=unit, return_sequences=False)(input_z)
+            out_z = layers.LSTM(units=unit, return_sequences=False, name='z_lstm' + str(k))(input_z)
         else:
             if k == 0:
-                out_z = layers.LSTM(units=unit, return_sequences=True, batch_input_shape=(ap.bs, None, 1))(input_z)
-            elif k < len(units_lstm) - 1:
-                out_z = layers.LSTM(units=unit, return_sequences=True)(out_z)
+                out_z = layers.LSTM(units=unit, return_sequences=True, name='z_lstm' + str(k))(input_z)
             else:
-                out_z = layers.LSTM(units=unit, return_sequences=True)(out_z)
+                out_z = layers.LSTM(units=unit, return_sequences=True, name='z_lstm' + str(k))(out_z)
 
     out_c = layers.concatenate([out_x, out_z])
 
+    t_max = ap.T_max_integrated
+
     for k in range(len(units_mlp_c)):
         unit = units_mlp_c[k]
-        out_c = layers.TimeDistributed(layers.Dense(unit, activation='sigmoid'))(out_c)
+        out_c = layers.TimeDistributed(layers.Dense(unit, activation='sigmoid',
+                                                    name='c_dense' + str(k)),
+                                       name='c_wrapped_dense' + str(k))(out_c)
+    out_c = layers.TimeDistributed(layers.Dense(t_max, activation='softmax', name='f_dense'),
+                                   name='f_wrapped_dense')(out_c)
 
-    # out_c = layers.Dense(t_max, activation='sigmoid')(out_c)
-    # out_final = layers.Softmax(out_c)
-    t_max = ap.T_max_integrated
-    out_c = layers.TimeDistributed(layers.Dense(t_max, activation='softmax'))(out_c)
-
-    label_s = layers.TimeDistributed(layers.Activation('linear'))(input_s)
-
+    label_s = layers.TimeDistributed(layers.Activation('linear'), name='Label')(input_s)
     out_final = layers.concatenate([out_c, label_s])
 
     net = keras.Model(inputs=[input_x, input_s, input_z], outputs=out_final)
@@ -131,7 +133,7 @@ if __name__ == '__main__':
     net2.summary()
 
     print("========= Start training net2 =========")
-    net2.fit(x=train_input_2, y=train_output_2, epochs=10, batch_size=ap.bs)
+    net2.fit(x=train_input_2, y=train_output_2, epochs=5, batch_size=ap.bs)
     print("========= Evaluate net2 =========")
     net2.evaluate(test_input_2, test_output_2)
 
@@ -143,7 +145,7 @@ if __name__ == '__main__':
     net3.summary()
 
     print("========= Start training net3 =========")
-    net3.fit(x=train_input_3, y=train_output_2, epochs=10, batch_size=ap.bs)
+    net3.fit(x=train_input_3, y=train_output_2, epochs=5, batch_size=ap.bs)
     print("========= Evaluate net3 =========")
     net3.evaluate(test_input_2, test_output_2)
 

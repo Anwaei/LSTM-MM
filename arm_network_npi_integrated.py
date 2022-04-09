@@ -7,9 +7,9 @@ import arm_plot as aplot
 
 
 def create_model(units_mlp_x, units_mlp_s, units_lstm, units_mlp_c):
-    input_x = layers.Input(shape=(None, 2))
-    input_s = layers.Input(shape=(None, 3))
-    input_z = layers.Input(shape=(None, 1))
+    input_x = layers.Input(shape=(None, ap.nx))
+    input_s = layers.Input(shape=(None, ap.M))
+    input_z = layers.Input(shape=(None, ap.nz))
 
     for k in range(len(units_mlp_x)):
         unit = units_mlp_x[k]
@@ -51,23 +51,12 @@ def create_model(units_mlp_x, units_mlp_s, units_lstm, units_mlp_c):
                                                     name='c_dense' + str(k)),
                                        name='c_wrapped_dense' + str(k))(out_c)
 
-    out_final = layers.TimeDistributed(layers.Dense(3, activation='softmax', name='f_dense'),
-                                       name='f_wrapped_dense' )(out_c)
+    out_final = layers.TimeDistributed(layers.Dense(ap.M, activation='softmax', name='f_dense'),
+                                       name='f_wrapped_dense')(out_c)
 
     net = keras.Model(inputs=[input_x, input_s, input_z], outputs=out_final)
 
     return net
-
-
-def one_step_model(rnnmodel):
-
-    model_config = rnnmodel.get_config()
-    layers_config = model_config['layers']
-    x_layers = []
-    s_layers = []
-    z_layers = []
-    c_layers = []
-
 
 
 def process_data(data):
@@ -129,11 +118,11 @@ if __name__ == '__main__':
     net.summary()
 
     print("========= Start training =========")
-    net.fit(x=train_input, y=train_output, epochs=20, batch_size=50)
+    net.fit(x=train_input, y=train_output, epochs=5, batch_size=50)
 
     print("========= Evaluate =========")
     net.evaluate(test_input, test_output)
 
-    net.save(ap.net_path_pi_int)
+    net.save(ap.net_path_npi_int)
 
     pass

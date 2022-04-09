@@ -3,8 +3,10 @@
     <words>
       <w>aplot</w>
       <w>lstm</w>
+      <w>lstmcell</w>
       <w>nopi</w>
       <w>rmsprop</w>
+      <w>rnnmodel</w>
       <w>softmax</w>
       <w>tanh</w>
     </words>
