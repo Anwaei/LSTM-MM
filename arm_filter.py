@@ -173,13 +173,19 @@ if __name__ == '__main__':
     xp = np.zeros(shape=(K, M, Np, ap.nx))
     mu = np.zeros(shape=(K, M))
 
+    x0 = ap.x0
+    s0 = ap.s0
+    z0 = am.measurement_arm(x0, 0)
+    hidden_state0 = list()
+    for l in range(len(hidden_state_ex)):
+        hidden_state0.append(tf.convert_to_tensor(np.zeros(shape=hidden_state_ex[l].shape)))
+
     for k in range(K):
-        z0 = am.measurement_arm(ap.x0, 0)
         for j in range(M):
-            if k == 1:
+            if k == 0:
                 for l in range(Np):
                     w[k, j, l] = 1/Np
-                    xp[k, j, l, :] = np.random.multivariate_normal(ap.x0, ap.Q0)
-                mu[k, j] = 1 if j == ap.s0 else 0
+                    xp[k, j, l, :] = np.random.multivariate_normal(x0, ap.Q0)
+                mu[k, j] = 1 if j == s0 else 0
             else:
                 pass
