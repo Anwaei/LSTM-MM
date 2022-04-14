@@ -97,6 +97,14 @@ def process_data(data, t_max):
     return train_input, train_output, test_input, test_output
 
 
+def loss_cce_mode1(y_true, y_pred):
+    cce = keras.losses.categorical_crossentropy(y_true[:, :, 0:-3], y_pred[:, :, 0:-3])
+    selected_cce = tf.multiply(y_true[:, :, -3], cce)
+    num = tf.reduce_sum(y_true[:, :, -3])
+    loss = tf.reduce_sum(selected_cce)/num
+    return loss
+
+
 def loss_cce_mode2(y_true, y_pred):
     cce = keras.losses.categorical_crossentropy(y_true[:, :, 0:-3], y_pred[:, :, 0:-3])
     selected_cce = tf.multiply(y_true[:, :, -2], cce)
@@ -122,8 +130,21 @@ if __name__ == '__main__':
     data_path = ap.data_path
     data = np.load(data_path)
 
+    train_input_1, train_output_1, test_input_1, test_output_1 = process_data(data, ap.T_max_parallel[0])
     train_input_2, train_output_2, test_input_2, test_output_2 = process_data(data, ap.T_max_parallel[1])
     train_input_3, train_output_3, test_input_3, test_output_3 = process_data(data, ap.T_max_parallel[2])
+
+    units1 = ap.units_pi_para1
+    net1 = create_model(units1['mlp_x'], units1['lstm'], units1['mlp_c'])
+    net1.compile(optimizer='rmsprop',
+                 loss=loss_cce_mode1,
+                 metrics=loss_cce_mode1)
+    net1.summary()
+
+    print("========= Start training net1 =========")
+    net1.fit(x=train_input_1, y=train_output_1, epochs=5, batch_size=ap.bs)
+    print("========= Evaluate net1 =========")
+    net1.evaluate(test_input_1, test_output_1)
 
     units2 = ap.units_pi_para2
     net2 = create_model(units2['mlp_x'], units2['lstm'], units2['mlp_c'])

@@ -3,13 +3,17 @@ from scipy import stats
 
 data_path = 'data/arm_data.npz'
 net_path_pi_int = 'nets/arm_net_pi_int'
+net_path_pi_para1 = 'nets/arm_net_pi_para1'
 net_path_pi_para2 = 'nets/arm_net_pi_para2'
 net_path_pi_para3 = 'nets/arm_net_pi_para3'
 net_path_npi_int = 'nets/arm_net_npi_int'
+net_path_npi_para1 = 'nets/arm_net_npi_para1'
 net_path_npi_para2 = 'nets/arm_net_npi_para2'
 net_path_npi_para3 = 'nets/arm_net_npi_para3'
 
-batch_size = 20000
+filter_data_path = 'data/arm_results.npz'
+
+batch_size = 200
 
 T = 5
 dt = 0.01
@@ -66,6 +70,9 @@ x2_c = 2.5
 # x1_c = 1000
 # x2_c = 1000
 
+lambda1 = 15
+lambda2 = 10
+
 """""""""""""""""""""
 Initial
 """""""""""""""""""""
@@ -78,8 +85,15 @@ Q0 = np.diag([0.001, 0.001])
 Network
 """""""""""""""""""""
 
-T_max_parallel = [None, 100, 120]  # Mode 2 and 3, no mode 1
+T_max_parallel = [50, 100, 120]  # \del{Mode 2 and 3, no mode 1} Including mode 1
 T_max_integrated = 100
+
+units_mlp_x = [10, 10, 10]
+units_lstm = [10, 10, 10]
+units_mlp_c = [15, 25, 50]  # Except last layer
+units_pi_para1 = {'mlp_x': units_mlp_x,
+                  'lstm': units_lstm,
+                  'mlp_c': units_mlp_c}
 
 units_mlp_x = [10, 10, 10]
 units_lstm = [10, 10, 10]
@@ -92,6 +106,13 @@ units_mlp_x = [10, 10, 10]
 units_lstm = [10, 10, 10]
 units_mlp_c = [15, 25, 50]  # Except last layer
 units_pi_para3 = {'mlp_x': units_mlp_x,
+                  'lstm': units_lstm,
+                  'mlp_c': units_mlp_c}
+
+units_mlp_x = [10, 10, 10]
+units_lstm = [10, 10, 10]
+units_mlp_c = [15, 25, 50]  # Except last layer
+units_npi_para1 = {'mlp_x': units_mlp_x,
                   'lstm': units_lstm,
                   'mlp_c': units_mlp_c}
 

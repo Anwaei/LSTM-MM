@@ -1,6 +1,7 @@
 import numpy as np
 import arm_paras as ap
-
+from scipy import stats
+import time
 
 def dynamic_arm(sc, x_p, q):
     """
@@ -30,6 +31,23 @@ def dynamic_arm(sc, x_p, q):
 
 def measurement_arm(x, r):
     return x[0] + r
+
+
+def compute_meas_likelihood(x, z, s):
+    # Gaussian noise
+    mean = measurement_arm(x, r=0)
+    li = pdf_Gaussian(x=z-mean, mean=np.zeros(ap.nz), cov=ap.R)
+    return li
+
+
+def compute_meas_loglikelihood(x, z, s):
+    # Gaussian noise
+    mean = measurement_arm(x, r=0)
+    if mean.size == 1:
+        logli = -(z - mean) ** 2 / (2 * ap.R)
+    else:
+        logli = -1/2 * np.matmul(np.matmul(z-mean, np.linalg.inv(ap.R)), z-mean)
+    return logli[0, 0]
 
 
 def noise_arm():
@@ -97,3 +115,42 @@ def constraint_arm(x):
         if_reach_constraint = 1
 
     return x, if_reach_constraint
+
+
+def compute_constraint_likelihood(x):
+    h1 = abs(x[0]) - ap.x1_c
+    h2 = abs(x[1]) - ap.x2_c
+    # t1 = time.clock()
+    # p1x = 1 - stats.expon.cdf(x=h1, scale=1/ap.lambda1)
+    # p2x = 1 - stats.expon.cdf(x=h2, scale=1/ap.lambda2)
+    # t2 = time.clock()
+    p1 = np.exp(-ap.lambda1*h1) if h1 > 0 else 1
+    p2 = np.exp(-ap.lambda2*h2) if h2 > 0 else 1
+    # t3 = time.clock()
+    return p1*p2
+
+
+def compute_constraint_loglikelihood(x):
+    h1 = abs(x[0]) - ap.x1_c
+    h2 = abs(x[1]) - ap.x2_c
+    logli1 = -ap.lambda1 * h1 if h1 > 0 else 0
+    logli2 = -ap.lambda2 * h2 if h2 > 0 else 0
+    return logli1*logli2
+
+
+def pdf_Gaussian(x, mean, cov):
+    if mean.size == 1:
+        pdf = 1/np.sqrt(2*np.pi*cov)*np.exp(-(x-mean)**2/(2*cov))
+    else:
+        pdf = np.power(2*np.pi, -mean.size/2) * np.power(np.linalg.det(cov), -1/2) \
+              * np.exp(-1/2 * np.matmul(np.matmul(x-mean, np.linalg.inv(cov)), x-mean))
+    return pdf[0, 0]
+
+
+def cdf_expon(x, lam):
+    c = 1 - np.exp(-lam*x) if x > 0 else 0
+    return c
+
+
+
+
