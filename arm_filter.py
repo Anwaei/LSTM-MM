@@ -410,7 +410,7 @@ if __name__ == '__main__':
         xest_all[k, :] = xest
         # print(6)
 
-    np.savez(path=ap.filter_data_path,
+    np.savez(file=ap.filter_data_path,
              xtrue_all=xtrue_all,
              strue_all=strue_all,
              xest_all=xest_all,

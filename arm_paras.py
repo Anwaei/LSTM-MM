@@ -156,4 +156,4 @@ train_prop = 0.7  # Proportion of training data
 Filtering
 """""""""""""""""""""
 
-Np = 10000
+Np = 1000
