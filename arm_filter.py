@@ -319,6 +319,7 @@ if __name__ == '__main__':
     z_all[1:, :] = ztrue_batch[run_index, :, :]
     strue_all[0] = s0
     strue_all[1:] = strue_batch[run_index, :]
+    time_steps = time_steps_batch[run_index, :]
 
     # k=0:
     for j in range(M):
@@ -424,7 +425,8 @@ if __name__ == '__main__':
              zcliprd_all=zcliprd_all,
              v_all=v_all,
              xi_all=xi_all,
-             zeta_all=zeta_all)
+             zeta_all=zeta_all,
+             time_steps=time_steps)
 
 
 

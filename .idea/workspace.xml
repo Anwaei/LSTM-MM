@@ -47,23 +47,23 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="19" />
+          <entry key="py" value="20" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="19" />
+          <entry key="Python" value="20" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="Python Console" value="2189" />
-          <entry key="py" value="6316" />
+          <entry key="Python Console" value="2275" />
+          <entry key="py" value="6665" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="8505" />
+          <entry key="Python" value="8940" />
         </counts>
       </usages-collector>
     </session>
@@ -76,20 +76,20 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/arm_filter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="308">
-              <caret line="409" column="26" lean-forward="true" selection-start-line="409" selection-start-column="26" selection-end-line="409" selection-end-column="26" />
+            <state relative-caret-position="289">
+              <caret line="305" column="45" selection-start-line="305" selection-start-column="45" selection-end-line="305" selection-end-column="45" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
+                <element signature="e#442#5638#0" />
+                <element signature="e#5697#7349#0" />
+                <element signature="e#7403#7823#0" />
+                <element signature="e#7866#8143#0" />
+                <element signature="e#7793#8118#0" />
+                <element signature="e#8410#8561#0" />
+                <element signature="e#8603#9447#0" />
+                <element signature="e#9489#9643#0" />
+                <element signature="e#9686#10545#0" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/numpy/lib/npyio.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="202">
-              <caret line="538" column="22" selection-start-line="538" selection-start-column="22" selection-end-line="538" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -115,11 +115,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/arm_paras.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="479">
-              <caret line="158" column="9" selection-start-line="158" selection-start-column="9" selection-end-line="158" selection-end-column="9" />
+            <state relative-caret-position="384">
+              <caret line="153" selection-start-line="153" selection-end-line="153" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -127,11 +127,20 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/arm_plot.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="147">
+              <caret line="60" column="31" selection-start-line="60" selection-start-column="31" selection-end-line="60" selection-end-column="31" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/arm_generate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="422">
-              <caret line="62" column="19" lean-forward="true" selection-start-line="62" selection-start-column="19" selection-end-line="62" selection-end-column="19" />
+            <state relative-caret-position="414">
+              <caret line="65" lean-forward="true" selection-start-line="65" selection-end-line="65" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -200,7 +209,6 @@
         <option value="$PROJECT_DIR$/network_pi_integrated_arm.py" />
         <option value="$PROJECT_DIR$/network_npi_parallel_arm.py" />
         <option value="$PROJECT_DIR$/paras_arm.py" />
-        <option value="$PROJECT_DIR$/arm_plot.py" />
         <option value="$PROJECT_DIR$/utils.py" />
         <option value="$PROJECT_DIR$/arm_network_npi_integrated.py" />
         <option value="$PROJECT_DIR$/arm_network_pi_integrated.py" />
@@ -208,12 +216,13 @@
         <option value="$PROJECT_DIR$/arm_network_npi_parallel.py" />
         <option value="$PROJECT_DIR$/arm_generate.py" />
         <option value="$PROJECT_DIR$/arm_model.py" />
-        <option value="$PROJECT_DIR$/arm_filter.py" />
         <option value="$PROJECT_DIR$/arm_paras.py" />
+        <option value="$PROJECT_DIR$/arm_filter.py" />
+        <option value="$PROJECT_DIR$/arm_plot.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-6" />
     <option name="y" value="24" />
     <option name="width" value="2019" />
@@ -260,7 +269,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.arm_filter">
+  <component name="RunManager" selected="Python.arm_plot">
     <configuration name="arm_filter" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="LSTM-MM" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -295,27 +304,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/arm_generate.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="arm_network_npi_parallel" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="LSTM-MM" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/arm_network_npi_parallel.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -366,20 +354,41 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="arm_plot" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="LSTM-MM" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/arm_plot.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.arm_filter" />
-      <item itemvalue="Python.arm_network_npi_parallel" />
       <item itemvalue="Python.arm_network_pi_integrated" />
       <item itemvalue="Python.arm_network_pi_parallel" />
       <item itemvalue="Python.arm_generate" />
+      <item itemvalue="Python.arm_plot" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.arm_plot" />
         <item itemvalue="Python.arm_filter" />
         <item itemvalue="Python.arm_generate" />
         <item itemvalue="Python.arm_network_pi_integrated" />
         <item itemvalue="Python.arm_network_pi_parallel" />
-        <item itemvalue="Python.arm_network_npi_parallel" />
       </list>
     </recent_temporary>
   </component>
@@ -405,7 +414,7 @@
       <window_info id="Favorites" order="2" sideWeight="0.5008375" side_tool="true" weight="0.24973656" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.28121606" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.28121606" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3756786" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -413,7 +422,7 @@
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32899022" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Python Console" order="10" weight="0.35179153" />
+      <window_info active="true" anchor="bottom" id="Python Console" order="10" visible="true" weight="0.35179153" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -594,13 +603,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/arm_plot.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="57">
-          <caret line="5" column="20" lean-forward="true" selection-start-line="5" selection-start-column="20" selection-end-line="5" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/arm_model.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1554">
@@ -618,6 +620,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/numpy/lib/npyio.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="202">
+          <caret line="538" column="22" selection-start-line="538" selection-start-column="22" selection-end-line="538" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/arm_paras.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="384">
+          <caret line="153" selection-start-line="153" selection-end-line="153" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/1361293752/numpy/random/mtrand.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="19">
@@ -628,40 +647,39 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/numpy/lib/npyio.py">
+    <entry file="file://$PROJECT_DIR$/arm_generate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="202">
-          <caret line="538" column="22" selection-start-line="538" selection-start-column="22" selection-end-line="538" selection-end-column="22" />
+        <state relative-caret-position="414">
+          <caret line="65" lean-forward="true" selection-start-line="65" selection-end-line="65" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/arm_filter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="308">
-          <caret line="409" column="26" lean-forward="true" selection-start-line="409" selection-start-column="26" selection-end-line="409" selection-end-column="26" />
+        <state relative-caret-position="289">
+          <caret line="305" column="45" selection-start-line="305" selection-start-column="45" selection-end-line="305" selection-end-column="45" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#442#5638#0" />
+            <element signature="e#5697#7349#0" />
+            <element signature="e#7403#7823#0" />
+            <element signature="e#7866#8143#0" />
+            <element signature="e#7793#8118#0" />
+            <element signature="e#8410#8561#0" />
+            <element signature="e#8603#9447#0" />
+            <element signature="e#9489#9643#0" />
+            <element signature="e#9686#10545#0" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/arm_generate.py">
+    <entry file="file://$PROJECT_DIR$/arm_plot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="422">
-          <caret line="62" column="19" lean-forward="true" selection-start-line="62" selection-start-column="19" selection-end-line="62" selection-end-column="19" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/arm_paras.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="479">
-          <caret line="158" column="9" selection-start-line="158" selection-start-column="9" selection-end-line="158" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="147">
+          <caret line="60" column="31" selection-start-line="60" selection-start-column="31" selection-end-line="60" selection-end-column="31" />
         </state>
       </provider>
     </entry>
