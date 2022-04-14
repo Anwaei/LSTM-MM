@@ -11,7 +11,7 @@ if __name__ == '__main__':
     s0 = ap.s0
     batch_size = ap.batch_size
 
-    K = int(T//dt)
+    K = int(T / dt)
     x_all = np.zeros([batch_size, 2, K])
     z_all = np.zeros([batch_size, 1, K])
     s_all = np.zeros([batch_size, 1, K], dtype='int')

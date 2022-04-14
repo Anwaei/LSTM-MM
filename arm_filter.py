@@ -239,7 +239,7 @@ if __name__ == '__main__':
 
     T = ap.T
     dt = ap.dt
-    K = int(T // dt)
+    K = int(T / dt)
     M = ap.M
     Np = ap.Np
 
