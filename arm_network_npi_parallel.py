@@ -1,3 +1,7 @@
+import os
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
@@ -136,7 +140,7 @@ if __name__ == '__main__':
     net1.summary()
 
     print("========= Start training net1 =========")
-    net1.fit(x=train_input_1, y=train_output_1, epochs=5, batch_size=ap.bs)
+    net1.fit(x=train_input_1, y=train_output_1, epochs=10, batch_size=ap.bs)
     print("========= Evaluate net1 =========")
     net1.evaluate(test_input_1, test_output_1)
     
@@ -148,7 +152,7 @@ if __name__ == '__main__':
     net2.summary()
 
     print("========= Start training net2 =========")
-    net2.fit(x=train_input_2, y=train_output_2, epochs=5, batch_size=ap.bs)
+    net2.fit(x=train_input_2, y=train_output_2, epochs=10, batch_size=ap.bs)
     print("========= Evaluate net2 =========")
     net2.evaluate(test_input_2, test_output_2)
 
@@ -160,7 +164,7 @@ if __name__ == '__main__':
     net3.summary()
 
     print("========= Start training net3 =========")
-    net3.fit(x=train_input_3, y=train_output_2, epochs=5, batch_size=ap.bs)
+    net3.fit(x=train_input_3, y=train_output_2, epochs=10, batch_size=ap.bs)
     print("========= Evaluate net3 =========")
     net3.evaluate(test_input_2, test_output_2)
 

@@ -11,12 +11,12 @@ net_path_npi_para1 = 'nets/arm_net_npi_para1'
 net_path_npi_para2 = 'nets/arm_net_npi_para2'
 net_path_npi_para3 = 'nets/arm_net_npi_para3'
 
-filter_data_path = 'data/arm_results.npz'
+filter_data_path = 'data/arm_results'
 
-batch_size = 200
+batch_size = 20000
 
 T = 5
-dt = 0.01
+dt = 0.02
 
 """""""""""""""""""""
 Model
@@ -150,10 +150,11 @@ units_npi_int = {'mlp_x': units_mlp_x,
 
 bs = 64
 
-train_prop = 0.7  # Proportion of training data
+train_prop = 0.9  # Proportion of training data
 
 """""""""""""""""""""
 Filtering
 """""""""""""""""""""
 
-Np = 1000
+Np = 5000
+run_batch = 10

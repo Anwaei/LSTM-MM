@@ -2,71 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="aa7150d1-0451-4a86-bc82-7f8928bd5b91" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/anwaei.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/anwaei.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/arm_filter.py" beforeDir="false" afterPath="$PROJECT_DIR$/arm_filter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arm_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/arm_model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/arm_network_npi_integrated.py" beforeDir="false" afterPath="$PROJECT_DIR$/arm_network_npi_integrated.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/arm_network_npi_parallel.py" beforeDir="false" afterPath="$PROJECT_DIR$/arm_network_npi_parallel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/arm_network_pi_integrated.py" beforeDir="false" afterPath="$PROJECT_DIR$/arm_network_pi_integrated.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/arm_network_pi_parallel.py" beforeDir="false" afterPath="$PROJECT_DIR$/arm_network_pi_parallel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/arm_net_npi_para2/saved_model.pb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/arm_net_npi_para2/variables/variables.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/arm_net_npi_para2/variables/variables.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/arm_net_npi_para3/saved_model.pb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/arm_net_npi_para3/variables/variables.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/arm_net_npi_para3/variables/variables.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/arm_net_pi_int/saved_model.pb" beforeDir="false" afterPath="$PROJECT_DIR$/nets/arm_net_pi_int/saved_model.pb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/arm_net_pi_int/variables/variables.data-00000-of-00001" beforeDir="false" afterPath="$PROJECT_DIR$/nets/arm_net_pi_int/variables/variables.data-00000-of-00001" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/arm_net_pi_int/variables/variables.index" beforeDir="false" afterPath="$PROJECT_DIR$/nets/arm_net_pi_int/variables/variables.index" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/arm_net_pi_para2/saved_model.pb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/arm_net_pi_para2/variables/variables.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/arm_net_pi_para2/variables/variables.index" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/arm_net_pi_para3/saved_model.pb" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/arm_net_pi_para3/variables/variables.data-00000-of-00001" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nets/arm_net_pi_para3/variables/variables.index" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/arm_paras.py" beforeDir="false" afterPath="$PROJECT_DIR$/arm_paras.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arm_plot.py" beforeDir="false" afterPath="$PROJECT_DIR$/arm_plot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nets/arm_net_npi_int/saved_model.pb" beforeDir="false" afterPath="$PROJECT_DIR$/nets/arm_net_npi_int/saved_model.pb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nets/arm_net_npi_int/variables/variables.data-00000-of-00001" beforeDir="false" afterPath="$PROJECT_DIR$/nets/arm_net_npi_int/variables/variables.data-00000-of-00001" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/nets/arm_net_npi_int/variables/variables.index" beforeDir="false" afterPath="$PROJECT_DIR$/nets/arm_net_npi_int/variables/variables.index" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="FUSProjectUsageTrigger">
-    <session id="-756483122">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="9" />
-          <entry key="project.open.time.14" value="1" />
-          <entry key="project.open.time.23" value="1" />
-          <entry key="project.open.time.4" value="1" />
-          <entry key="project.open.time.5" value="4" />
-          <entry key="project.open.time.6" value="2" />
-          <entry key="project.open.time.7" value="2" />
-          <entry key="project.opened" value="11" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="py" value="20" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="Python" value="20" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.extensions.edit">
-        <counts>
-          <entry key="Python Console" value="2275" />
-          <entry key="py" value="6673" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.edit">
-        <counts>
-          <entry key="Python" value="8948" />
-        </counts>
-      </usages-collector>
-    </session>
   </component>
   <component name="FavoritesManager">
     <favorites_list name="LSTM-MM" />
@@ -76,19 +27,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/arm_filter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="232">
-              <caret line="241" column="19" selection-start-line="241" selection-start-column="4" selection-end-line="241" selection-end-column="19" />
+            <state relative-caret-position="-451">
+              <caret line="338" column="27" selection-start-line="338" selection-start-column="27" selection-end-line="338" selection-end-column="27" />
               <folding>
-                <element signature="e#0#18#0" expanded="true" />
-                <element signature="e#442#5638#0" />
                 <element signature="e#5697#7349#0" />
-                <element signature="e#7403#7823#0" />
-                <element signature="e#7866#8143#0" />
-                <element signature="e#7793#8118#0" />
-                <element signature="e#8410#8561#0" />
-                <element signature="e#8603#9447#0" />
-                <element signature="e#9489#9643#0" />
-                <element signature="e#9686#10545#0" />
+                <element signature="e#7403#7821#0" />
+                <element signature="e#7864#8141#0" />
+                <element signature="e#8183#8508#0" />
               </folding>
             </state>
           </provider>
@@ -97,8 +42,35 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/arm_network_npi_integrated.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="18" column="31" selection-start-line="18" selection-start-column="31" selection-end-line="18" selection-end-column="31" />
+            <state>
+              <caret selection-end-line="2" selection-end-column="41" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/os.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="448">
+              <caret line="765" column="18" selection-start-line="765" selection-start-column="18" selection-end-line="765" selection-end-column="18" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/arm_network_npi_parallel.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="171">
+              <caret line="9" column="24" lean-forward="true" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/tensorflow/python/eager/execute.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="874">
+              <caret line="59" selection-start-line="59" selection-end-line="59" />
             </state>
           </provider>
         </entry>
@@ -106,11 +78,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/arm_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1554">
-              <caret line="42" column="30" selection-start-line="42" selection-start-column="30" selection-end-line="42" selection-end-column="30" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="608">
+              <caret line="35" column="12" selection-start-line="35" selection-start-column="12" selection-end-line="35" selection-end-column="12" />
             </state>
           </provider>
         </entry>
@@ -118,7 +87,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/arm_paras.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="384">
+            <state relative-caret-position="2888">
               <caret line="153" selection-start-line="153" selection-end-line="153" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -128,19 +97,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/arm_plot.py">
+        <entry file="file://$PROJECT_DIR$/arm_compare.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="304">
-              <caret line="18" column="56" lean-forward="true" selection-start-line="18" selection-start-column="56" selection-end-line="18" selection-end-column="56" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/arm_generate.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="399">
-              <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+            <state relative-caret-position="133">
+              <caret line="7" column="4" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -149,12 +109,21 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/1361293752/numpy/random/mtrand.py">
+        <entry file="file://$PROJECT_DIR$/arm_plot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="19">
-              <caret line="1412" column="4" selection-start-line="1412" selection-start-column="4" selection-end-line="1412" selection-end-column="4" />
+            <state relative-caret-position="394">
+              <caret line="103" lean-forward="true" selection-start-line="103" selection-end-line="103" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/arm_generate.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="247">
+              <caret line="16" column="53" selection-start-line="16" selection-start-column="53" selection-end-line="16" selection-end-column="53" />
               <folding>
-                <element signature="e#206#270#0" expanded="true" />
+                <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -182,6 +151,8 @@
       <find>cmtp[l, :]</find>
       <find>=</find>
       <find>clock</find>
+      <find>(K</find>
+      <find>_all[</find>
     </findStrings>
     <replaceStrings>
       <replace>tanh</replace>
@@ -192,6 +163,8 @@
       <replace>cmtp[:, ]</replace>
       <replace>cmtp[:, l]</replace>
       <replace>=</replace>
+      <replace>(run_batch, K</replace>
+      <replace>_all[n,</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -210,22 +183,23 @@
         <option value="$PROJECT_DIR$/network_npi_parallel_arm.py" />
         <option value="$PROJECT_DIR$/paras_arm.py" />
         <option value="$PROJECT_DIR$/utils.py" />
-        <option value="$PROJECT_DIR$/arm_network_npi_integrated.py" />
         <option value="$PROJECT_DIR$/arm_network_pi_integrated.py" />
         <option value="$PROJECT_DIR$/arm_network_pi_parallel.py" />
-        <option value="$PROJECT_DIR$/arm_network_npi_parallel.py" />
-        <option value="$PROJECT_DIR$/arm_model.py" />
-        <option value="$PROJECT_DIR$/arm_paras.py" />
-        <option value="$PROJECT_DIR$/arm_plot.py" />
-        <option value="$PROJECT_DIR$/arm_filter.py" />
         <option value="$PROJECT_DIR$/arm_generate.py" />
+        <option value="$PROJECT_DIR$/arm_model.py" />
+        <option value="$PROJECT_DIR$/arm_filter.py" />
+        <option value="$PROJECT_DIR$/arm_paras.py" />
+        <option value="$PROJECT_DIR$/arm_network_npi_integrated.py" />
+        <option value="$PROJECT_DIR$/arm_plot.py" />
+        <option value="$PROJECT_DIR$/arm_network_npi_parallel.py" />
+        <option value="$PROJECT_DIR$/arm_compare.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-6" />
-    <option name="y" value="24" />
-    <option name="width" value="2019" />
+    <option name="x" value="207" />
+    <option name="y" value="67" />
+    <option name="width" value="1940" />
     <option name="height" value="1023" />
   </component>
   <component name="ProjectView">
@@ -245,6 +219,17 @@
               <item name="LSTM-MM" type="b2602c69:ProjectViewProjectNode" />
               <item name="LSTM-MM" type="462c0819:PsiDirectoryNode" />
               <item name="data" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LSTM-MM" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LSTM-MM" type="462c0819:PsiDirectoryNode" />
+              <item name="nets" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="LSTM-MM" type="b2602c69:ProjectViewProjectNode" />
+              <item name="LSTM-MM" type="462c0819:PsiDirectoryNode" />
+              <item name="nets" type="462c0819:PsiDirectoryNode" />
+              <item name="arm_net_pi_int" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -269,7 +254,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.arm_plot">
+  <component name="RunManager" selected="Python.arm_network_npi_parallel">
     <configuration name="arm_filter" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="LSTM-MM" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -312,7 +297,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="arm_network_pi_integrated" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="arm_network_npi_integrated" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="LSTM-MM" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -324,7 +309,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/arm_network_pi_integrated.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/arm_network_npi_integrated.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -333,7 +318,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="arm_network_pi_parallel" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="arm_network_npi_parallel" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="LSTM-MM" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -345,7 +330,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/arm_network_pi_parallel.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/arm_network_npi_parallel.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -377,18 +362,18 @@
     </configuration>
     <list>
       <item itemvalue="Python.arm_filter" />
-      <item itemvalue="Python.arm_network_pi_integrated" />
-      <item itemvalue="Python.arm_network_pi_parallel" />
       <item itemvalue="Python.arm_generate" />
       <item itemvalue="Python.arm_plot" />
+      <item itemvalue="Python.arm_network_npi_integrated" />
+      <item itemvalue="Python.arm_network_npi_parallel" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.arm_network_npi_parallel" />
         <item itemvalue="Python.arm_plot" />
         <item itemvalue="Python.arm_filter" />
+        <item itemvalue="Python.arm_network_npi_integrated" />
         <item itemvalue="Python.arm_generate" />
-        <item itemvalue="Python.arm_network_pi_integrated" />
-        <item itemvalue="Python.arm_network_pi_parallel" />
       </list>
     </recent_temporary>
   </component>
@@ -414,22 +399,19 @@
       <window_info id="Favorites" order="2" sideWeight="0.5008375" side_tool="true" weight="0.24973656" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.28121606" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.3756786" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.28091106" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.37527114" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Terminal" order="8" weight="0.32899022" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
-      <window_info anchor="bottom" id="Python Console" order="10" weight="0.35179153" />
+      <window_info anchor="bottom" id="Python Console" order="10" weight="0.35140997" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
     </layout>
-  </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/model.py" />
@@ -561,13 +543,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/1361293752/builtins.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="5128" column="8" lean-forward="true" selection-start-line="5128" selection-start-column="8" selection-end-line="5128" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/1361293752/builtins.py" />
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/tensorflow/python/keras/engine/base_layer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="224">
@@ -575,20 +551,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/1361293752/numpy/core/_multiarray_umath.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4">
-          <caret line="6529" column="14" lean-forward="true" selection-start-line="6529" selection-start-column="14" selection-end-line="6529" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/arm_network_npi_parallel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2717">
-          <caret line="143" column="62" selection-start-line="143" selection-start-column="62" selection-end-line="143" selection-end-column="62" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/1361293752/numpy/core/_multiarray_umath.py" />
     <entry file="file://$PROJECT_DIR$/arm_network_pi_integrated.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1349">
@@ -603,16 +566,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/arm_model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1554">
-          <caret line="42" column="30" selection-start-line="42" selection-start-column="30" selection-end-line="42" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/numpy/lib/npyio.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="202">
@@ -620,9 +573,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/1361293752/numpy/random/mtrand.py" />
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/tensorflow/python/eager/execute.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="874">
+          <caret line="59" selection-start-line="59" selection-end-line="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/arm_model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="608">
+          <caret line="35" column="12" selection-start-line="35" selection-start-column="12" selection-end-line="35" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/arm_paras.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
+        <state relative-caret-position="2888">
           <caret line="153" selection-start-line="153" selection-end-line="153" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -630,56 +598,64 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/.PyCharmCE2018.2/system/python_stubs/1361293752/numpy/random/mtrand.py">
+    <entry file="file://$PROJECT_DIR$/arm_generate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="19">
-          <caret line="1412" column="4" selection-start-line="1412" selection-start-column="4" selection-end-line="1412" selection-end-column="4" />
+        <state relative-caret-position="247">
+          <caret line="16" column="53" selection-start-line="16" selection-start-column="53" selection-end-line="16" selection-end-column="53" />
           <folding>
-            <element signature="e#206#270#0" expanded="true" />
+            <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/arm_network_npi_integrated.py">
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/os.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="18" column="31" selection-start-line="18" selection-start-column="31" selection-end-line="18" selection-end-column="31" />
+        <state relative-caret-position="448">
+          <caret line="765" column="18" selection-start-line="765" selection-start-column="18" selection-end-line="765" selection-end-column="18" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/arm_filter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="241" column="19" selection-start-line="241" selection-start-column="4" selection-end-line="241" selection-end-column="19" />
+        <state relative-caret-position="-451">
+          <caret line="338" column="27" selection-start-line="338" selection-start-column="27" selection-end-line="338" selection-end-column="27" />
           <folding>
-            <element signature="e#0#18#0" expanded="true" />
-            <element signature="e#442#5638#0" />
             <element signature="e#5697#7349#0" />
-            <element signature="e#7403#7823#0" />
-            <element signature="e#7866#8143#0" />
-            <element signature="e#7793#8118#0" />
-            <element signature="e#8410#8561#0" />
-            <element signature="e#8603#9447#0" />
-            <element signature="e#9489#9643#0" />
-            <element signature="e#9686#10545#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/arm_generate.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
+            <element signature="e#7403#7821#0" />
+            <element signature="e#7864#8141#0" />
+            <element signature="e#8183#8508#0" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/arm_plot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="304">
-          <caret line="18" column="56" lean-forward="true" selection-start-line="18" selection-start-column="56" selection-end-line="18" selection-end-column="56" />
+        <state relative-caret-position="394">
+          <caret line="103" lean-forward="true" selection-start-line="103" selection-end-line="103" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/arm_network_npi_integrated.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="2" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/arm_network_npi_parallel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="9" column="24" lean-forward="true" selection-start-line="9" selection-start-column="24" selection-end-line="9" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/arm_compare.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="7" column="4" selection-start-line="7" selection-start-column="4" selection-end-line="7" selection-end-column="4" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

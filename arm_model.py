@@ -29,6 +29,25 @@ def dynamic_arm(sc, x_p, q):
     return x
 
 
+def dynamic_Jacobian_arm(x, s):
+    if s not in [1, 2, 3]:
+        raise ValueError("Invalid mode.")
+    dt = ap.dt
+    g = ap.g
+    l0 = ap.l0
+    B = ap.B
+    m = ap.m[s - 1]
+    J = ap.J[s - 1]
+
+    Ja = np.zeros(shape=(ap.nx, ap.nx))
+    Ja[0, 0] = 1
+    Ja[0, 1] = dt
+    Ja[1, 0] = -g*l0*m/J*np.cos(x[0])*dt
+    Ja[1, 1] = 1
+
+    return Ja
+
+
 def measurement_arm(x, r):
     return x[0] + r
 

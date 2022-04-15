@@ -242,6 +242,7 @@ if __name__ == '__main__':
     K = int(T / dt)
     M = ap.M
     Np = ap.Np
+    run_batch = ap.run_batch
 
     nets = list()
     # hiddens_ex = list()
@@ -284,22 +285,20 @@ if __name__ == '__main__':
     s0 = ap.s0
     z0 = am.measurement_arm(x0, 0)
 
-    xtrue_all = np.zeros(shape=(K + 1, ap.nx))
-    strue_all = np.zeros(shape=K + 1)
-    xest_all = np.zeros(shape=(K + 1, ap.nx))
-    xp_all = np.zeros(shape=(K + 1, M, Np, ap.nx))
-    w_all = np.zeros(shape=(K + 1, M, Np))
-    mu_all = np.zeros(shape=(K + 1, M))
-    z_all = np.zeros(shape=(K + 1, ap.nz))
-    cmtp_all = np.zeros(shape=(K + 1, M, M, Np))
-    what_all = np.zeros(shape=(K + 1, M, M, Np))
-    what_sum_all = np.zeros(shape=(K + 1, M))
-    zcliprd_all = np.zeros(shape=(K + 1, M, M, Np))
-    v_all = np.zeros(shape=(K + 1, M, M, Np))
-    xi_all = np.zeros(shape=(K + 1, M, Np), dtype='int')
-    zeta_all = np.zeros(shape=(K + 1, M, Np), dtype='int')
-    hidden_int_all = []
-    hidden_para_all = [[]]
+    xtrue_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
+    strue_all = np.zeros(shape=(run_batch, K + 1))
+    xest_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
+    xp_all = np.zeros(shape=(run_batch, K + 1, M, Np, ap.nx))
+    w_all = np.zeros(shape=(run_batch, K + 1, M, Np))
+    mu_all = np.zeros(shape=(run_batch, K + 1, M))
+    z_all = np.zeros(shape=(run_batch, K + 1, ap.nz))
+    cmtp_all = np.zeros(shape=(run_batch, K + 1, M, M, Np))
+    what_all = np.zeros(shape=(run_batch, K + 1, M, M, Np))
+    what_sum_all = np.zeros(shape=(run_batch, K + 1, M))
+    zcliprd_all = np.zeros(shape=(run_batch, K + 1, M, M, Np))
+    v_all = np.zeros(shape=(run_batch, K + 1, M, M, Np))
+    xi_all = np.zeros(shape=(run_batch, K + 1, M, Np), dtype='int')
+    zeta_all = np.zeros(shape=(run_batch, K + 1, M, Np), dtype='int')
     q_proposal_all = np.random.multivariate_normal(mean=np.zeros(ap.nx), cov=ap.Q, size=(K+1, M, Np))
 
     data = np.load(ap.data_path)
@@ -311,132 +310,123 @@ if __name__ == '__main__':
     ttrue_batch = t_data[size_run:, 0, :]
     ifreach_batch = ifreach_data[size_run:, 0, :]
     time_steps_batch = time_steps_data[size_run:, 0, :]
+    time_steps = time_steps_batch[0, :]
 
-    run_index = 1
-    xtrue_all[0, :] = x0
-    xtrue_all[1:, :] = xtrue_batch[run_index, :, :]
-    z_all[0, :] = z0
-    z_all[1:, :] = ztrue_batch[run_index, :, :]
-    strue_all[0] = s0
-    strue_all[1:] = strue_batch[run_index, :]
-    time_steps = time_steps_batch[run_index, :]
+    for n in tqdm(range(run_batch)):
+        hidden_int_all = []
+        hidden_para_all = [[]]
 
-    # k=0:
-    for j in range(M):
-        for l in range(Np):
-            w_all[0, j, l] = 1 / Np
-            xp_all[0, j, l, :] = np.random.multivariate_normal(x0, ap.Q0)
-        mu_all[0, j] = 1 if j == s0 else 0
-    if which_net == 'pi_int' or which_net == 'npi_int':
-        hidden0 = list()
-        for l in range(len(hidden_ex)):
-            hidden0.append(tf.convert_to_tensor(np.zeros(shape=hidden_ex[l].shape)))
-        hidden_int_all.append(hidden0)
-    elif which_net == 'pi_para' or which_net == 'npi_para':
+        xtrue_all[n, 0, :] = x0
+        xtrue_all[n, 1:, :] = xtrue_batch[n, :, :]
+        z_all[n, 0, :] = z0
+        z_all[n, 1:, :] = ztrue_batch[n, :, :]
+        strue_all[n, 0] = s0
+        strue_all[n, 1:] = strue_batch[n, :]
+
+        # k=0:
         for j in range(M):
+            for l in range(Np):
+                w_all[n, 0, j, l] = 1 / Np
+                xp_all[n, 0, j, l, :] = np.random.multivariate_normal(x0, ap.Q0)
+            mu_all[n, 0, j] = 1 if j == s0 else 0
+        if which_net == 'pi_int' or which_net == 'npi_int':
             hidden0 = list()
-            for l in range(len(hidden_ex[j])):
-                hidden0.append(tf.convert_to_tensor(np.zeros(shape=hidden_ex[j][l].shape)))
-            hidden_para_all[0].append(hidden0)
+            for l in range(len(hidden_ex)):
+                hidden0.append(tf.convert_to_tensor(np.zeros(shape=hidden_ex[l].shape)))
+            hidden_int_all.append(hidden0)
+        elif which_net == 'pi_para' or which_net == 'npi_para':
+            for j in range(M):
+                hidden0 = list()
+                for l in range(len(hidden_ex[j])):
+                    hidden0.append(tf.convert_to_tensor(np.zeros(shape=hidden_ex[j][l].shape)))
+                hidden_para_all[0].append(hidden0)
 
-    for k in tqdm(range(1, K + 1)):
-        z_pre = z_all[k - 1, :]
-        z = z_all[k, :]
-        for i in range(M):
-            xp_pre = xp_all[k - 1, i, :, :]
-            if which_net == 'pi_int' or which_net == 'npi_int':
-                hidden_pre = hidden_int_all[k - 1]
-            elif which_net == 'pi_para' or which_net == 'npi_para':
-                hidden_pre = hidden_para_all[k - 1][i]
-            else:
-                raise ValueError('Error net structure')
-            cmtp_pre, hidden_new = compute_cmtp(nets=nets, which_net=which_net,
-                                                x=xp_pre, z=z_pre, s=i,
-                                                hidden=hidden_pre)
-            cmtp_all[k - 1, i, :, :] = cmtp_pre
-            if which_net == 'pi_int' or which_net == 'npi_int':
-                if i == 0:
-                    hidden_int_all.append(hidden_new)
-            elif which_net == 'pi_para' or which_net == 'npi_para':
-                if i == 0:
-                    hidden_para_all.append([])
-                hidden_para_all[k].append(hidden_new)
-        # print(1)
-        for j in range(M):
+        for k in tqdm(range(1, K + 1)):
+            z_pre = z_all[n, k - 1, :]
+            z = z_all[n, k, :]
             for i in range(M):
+                xp_pre = xp_all[n, k - 1, i, :, :]
+                if which_net == 'pi_int' or which_net == 'npi_int':
+                    hidden_pre = hidden_int_all[k - 1]
+                elif which_net == 'pi_para' or which_net == 'npi_para':
+                    hidden_pre = hidden_para_all[k - 1][i]
+                else:
+                    raise ValueError('Error net structure')
+                cmtp_pre, hidden_new = compute_cmtp(nets=nets, which_net=which_net,
+                                                    x=xp_pre, z=z_pre, s=i,
+                                                    hidden=hidden_pre)
+                cmtp_all[n, k - 1, i, :, :] = cmtp_pre
+                if which_net == 'pi_int' or which_net == 'npi_int':
+                    if i == 0:
+                        hidden_int_all.append(hidden_new)
+                elif which_net == 'pi_para' or which_net == 'npi_para':
+                    if i == 0:
+                        hidden_para_all.append([])
+                    hidden_para_all[k].append(hidden_new)
+            # print(1)
+            for j in range(M):
+                for i in range(M):
+                    for l in range(Np):
+                        # what_pre = cmtp_all[n, k - 1, i, j, l] * mu_all[n, k - 1, i] * w_all[n, k - 1, i, l]
+                        # what_all[n, k - 1, i, j, l] = what_pre
+                        what_all[n, k - 1, i, j, l] = cmtp_all[n, k - 1, i, j, l] * mu_all[n, k - 1, i] * w_all[n, k - 1, i, l]
+                what_pre_sum = np.sum(what_all[n, k - 1, :, j, :])
+                what_sum_all[n, k - 1, j] = what_pre_sum
+                what_all[n, k - 1, :, j, :] = what_all[n, k - 1, :, j, :] / what_pre_sum
+            # print(2)
+            for j in range(M):
+                for i in range(M):
+                    for l in range(Np):
+                        # zcliprd_pre = compute_zcpredict_likelihood(x_pre=xp_all[n, k - 1, i, l, :], z=z, s=j)
+                        # zcliprd_all[n, k - 1, i, j, l] = zcliprd_pre
+                        # v_pre = zcliprd_pre * what_all[n, k - 1, i, j, l]
+                        # v_all[n, k - 1, i, j, l] = v_pre
+                        v_all[n, k - 1, i, j, l] = compute_zcpredict_likelihood(x_pre=xp_all[n, k - 1, i, l, :], z=z, s=j) \
+                                                * what_all[n, k - 1, i, j, l]
+                v_pre_sum = np.sum(v_all[n, k - 1, :, j, :])
+                v_all[n, k - 1, :, j, :] = v_all[n, k - 1, :, j, :] / v_pre_sum
+            # print(3)
+            for j in range(M):
+                xi_all[n, k - 1, j, :], zeta_all[n, k - 1, j, :] = sample_auxiliary_variables(v_all[n, k - 1, :, j, :])
                 for l in range(Np):
-                    # what_pre = cmtp_all[k - 1, i, j, l] * mu_all[k - 1, i] * w_all[k - 1, i, l]
-                    # what_all[k - 1, i, j, l] = what_pre
-                    what_all[k - 1, i, j, l] = cmtp_all[k - 1, i, j, l] * mu_all[k - 1, i] * w_all[k - 1, i, l]
-            what_pre_sum = np.sum(what_all[k - 1, :, j, :])
-            what_sum_all[k - 1, j] = what_pre_sum
-            what_all[k - 1, :, j, :] = what_all[k - 1, :, j, :] / what_pre_sum
-        # print(2)
-        for j in range(M):
-            for i in range(M):
+                    xi = xi_all[n, k - 1, j, l]
+                    zeta = zeta_all[n, k - 1, j, l]
+                    xp = am.dynamic_arm(sc=j + 1, x_p=xp_all[n, k - 1, xi, zeta, :], q=q_proposal_all[k - 1, j, l, :])
+                    xp_all[n, k, j, l, :] = xp
+                    zcli = compute_zc_likelihood(x=xp, z=z, s=j)
+                    w_all[n, k, j, l] = zcli * what_all[n, k - 1, xi, j, zeta] / v_all[n, k - 1, xi, j, zeta]
+                w_all[n, k, j, :] = w_all[n, k, j, :] / np.sum(w_all[n, k, j, :])
+            # print(4)
+            for j in range(M):
+                mu = 0
+                for l2 in range(Np):
+                    mu = mu + w_all[n, k, j, l2] * what_sum_all[n, k - 1, j]
+                mu_all[n, k, j] = mu
+            mu_all[n, k, :] = mu_all[n, k, :] / sum(mu_all[n, k, :])
+            # print(5)
+            xest = np.zeros(ap.nx)
+            for j in range(M):
+                xestj = np.zeros(ap.nx)
                 for l in range(Np):
-                    # zcliprd_pre = compute_zcpredict_likelihood(x_pre=xp_all[k - 1, i, l, :], z=z, s=j)
-                    # zcliprd_all[k - 1, i, j, l] = zcliprd_pre
-                    # v_pre = zcliprd_pre * what_all[k - 1, i, j, l]
-                    # v_all[k - 1, i, j, l] = v_pre
-                    v_all[k - 1, i, j, l] = compute_zcpredict_likelihood(x_pre=xp_all[k - 1, i, l, :], z=z, s=j) \
-                                            * what_all[k - 1, i, j, l]
-            v_pre_sum = np.sum(v_all[k - 1, :, j, :])
-            v_all[k - 1, :, j, :] = v_all[k - 1, :, j, :] / v_pre_sum
-        # print(3)
-        for j in range(M):
-            xi_all[k - 1, j, :], zeta_all[k - 1, j, :] = sample_auxiliary_variables(v_all[k - 1, :, j, :])
-            for l in range(Np):
-                xi = xi_all[k - 1, j, l]
-                zeta = zeta_all[k - 1, j, l]
-                xp = am.dynamic_arm(sc=j + 1, x_p=xp_all[k - 1, xi, zeta, :], q=q_proposal_all[k-1, j, l, :])
-                xp_all[k, j, l, :] = xp
-                zcli = compute_zc_likelihood(x=xp, z=z, s=j)
-                w_all[k, j, l] = zcli * what_all[k - 1, xi, j, zeta] / v_all[k - 1, xi, j, zeta]
-            w_all[k, j, :] = w_all[k, j, :] / np.sum(w_all[k, j, :])
-        # print(4)
-        for j in range(M):
-            mu = 0
-            for l2 in range(Np):
-                mu = mu + w_all[k, j, l2] * what_sum_all[k - 1, j]
-            mu_all[k, j] = mu
-        mu_all[k, :] = mu_all[k, :] / sum(mu_all[k, :])
-        # print(5)
-        xest = np.zeros(ap.nx)
-        for j in range(M):
-            xestj = np.zeros(ap.nx)
-            for l in range(Np):
-                xestj = xestj + w_all[k, j, l] * xp_all[k, j, l, :]
-            xest = xest + mu_all[k, j] * xestj
-        xest_all[k, :] = xest
-        # print(6)
+                    xestj = xestj + w_all[n, k, j, l] * xp_all[n, k, j, l, :]
+                xest = xest + mu_all[n, k, j] * xestj
+            xest_all[n, k, :] = xest
+            # print(6)
 
-    np.savez(file=ap.filter_data_path,
+    np.savez(file=ap.filter_data_path+'_'+which_net+'.npz',
              xtrue_all=xtrue_all,
              strue_all=strue_all,
              xest_all=xest_all,
-             xp_all=xp_all,
-             w_all=w_all,
              mu_all=mu_all,
              z_all=z_all,
-             cmtp_all=cmtp_all,
-             what_all=what_all,
-             what_sum_all=what_sum_all,
-             zcliprd_all=zcliprd_all,
-             v_all=v_all,
-             xi_all=xi_all,
-             zeta_all=zeta_all,
              time_steps=time_steps)
-
-
-
-
-
-
-
-
-
-
-
-
+    # xp_all=xp_all,
+    # w_all=w_all,
+    # cmtp_all=cmtp_all,
+    # what_all=what_all,
+    # what_sum_all=what_sum_all,
+    # zcliprd_all=zcliprd_all,
+    # v_all=v_all,
+    # xi_all=xi_all,
+    # zeta_all=zeta_all,
 

@@ -1,3 +1,7 @@
+import os
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
@@ -118,7 +122,7 @@ if __name__ == '__main__':
     net.summary()
 
     print("========= Start training =========")
-    net.fit(x=train_input, y=train_output, epochs=5, batch_size=50)
+    net.fit(x=train_input, y=train_output, epochs=10, batch_size=ap.bs)
 
     print("========= Evaluate =========")
     net.evaluate(test_input, test_output)
