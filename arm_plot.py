@@ -90,24 +90,98 @@ def plot_rmse(data):
     strue_all = data['strue_all'][:, 1:]
     mu_all = data['mu_all'][:, 1:, :]
 
-    N = ap.run_batch
     rmse = np.sqrt(np.mean((xtrue_all-xest_all)**2, axis=0))
 
     plt.figure(1)
     plt.plot(time_steps, rmse)
     plt.xlabel('Time')
     plt.ylabel('Value')
-    plt.legend(['RMSE of state 1', 'RMSE of state 1'])
+    plt.legend(['RMSE of state 1', 'RMSE of state 2'])
     plt.title('RMSE of states')
     plt.show()
 
+
+def plot_compare(datas):
+    time_steps = datas[0]['time_steps']
+    xtrue_all = []
+    xest_all = []
+    strue_all = []
+    mu_all = []
+    for k in range(len(datas)):
+        data = datas[k]
+        xtrue_all.append(data['xtrue_all'][:, 1:, :])
+        xest_all.append(data['xest_all'][:, 1:, :])
+        strue_all.append(data['strue_all'][:, 1:])
+        mu_all.append(data['mu_all'][:, 1:, :])
+
+    index = 0
+    plt.figure(1)
+    plt.hold(True)
+    plt.plot(time_steps, xtrue_all[0][index, :, 0])
+    for k in range(len(datas)):
+        plt.plot(time_steps, xest_all[k][index, :, 0])
+    plt.xlabel('Time')
+    plt.ylabel('Value')
+    plt.legend(['True value', 'LSTM-MM Estimation', 'IMM Estimation'])
+    plt.title('Trajectory of state 1')
+
+    plt.figure(2)
+    plt.hold(True)
+    plt.plot(time_steps, xtrue_all[0][index, :, 1])
+    for k in range(len(datas)):
+        plt.plot(time_steps, xest_all[k][index, :, 1])
+    plt.xlabel('Time')
+    plt.ylabel('Value')
+    plt.legend(['True value', 'LSTM-MM Estimation', 'IMM Estimation'])
+    plt.title('Trajectory of state 2')
+
+    plt.figure(3)
+    plt.hold(True)
+    plt.plot(time_steps, strue_all[0][index, :])
+    for k in range(len(datas)):
+        plt.plot(time_steps, mu_all[k][index, :])
+    plt.xlabel('Time')
+    plt.ylabel('Value')
+    legends = []
+    legends.append('True Mode')
+    for j in range(ap.M):
+        legends.append('LSTM-MM Mode' + str(j+1))
+    for j in range(ap.M):
+        legends.append('IMM Mode' + str(j+1))
+    plt.legend(legends)
+    plt.title('Mode probabilities')
+
+    plt.figure(4)
+    plt.hold(True)
+    legends=[]
+    for k in range(len(datas)):
+        rmse = np.sqrt(np.mean((xtrue_all[k]-xest_all[k])**2, axis=0))
+        plt.plot(time_steps, rmse)
+    legends.append('LSTM-MM rmse for state 1')
+    legends.append('LSTM-MM rmse for state 2')
+    legends.append('IMM rmse for state 1')
+    legends.append('IMM rmse for state 2')
+    plt.xlabel('Time')
+    plt.ylabel('Value')
+    plt.legend(legends)
+    plt.title('RMSE')
+
+    plt.show()
 
 if __name__ == '__main__':
     # data_path = ap.data_path
     # data = np.load(data_path)
     # plot_single_trajectory(data)
+
     which_net = 'npi_int'
     data_path = ap.filter_data_path+'_'+which_net+'.npz'
-    data = np.load(data_path)
-    # plot_result_single(data)
-    plot_rmse(data)
+    data_npi_int = np.load(data_path)
+    # plot_result_single(data_npi_int)
+    # plot_rmse(data_npi_int)
+
+    data_path = ap.filter_data_path + '_' + 'IMM' + '.npz'
+    data_imm = np.load(data_path)
+    # plot_result_single(data_imm)
+    # plot_rmse(data_imm)
+
+    plot_compare([data_npi_int, data_imm])

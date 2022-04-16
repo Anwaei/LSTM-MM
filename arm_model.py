@@ -52,6 +52,13 @@ def measurement_arm(x, r):
     return x[0] + r
 
 
+def measurement_Jacobian_arm(x):
+    Ja = np.zeros(shape=(ap.nz, ap.nx))
+    Ja[0, 0] = 1
+    Ja[0, 1] = 0
+    return Ja
+
+
 def compute_meas_likelihood(x, z, s):
     # Gaussian noise
     mean = measurement_arm(x, r=0)
