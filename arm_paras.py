@@ -116,15 +116,15 @@ units_npi_para1 = {'mlp_x': units_mlp_x,
                   'lstm': units_lstm,
                   'mlp_c': units_mlp_c}
 
-units_mlp_x = [10, 10, 10]
-units_lstm = [10, 10, 10]
+units_mlp_x = [16, 16, 16]
+units_lstm = [16, 16, 16]
 units_mlp_c = [15, 25, 50]  # Except last layer
 units_npi_para2 = {'mlp_x': units_mlp_x,
                   'lstm': units_lstm,
                   'mlp_c': units_mlp_c}
 
-units_mlp_x = [10, 10, 10]
-units_lstm = [10, 10, 10]
+units_mlp_x = [16, 16, 16]
+units_lstm = [16, 16, 16]
 units_mlp_c = [15, 25, 50]  # Except last layer
 units_npi_para3 = {'mlp_x': units_mlp_x,
                   'lstm': units_lstm,
@@ -139,10 +139,10 @@ units_pi_int = {'mlp_x': units_mlp_x,
                 'lstm': units_lstm,
                 'mlp_c': units_mlp_c}
 
-units_mlp_x = [10, 10, 10]
-units_mlp_s = [10, 10]
-units_lstm = [10, 10, 10]
-units_mlp_c = [15, 25, 50]  # Except last layer
+units_mlp_x = [32, 32, 32]
+units_mlp_s = [32, 32]
+units_lstm = [32, 32, 32]
+units_mlp_c = [32, 32, 32]  # Except last layer
 units_npi_int = {'mlp_x': units_mlp_x,
                  'mlp_s': units_mlp_s,
                  'lstm': units_lstm,

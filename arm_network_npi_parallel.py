@@ -168,5 +168,6 @@ if __name__ == '__main__':
     print("========= Evaluate net3 =========")
     net3.evaluate(test_input_2, test_output_2)
 
+    net1.save(ap.net_path_npi_para1)
     net2.save(ap.net_path_npi_para2)
     net3.save(ap.net_path_npi_para3)
