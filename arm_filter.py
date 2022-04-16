@@ -155,8 +155,8 @@ def compute_cmtp(nets, which_net, x, z, s, hidden):
 
     if which_net == 'npi_int' or which_net == 'pi_int':
         net_int = nets[0]
-        s = tf.tile(keras.utils.to_categorical(s, ap.M)[None, :], (ap.Np, 1))
-        out = net_int([x, s, z] + hidden)
+        s_cat = tf.tile(keras.utils.to_categorical(s, ap.M)[None, :], (ap.Np, 1))
+        out = net_int([x, s_cat, z] + hidden)
         hidden_new = out[1:]
         if which_net == 'pi_int':
             soutdtr = out[0]
@@ -235,7 +235,8 @@ def sample_auxiliary_variables(v):
 if __name__ == '__main__':
 
     # which_net = 'npi_int'
-    which_net = 'npi_para'
+    # which_net = 'npi_para'
+    which_net = 'pi_int'
     # mode_shift = 2  # No net for mode 1, so the index for net i is s-2.
 
     T = ap.T
