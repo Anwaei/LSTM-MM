@@ -235,7 +235,7 @@ def sample_auxiliary_variables(v):
 if __name__ == '__main__':
 
     # which_net = 'npi_int'
-    which_net = 'npi_para'
+    which_net = 'npi_int'
     # mode_shift = 2  # No net for mode 1, so the index for net i is s-2.
 
     T = ap.T

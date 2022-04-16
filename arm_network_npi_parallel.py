@@ -164,9 +164,9 @@ if __name__ == '__main__':
     net3.summary()
 
     print("========= Start training net3 =========")
-    net3.fit(x=train_input_3, y=train_output_2, epochs=10, batch_size=ap.bs)
+    net3.fit(x=train_input_3, y=train_output_3, epochs=10, batch_size=ap.bs)
     print("========= Evaluate net3 =========")
-    net3.evaluate(test_input_2, test_output_2)
+    net3.evaluate(test_input_3, test_output_3)
 
     net1.save(ap.net_path_npi_para1)
     net2.save(ap.net_path_npi_para2)

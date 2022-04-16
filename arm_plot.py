@@ -173,7 +173,7 @@ if __name__ == '__main__':
     # data = np.load(data_path)
     # plot_single_trajectory(data)
 
-    which_net = 'npi_int'
+    which_net = 'npi_para'
     data_path = ap.filter_data_path+'_'+which_net+'.npz'
     data_npi_int = np.load(data_path)
     # plot_result_single(data_npi_int)

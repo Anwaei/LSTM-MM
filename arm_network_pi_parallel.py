@@ -1,3 +1,7 @@
+import os
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
@@ -6,7 +10,7 @@ import arm_paras as ap
 import arm_plot as aplot
 
 
-def create_model(units_mlp_x, units_lstm, units_mlp_c):
+def create_model(units_mlp_x, units_lstm, units_mlp_c, mode):
     input_x = layers.Input(shape=(None, 2))
     input_s = layers.Input(shape=(None, 3))
     input_z = layers.Input(shape=(None, 1))
@@ -34,7 +38,7 @@ def create_model(units_mlp_x, units_lstm, units_mlp_c):
 
     out_c = layers.concatenate([out_x, out_z])
 
-    t_max = ap.T_max_integrated
+    t_max = ap.T_max_parallel[mode-1]
 
     for k in range(len(units_mlp_c)):
         unit = units_mlp_c[k]
@@ -135,40 +139,40 @@ if __name__ == '__main__':
     train_input_3, train_output_3, test_input_3, test_output_3 = process_data(data, ap.T_max_parallel[2])
 
     units1 = ap.units_pi_para1
-    net1 = create_model(units1['mlp_x'], units1['lstm'], units1['mlp_c'])
+    net1 = create_model(units1['mlp_x'], units1['lstm'], units1['mlp_c'], mode=1)
     net1.compile(optimizer='rmsprop',
                  loss=loss_cce_mode1,
                  metrics=loss_cce_mode1)
     net1.summary()
 
     print("========= Start training net1 =========")
-    net1.fit(x=train_input_1, y=train_output_1, epochs=5, batch_size=ap.bs)
+    net1.fit(x=train_input_1, y=train_output_1, epochs=10, batch_size=ap.bs)
     print("========= Evaluate net1 =========")
     net1.evaluate(test_input_1, test_output_1)
 
     units2 = ap.units_pi_para2
-    net2 = create_model(units2['mlp_x'], units2['lstm'], units2['mlp_c'])
+    net2 = create_model(units2['mlp_x'], units2['lstm'], units2['mlp_c'], mode=2)
     net2.compile(optimizer='rmsprop',
                  loss=loss_cce_mode2,
                  metrics=loss_cce_mode2)
     net2.summary()
 
     print("========= Start training net2 =========")
-    net2.fit(x=train_input_2, y=train_output_2, epochs=5, batch_size=ap.bs)
+    net2.fit(x=train_input_2, y=train_output_2, epochs=10, batch_size=ap.bs)
     print("========= Evaluate net2 =========")
     net2.evaluate(test_input_2, test_output_2)
 
     units3 = ap.units_pi_para3
-    net3 = create_model(units3['mlp_x'], units3['lstm'], units3['mlp_c'])
+    net3 = create_model(units3['mlp_x'], units3['lstm'], units3['mlp_c'], mode=3)
     net3.compile(optimizer='rmsprop',
                  loss=loss_cce_mode3,
                  metrics=loss_cce_mode3)
     net3.summary()
 
     print("========= Start training net3 =========")
-    net3.fit(x=train_input_3, y=train_output_2, epochs=5, batch_size=ap.bs)
+    net3.fit(x=train_input_3, y=train_output_3, epochs=10, batch_size=ap.bs)
     print("========= Evaluate net3 =========")
-    net3.evaluate(test_input_2, test_output_2)
+    net3.evaluate(test_input_3, test_output_3)
 
     net1.save(ap.net_path_pi_para1)
     net2.save(ap.net_path_pi_para2)
