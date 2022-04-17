@@ -114,9 +114,9 @@ def plot_compare(datas):
         strue_all.append(data['strue_all'][:, 1:])
         mu_all.append(data['mu_all'][:, 1:, :])
 
-    index = 0
+    index = 2
     plt.figure(1)
-    plt.hold(True)
+    # plt.hold(True)
     plt.plot(time_steps, xtrue_all[0][index, :, 0])
     for k in range(len(datas)):
         plt.plot(time_steps, xest_all[k][index, :, 0])
@@ -126,7 +126,7 @@ def plot_compare(datas):
     plt.title('Trajectory of state 1')
 
     plt.figure(2)
-    plt.hold(True)
+    # plt.hold(True)
     plt.plot(time_steps, xtrue_all[0][index, :, 1])
     for k in range(len(datas)):
         plt.plot(time_steps, xest_all[k][index, :, 1])
@@ -136,7 +136,7 @@ def plot_compare(datas):
     plt.title('Trajectory of state 2')
 
     plt.figure(3)
-    plt.hold(True)
+    # plt.hold(True)
     plt.plot(time_steps, strue_all[0][index, :])
     for k in range(len(datas)):
         plt.plot(time_steps, mu_all[k][index, :])
@@ -152,7 +152,7 @@ def plot_compare(datas):
     plt.title('Mode probabilities')
 
     plt.figure(4)
-    plt.hold(True)
+    # plt.hold(True)
     legends=[]
     for k in range(len(datas)):
         rmse = np.sqrt(np.mean((xtrue_all[k]-xest_all[k])**2, axis=0))
@@ -173,7 +173,7 @@ if __name__ == '__main__':
     # data = np.load(data_path)
     # plot_single_trajectory(data)
 
-    which_net = 'npi_para'
+    which_net = 'npi_int'
     data_path = ap.filter_data_path+'_'+which_net+'.npz'
     data_npi_int = np.load(data_path)
     # plot_result_single(data_npi_int)
