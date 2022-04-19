@@ -122,7 +122,8 @@ def plot_compare(datas):
         plt.plot(time_steps, xest_all[k][index, :, 0])
     plt.xlabel('Time')
     plt.ylabel('Value')
-    plt.legend(['True value', 'LSTM-MM Estimation', 'IMM Estimation'])
+    legends=['True value', 'LSTM-MM Estimation', 'IMM Estimation', 'IMMPF Estimation']
+    plt.legend(legends[0: len(datas)+1])
     plt.title('Trajectory of state 1')
 
     plt.figure(2)
@@ -132,7 +133,8 @@ def plot_compare(datas):
         plt.plot(time_steps, xest_all[k][index, :, 1])
     plt.xlabel('Time')
     plt.ylabel('Value')
-    plt.legend(['True value', 'LSTM-MM Estimation', 'IMM Estimation'])
+    legends=['True value', 'LSTM-MM Estimation', 'IMM Estimation', 'IMMPF Estimation']
+    plt.legend(legends[0: len(datas)+1])
     plt.title('Trajectory of state 2')
 
     plt.figure(3)
@@ -148,7 +150,9 @@ def plot_compare(datas):
         legends.append('LSTM-MM Mode' + str(j+1))
     for j in range(ap.M):
         legends.append('IMM Mode' + str(j+1))
-    plt.legend(legends)
+    for j in range(ap.M):
+        legends.append('IMMPF Mode' + str(j+1))
+    plt.legend(legends[0: ap.M*len(datas)+1])
     plt.title('Mode probabilities')
 
     plt.figure(4)
@@ -161,9 +165,11 @@ def plot_compare(datas):
     legends.append('LSTM-MM rmse for state 2')
     legends.append('IMM rmse for state 1')
     legends.append('IMM rmse for state 2')
+    legends.append('IMMPF rmse for state 1')
+    legends.append('IMMPF rmse for state 2')
     plt.xlabel('Time')
     plt.ylabel('Value')
-    plt.legend(legends)
+    plt.legend(legends[0: ap.M*len(datas)])
     plt.title('RMSE')
 
     plt.show()
@@ -173,7 +179,7 @@ if __name__ == '__main__':
     # data = np.load(data_path)
     # plot_single_trajectory(data)
 
-    which_net = 'npi_int'
+    which_net = 'pi_int'
     data_path = ap.filter_data_path+'_'+which_net+'.npz'
     data_npi_int = np.load(data_path)
     # plot_result_single(data_npi_int)
@@ -184,4 +190,7 @@ if __name__ == '__main__':
     # plot_result_single(data_imm)
     # plot_rmse(data_imm)
 
-    plot_compare([data_npi_int, data_imm])
+    data_path = ap.filter_data_path + '_' + 'IMMPF' + '.npz'
+    data_immpf = np.load(data_path)
+
+    plot_compare([data_npi_int, data_imm, data_immpf])

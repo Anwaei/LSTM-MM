@@ -142,13 +142,12 @@ def IMMPF(ztrue):
 
     for j in range(M):
         for l in range(Np):
-            w_all[n, 0, j, l] = 1 / Np
-            xp_all[n, 0, j, l, :] = np.random.multivariate_normal(x0, ap.Q0)
-        mu_all[n, 0, j] = 1 if j == s0 else 0
+            w_all[0, j, l] = 1 / Np
+            xp_all[0, j, l, :] = np.random.multivariate_normal(x0, ap.Q0)
+        mu_all[0, j] = 1 if j == s0 else 0
 
     for k in range(1, K + 1):
-        z_pre = z_all[n, k - 1, :]
-        z = z_all[n, k, :]
+        z = z_all[k, :]
         for i in range(M):
             for l in range(Np):
                 tpm = tpm_immpf_arm(xp_all[k - 1, i, l, :])
@@ -158,24 +157,25 @@ def IMMPF(ztrue):
             gamma_all[k, j] = np.sum(what_all[k, :, j, :])
             what_all[k, :, j, :] = what_all[k, :, j, :]/gamma_all[k, j]
         for j in range(M):
-            xi_all[n, k - 1, j, :], zeta_all[n, k - 1, j, :] = resample(what_all[n, k - 1, :, j, :])
+            xi_all[n, k - 1, j, :], zeta_all[n, k - 1, j, :] = resample(what_all[k, :, j, :])
         for j in range(M):
             for l in range(Np):
                 xi = xi_all[n, k - 1, j, l]
                 zeta = zeta_all[n, k - 1, j, l]
-                xp_all[k, j, l, :] = am.dynamic_arm(sc=j, x_p=xp_all[n, k - 1, xi, zeta, :]
+                xp_all[k, j, l, :] = am.dynamic_arm(sc=j+1, x_p=xp_all[k - 1, xi, zeta, :]
                                                     , q=q_proposal_all[k - 1, j, l, :])
                 zli = am.compute_meas_likelihood(x=xp_all[k, j, l, :], z=z)
                 w_all[k, j, l] = 1/Np*zli
             mu_all[k, j] = gamma_all[k, j] * np.sum(w_all[k, j, :])
             w_all[k, j, :] = w_all[k, j, :]/np.sum(w_all[k, j, :])
+        mu_all[k, :] = mu_all[k, :]/np.sum(mu_all[k, :])
         xest = np.zeros(ap.nx)
         for j in range(M):
             xestj = np.zeros(ap.nx)
             for l in range(Np):
                 xestj = xestj + w_all[k, j, l] * xp_all[k, j, l, :]
             xest = xest + mu_all[k, j] * xestj
-        xest_all[n, k, :] = xest
+        xest_all[k, :] = xest
 
     return xest_all, mu_all
 
