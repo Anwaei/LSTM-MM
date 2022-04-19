@@ -14,8 +14,8 @@ filter_data_path = 'data/tracking_results'
 
 batch_size = 20000
 
-T = 5
-dt = 0.02
+T = 10
+dt = 0.04
 
 """""""""""""""""""""
 Model
@@ -49,46 +49,74 @@ psz = 100
 Transition
 """""""""""""""""""""
 
-M = 3
-# Boundary of s1/s2
-b = -0.2
-# b = 0.53
+M = 5
 
-# Parameters of s2<->s3
-# q23 = 0.9
-# r23 = 1.2
-# q32 = 0.95
-# r32 = 1.5
+tlast = 20
 
-q23 = 0.8
-r23 = 0.5
-q32 = 0.7
-r32 = 0.2
+alpha12 = 0.1
+nu12 = 0.6
+px_tcp1 = -50
+py_tcp1 = -50
+Sigma12 = [5, 5]
 
-# Non switch situation
-# q23 = 1
-# r23 = 0.5
-# q32 = 0
-# r32 = 0.3
+
+alpha21 = 0.1
+nu21 = 0.6
+psi21 = -0.5
+sigma21 = 0.2
+
+alpha13 = 0.1
+nu13 = 0.6
+px_tcp2 = 100
+py_tcp2 = 50
+Sigma13 = [5, 5]
+
+alpha31 = 0.1
+nu31 = 0.6
+psi31 = 0.7
+sigma31 = 0.2
+
+alpha14 = 0.1
+nu14 = 0.6
+psi14 = 1
+
+alpha41 = 0.1
+nu41 = 0.6
+psi41 = 0.5
+
+alpha15 = 0.1
+nu15 = 0.6
+psi15 = 0.5
+
+alpha51 = 0.1
+nu51 = 0.6
+psi51 = 0.5
+
 
 """""""""""""""""""""
 Constraint
 """""""""""""""""""""
-x1_c = 0.5
-x2_c = 2.5
+ca3 = 5*10**(-5)
+ca2 = -0.004
+ca1 = -0.2
+ca0 = 75
+cb3 = 4.899*10**(-5)
+cb2 = -0.0047
+cb1 = -0.1521
+cb0 = 115.4
 
-# Non constraint situation
-# x1_c = 1000
-# x2_c = 1000
+vmax = 12.5
+ve = 10
 
-lambda1 = 15
-lambda2 = 10
+lambda1 = 4
+lambda2 = 4
+lambda3 = 1
 
 """""""""""""""""""""
 Initial
 """""""""""""""""""""
 
-x0 = np.array([0, 2.0])
+x0 = np.array([-80, 40, 5, 5])
 s0 = 1
 Q0 = np.diag([0.001, 0.001])
 

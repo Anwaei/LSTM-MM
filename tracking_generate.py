@@ -1,22 +1,22 @@
 import numpy as np
 from tqdm import tqdm
-import arm_paras as ap
-import arm_model as am
+import tracking_paras as tkp
+import tracking_model as tkm
 
 if __name__ == '__main__':
 
-    T = ap.T
-    dt = ap.dt
-    x0 = ap.x0
-    s0 = ap.s0
-    batch_size = ap.batch_size
+    T = tkp.T
+    dt = tkp.dt
+    x0 = tkp.x0
+    s0 = tkp.s0
+    batch_size = tkp.batch_size
 
     K = int(T / dt)
-    x_all = np.zeros([batch_size, 2, K])
-    z_all = np.zeros([batch_size, 1, K])
+    x_all = np.zeros([batch_size, tkp.nx, K])
+    z_all = np.zeros([batch_size, tkp.nz, K])
     s_all = np.zeros([batch_size, 1, K], dtype='int')
     t_all = np.zeros([batch_size, 1, K], dtype='int')
-    tpm_all = np.zeros([batch_size, 3, 3, K])
+    tpm_all = np.zeros([batch_size, tkp.M, tkp.M, K])
     ifreach_all = np.zeros([batch_size, 1, K], dtype='int')
     time_steps_all = np.zeros([batch_size, 1, K])
 
@@ -25,41 +25,41 @@ if __name__ == '__main__':
         time_current = 0
         for k in range(K):
             time_current = time_current + dt
-            qk, rk = am.noise_arm()
+            qk, rk = tkm.noise_tracking()
             if k == 0:
-                tpm0 = am.tpm_arm(x=x0, t=tk)
-                sk = am.switch_arm(sp=s0, xp=x0, tp=tk)
+                tpm0 = tkm.tpm_tracking(x=x0, t=tk)
+                sk = tkm.switch_tracking(sp=s0, xp=x0, tp=tk)
                 if sk == s0:
                     tk = tk + 1
                 else:
                     tk = 1
-                xk = am.dynamic_arm(sk, x0, qk)
-                xk, ifreachk = am.constraint_arm(xk)
-                zk = am.measurement_arm(xk, rk)
-                tpmk = am.tpm_arm(x=xk, t=tk)
+                xk = tkm.dynamic_tracking(sk, x0, qk)
+                xk, ifreachk = tkm.constraint_tracking(xk)
+                zk = tkm.measurement_tracking(xk, rk)
+                tpmk = tkm.tpm_tracking(x=xk, t=tk)
             else:
                 sp = s_all[n, 0, k - 1]
                 xp = x_all[n, :, k - 1]
                 tp = t_all[n, 0, k - 1]
-                sk = am.switch_arm(sp, xp, tp)
+                sk = tkm.switch_tracking(sp, xp, tp)
                 if sk == sp:
                     tk = tk + 1
                 else:
                     tk = 1
-                xk = am.dynamic_arm(sk, xp, qk)
-                xk, ifreachk = am.constraint_arm(xk)
-                zk = am.measurement_arm(xk, rk)
-                tpmk = am.tpm_arm(x=xk, t=tk)
+                xk = tkm.dynamic_tracking(sk, xp, qk)
+                xk, ifreachk = tkm.constraint_tracking(xk)
+                zk = tkm.measurement_tracking(xk, rk)
+                tpmk = tkm.tpm_tracking(x=xk, t=tk)
 
             x_all[n, :, k] = xk
-            z_all[n, 0, k] = zk
+            z_all[n, :, k] = zk
             s_all[n, 0, k] = sk
             t_all[n, 0, k] = tk
             tpm_all[n, :, :, k] = tpmk
             ifreach_all[n, 0, k] = ifreachk
             time_steps_all[n, 0, k] = time_current
 
-    data_path = ap.data_path
+    data_path = tkp.data_path
     np.savez(data_path, x_all=x_all, z_all=z_all, s_all=s_all,
              t_all=t_all, tpm_all=tpm_all, ifreach_all=ifreach_all,
              time_steps_all=time_steps_all)

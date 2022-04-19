@@ -66,10 +66,7 @@ def dynamic_tracking(sc, x_p, q):
 
 def dynamic_Jacobian_tracking(x, s):
     dt = tkp.dt
-    px = x[0]
-    py = x[1]
-    vx = x[2]
-    vy = x[3]
+    px, py, vx, vy = x
 
     Ja = np.zeros(shape=(tkp.nx, tkp.nx))
 
@@ -237,87 +234,115 @@ def tpm_tracking(x, t):
     if (type(t) is not int) and (type(t) is not np.int32):
         raise ValueError("Invalid sojourn time.")
 
-    b = tkp.b
-    q23 = tkp.q23
-    r23 = tkp.r23
-    q32 = tkp.q32
-    r32 = tkp.r32
+    tpm = np.zeros([tkp.M, tkp.M])
+    if t <= tkp.tlast:
+        for j in range(tkp.M):
+            tpm[j, j] = 1
+    else:
+        px, py, vx, vy = x
+        angle = np.arctan(vy/vx)
+        velocity = np.sqrt(vx**2 + vy**2)
 
-    tpm = np.zeros([3, 3])
-    ep = 0.99 if x[0] >= b else 0.01
-    tpm[0][0] = -1*ep + 1
-    tpm[0][1] = 1*ep
-    tpm[0][2] = 0
-    tpm[1][0] = -1*ep + 1
-    tpm[1][1] = q23**(t**r23-(t-1)**r23) * ep
-    tpm[1][2] = (1-q23**(t**r23-(t-1)**r23)) * ep
-    tpm[2][0] = -1 * ep + 1
-    tpm[2][1] = (1-q32**(t**r32-(t-1)**r32)) * ep
-    tpm[2][2] = q32**(t**r32-(t-1)**r32) * ep
+        tpm[0, 1] = tkp.alpha12 + tkp.nu12*pdf_Gaussian(x=[px, py], mean=[tkp.px_tcp1, tkp.py_tcp1], cov=tkp.Sigma12)
+        tpm[1, 0] = tkp.alpha21 + tkp.nu21*pdf_Gaussian(x=angle, mean=tkp.psi21, cov=tkp.sigma21)
+        tpm[0, 2] = tkp.alpha13 + tkp.nu13*pdf_Gaussian(x=[px, py], mean=[tkp.px_tcp2, tkp.py_tcp2], cov=tkp.Sigma13)
+        tpm[2, 0] = tkp.alpha31 + tkp.nu31*pdf_Gaussian(x=angle, mean=tkp.psi31, cov=tkp.sigma31)
+        tpm[0, 3] = tkp.alpha14 + tkp.nu14*tkp.psi14*np.exp(-tkp.psi14*velocity)
+        tpm[3, 0] = tkp.alpha41 + tkp.nu41/(1+np.exp(-tkp.psi41*(velocity-tkp.ve)))
+        tpm[0, 4] = tkp.alpha15 + tkp.nu15/(1+np.exp(-tkp.psi15*(velocity-tkp.vmax)))
+        tpm[4, 0] = tkp.alpha51 + tkp.nu51/(1+np.exp(-tkp.psi51*(velocity-tkp.ve)))
+
+        tpm[0, 0] = 1 - tpm[0, 1] - tpm[0, 2] - tpm[0, 3] - tpm[0, 4]
+        tpm[1, 1] = 1 - tpm[1, 0]
+        tpm[2, 2] = 1 - tpm[2, 0]
+        tpm[3, 3] = 1 - tpm[3, 0]
+        tpm[4, 4] = 1 - tpm[4, 0]
+        if tpm[0, 0] < 0:
+            raise ValueError('Transition probability sum of mode 1 exceed 1')
 
     return tpm
 
 
 def switch_tracking(sp, xp, tp):
-    mode_list = [1, 2, 3]
+    mode_list = [1, 2, 3, 4, 5]
     if sp not in mode_list:
         raise ValueError("Invalid mode.")
     if (type(tp) is not int) and (type(tp) is not np.int32):
         raise ValueError("Invalid sojourn time.")
     tpm = tpm_tracking(xp, tp)
-    probability = [tpm[sp-1, 0], tpm[sp-1, 1], tpm[sp-1, 2]]
+    probability = tpm[sp-1, :]
     sc = np.random.choice(mode_list, 1, p=probability)[0]
     return sc
 
 
 def constraint_tracking(x):
-    x1_c = tkp.x1_c
-    x2_c = tkp.x2_c
-
-    if abs(x[0]) <= x1_c and abs(x[1]) <= x2_c:
-        if_reach_constraint = 0
+    px = x[0]
+    py = x[1]
+    if py > tkp.ca3*px**3 + tkp.ca2*px**2 + tkp.ca1*px + tkp.ca0:
+        py = tkp.ca3*px**3 + tkp.ca2*px**2 + tkp.ca1*px + tkp.ca0
+        x[1] = py
+        if_reach_constraint = True
+    elif py < tkp.cb3*px**3 + tkp.cb2*px**2 + tkp.cb1*px + tkp.cb0:
+        py = tkp.cb3*px**3 + tkp.cb2*px**2 + tkp.cb1*px + tkp.cb0
+        x[1] = py
+        if_reach_constraint = True
     else:
-        if x[0] > x1_c:
-            x[0] = x1_c
-        if x[0] < -x1_c:
-            x[0] = -x1_c
-        if x[1] > x2_c:
-            x[1] = x2_c
-        if x[1] < -x2_c:
-            x[1] = -x2_c
-        if_reach_constraint = 1
+        if_reach_constraint = False
 
     return x, if_reach_constraint
 
 
 def compute_constraint_likelihood(x):
-    h1 = abs(x[0]) - tkp.x1_c
-    h2 = abs(x[1]) - tkp.x2_c
+    px, py, vx, vy = x
+    h1 = py - (tkp.ca3*px**3 + tkp.ca2*px**2 + tkp.ca1*px + tkp.ca0)
+    h2 = -py + tkp.cb3*px**3 + tkp.cb2*px**2 + tkp.cb1*px + tkp.cb0
+    h3 = np.sqrt(vx**2+vy**2) - tkp.vmax
     # t1 = time.clock()
     # p1x = 1 - stats.expon.cdf(x=h1, scale=1/tkp.lambda1)
     # p2x = 1 - stats.expon.cdf(x=h2, scale=1/tkp.lambda2)
     # t2 = time.clock()
     p1 = np.exp(-tkp.lambda1*h1) if h1 > 0 else 1
     p2 = np.exp(-tkp.lambda2*h2) if h2 > 0 else 1
+    p3 = np.exp(-tkp.lambda3*h3) if h3 > 0 else 1
     # t3 = time.clock()
-    return p1*p2
+    return p1*p2*p3
 
 
 def compute_constraint_loglikelihood(x):
-    h1 = abs(x[0]) - tkp.x1_c
-    h2 = abs(x[1]) - tkp.x2_c
+    px, py, vx, vy = x
+    h1 = py - (tkp.ca3*px**3 + tkp.ca2*px**2 + tkp.ca1*px + tkp.ca0)
+    h2 = -py + tkp.cb3*px**3 + tkp.cb2*px**2 + tkp.cb1*px + tkp.cb0
+    h3 = np.sqrt(vx**2+vy**2) - tkp.vmax
     logli1 = -tkp.lambda1 * h1 if h1 > 0 else 0
     logli2 = -tkp.lambda2 * h2 if h2 > 0 else 0
-    return logli1*logli2
+    logli3 = -tkp.lambda3 * h3 if h3 > 0 else 0
+    return logli1*logli2*logli3
 
 
 def pdf_Gaussian(x, mean, cov):
+    if isinstance(x, list) or isinstance(x, float) or isinstance(x, int):
+        x = np.array(x)
+    mean = np.array(mean)
     if mean.size == 1:
         pdf = 1/np.sqrt(2*np.pi*cov)*np.exp(-(x-mean)**2/(2*cov))
     else:
-        pdf = np.power(2*np.pi, -mean.size/2) * np.power(np.linalg.det(cov), -1/2) \
-              * np.exp(-1/2 * np.matmul(np.matmul(x-mean, np.linalg.inv(cov)), x-mean))
-    return pdf[0, 0]
+        if isinstance(cov, list):
+            # Fast implementation for diag cov
+            cov_diag = np.array(cov)
+            cov_det = cov_diag.prod()
+            cov_inv = 1 / cov_diag
+            pdf = 1 / ((2*np.pi) ** (mean.size/2) * np.sqrt(cov_det)) * np.exp(-1/2 * np.sum((x - mean)**2 * cov_inv))
+        elif cov.ndim == 1:
+            cov_diag = cov
+            cov_det = cov_diag.prod()
+            cov_inv = 1 / cov_diag
+            pdf = 1 / ((2*np.pi) ** (mean.size/2) * np.sqrt(cov_det)) * np.exp(-1/2 * ((x - mean)**2 * cov_inv))
+        else:
+            pdf = np.power(2*np.pi, -mean.size/2) * np.power(np.linalg.det(cov), -1/2) \
+                  * np.exp(-1/2 * np.matmul(np.matmul(x - mean, np.linalg.inv(cov)), x - mean))
+    if pdf.size != 1:
+        raise ValueError('Error pdf size')
+    return pdf.mean()
 
 
 def cdf_expon(x, lam):
