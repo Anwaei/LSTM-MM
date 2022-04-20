@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-import arm_paras as ap
+import tracking_paras as tkp
 
 
 def read_data(data):
@@ -14,11 +14,21 @@ def read_data(data):
     return x_all, z_all, s_all, t_all, tpm_all, ifreach_all, time_steps_all
 
 
+def plot_model():
+    px = np.arange(start=-80, stop=140, step=1)
+    py_above = tkp.ca3*px**3 + tkp.ca2*px**2 + tkp.ca1*px + tkp.ca0
+    py_below = tkp.cb3*px**3 + tkp.cb2*px**2 + tkp.cb1*px + tkp.cb0
+    plt.figure(1)
+    plt.plot(px, py_above, px, py_below)
+    plt.axis([-100, 160, 0, 130])
+    plt.show()
+
+
 def plot_single_trajectory(data):
     x_all, z_all, s_all, t_all, tpm_all, ifreach_all, time_steps_all = read_data(data)
     index = np.random.randint(0, time_steps_all.shape[0])
     x_s = x_all[index, :, :]
-    z_s = z_all[index, 0, :]
+    z_s = z_all[index, :, :]
     s_s = s_all[index, 0, :]
     t_s = t_all[index, 0, :]
     tpm_s = tpm_all[index, :, :]
@@ -29,19 +39,39 @@ def plot_single_trajectory(data):
     plt.plot(time_steps_s, x_s[0, :], time_steps_s, x_s[1, :])
     plt.xlabel('Time')
     plt.ylabel('Value')
-    plt.legend(['State 1', 'State 2'])
+    plt.legend(['Pos x', 'Pos y'])
 
     plt.figure(2)
+    plt.plot(x_s[0, :], x_s[1, :])
+    plt.scatter(tkp.x0[0], tkp.x0[1])
+    plt.axis([-100, 160, 0, 130])
+
+    px = np.arange(start=-80, stop=140, step=1)
+    py_above = tkp.ca3 * px ** 3 + tkp.ca2 * px ** 2 + tkp.ca1 * px + tkp.ca0
+    py_below = tkp.cb3 * px ** 3 + tkp.cb2 * px ** 2 + tkp.cb1 * px + tkp.cb0
+    plt.plot(px, py_above, px, py_below, alpha=0.5)
+
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.legend(['Trajectory', 'Road upper bound', 'Road lower bound'])
+
+    plt.figure(3)
+    plt.plot(time_steps_s, x_s[2, :], time_steps_s, x_s[3, :])
+    plt.xlabel('Time')
+    plt.ylabel('Value')
+    plt.legend(['Vel x', 'Vel y'])
+
+    plt.figure(4)
     plt.plot(time_steps_s, ifreach_s)
     plt.xlabel('Time')
     plt.ylabel('If reach the constraint')
 
-    plt.figure(3)
+    plt.figure(5)
     plt.plot(time_steps_s, s_s)
     plt.xlabel('Time')
     plt.ylabel('Mode')
 
-    plt.figure(4)
+    plt.figure(6)
     plt.plot(time_steps_s, t_s)
     plt.xlabel('Time')
     plt.ylabel('Sojourn time')
@@ -146,13 +176,13 @@ def plot_compare(datas):
     plt.ylabel('Value')
     legends = []
     legends.append('True Mode')
-    for j in range(ap.M):
+    for j in range(tkp.M):
         legends.append('LSTM-MM Mode' + str(j+1))
-    for j in range(ap.M):
+    for j in range(tkp.M):
         legends.append('IMM Mode' + str(j+1))
-    for j in range(ap.M):
+    for j in range(tkp.M):
         legends.append('IMMPF Mode' + str(j+1))
-    plt.legend(legends[0: ap.M*len(datas)+1])
+    plt.legend(legends[0: tkp.M * len(datas) + 1])
     plt.title('Mode probabilities')
 
     plt.figure(4)
@@ -169,28 +199,30 @@ def plot_compare(datas):
     legends.append('IMMPF rmse for state 2')
     plt.xlabel('Time')
     plt.ylabel('Value')
-    plt.legend(legends[0: ap.M*len(datas)])
+    plt.legend(legends[0: tkp.M * len(datas)])
     plt.title('RMSE')
 
     plt.show()
 
-if __name__ == '__main__':
-    # data_path = ap.data_path
-    # data = np.load(data_path)
-    # plot_single_trajectory(data)
 
-    which_net = 'pi_int'
-    data_path = ap.filter_data_path+'_'+which_net+'.npz'
-    data_npi_int = np.load(data_path)
+if __name__ == '__main__':
+    data_path = tkp.data_path
+    data = np.load(data_path)
+    plot_single_trajectory(data)
+    # plot_model()
+
+    # which_net = 'pi_int'
+    # data_path = tkp.filter_data_path + '_' + which_net + '.npz'
+    # data_npi_int = np.load(data_path)
     # plot_result_single(data_npi_int)
     # plot_rmse(data_npi_int)
 
-    data_path = ap.filter_data_path + '_' + 'IMM' + '.npz'
-    data_imm = np.load(data_path)
+    # data_path = tkp.filter_data_path + '_' + 'IMM' + '.npz'
+    # data_imm = np.load(data_path)
     # plot_result_single(data_imm)
     # plot_rmse(data_imm)
 
-    data_path = ap.filter_data_path + '_' + 'IMMPF' + '.npz'
-    data_immpf = np.load(data_path)
-
-    plot_compare([data_npi_int, data_imm, data_immpf])
+    # data_path = tkp.filter_data_path + '_' + 'IMMPF' + '.npz'
+    # data_immpf = np.load(data_path)
+    #
+    # plot_compare([data_npi_int, data_imm, data_immpf])

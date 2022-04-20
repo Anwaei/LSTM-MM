@@ -12,10 +12,10 @@ net_path_npi_para3 = 'nets/tracking_net_npi_para3'
 
 filter_data_path = 'data/tracking_results'
 
-batch_size = 20000
+batch_size = 20
 
-T = 10
-dt = 0.04
+T = 100
+dt = 0.5
 
 """""""""""""""""""""
 Model
@@ -103,7 +103,7 @@ ca0 = 75
 cb3 = 4.899*10**(-5)
 cb2 = -0.0047
 cb1 = -0.1521
-cb0 = 115.4
+cb0 = 65.4109
 
 vmax = 12.5
 ve = 10

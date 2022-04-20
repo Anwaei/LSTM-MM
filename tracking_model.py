@@ -32,16 +32,16 @@ def dynamic_tracking(sc, x_p, q):
         cw = tkp.cwr
         x1 = px + sw/w*vx - (1-cw)/w*vy
         x2 = py + (1-cw)/w*vx + sw/w*vy
-        x3 = vx + cw*vx - sw*vy
-        x4 = vy + sw*vx + cw*vy
+        x3 = cw*vx - sw*vy
+        x4 = sw*vx + cw*vy
     elif sc == 3:
         w = tkp.omegal
         sw = tkp.swl
         cw = tkp.cwl
         x1 = px + sw/w*vx - (1-cw)/w*vy
         x2 = py + (1-cw)/w*vx + sw/w*vy
-        x3 = vx + cw*vx - sw*vy
-        x4 = vy + sw*vx + cw*vy
+        x3 = cw*vx - sw*vy
+        x4 = sw*vx + cw*vy
     elif sc == 4:
         a = tkp.apos
         v = np.sqrt(vx**2 + vy**2)
@@ -101,12 +101,12 @@ def dynamic_Jacobian_tracking(x, s):
         Ja[1, 3] = sw/w
         Ja[2, 0] = 0
         Ja[2, 1] = 0
-        Ja[2, 2] = 1+cw
+        Ja[2, 2] = cw
         Ja[2, 3] = -sw
         Ja[3, 0] = 0
         Ja[3, 1] = 0
         Ja[3, 2] = sw
-        Ja[3, 3] = 1+cw
+        Ja[3, 3] = cw
     elif s == 3:
         w = tkp.omegar
         sw = tkp.swl
@@ -121,12 +121,12 @@ def dynamic_Jacobian_tracking(x, s):
         Ja[1, 3] = sw/w
         Ja[2, 0] = 0
         Ja[2, 1] = 0
-        Ja[2, 2] = 1+cw
+        Ja[2, 2] = cw
         Ja[2, 3] = -sw
         Ja[3, 0] = 0
         Ja[3, 1] = 0
         Ja[3, 2] = sw
-        Ja[3, 3] = 1+cw
+        Ja[3, 3] = cw
     elif s == 4:
         a = tkp.apos
         v = np.sqrt(vx ** 2 + vy ** 2)
