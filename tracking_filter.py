@@ -3,11 +3,11 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 from tqdm import tqdm
-import arm_paras as ap
-import arm_model as am
-import arm_plot as aplot
-import arm_network_npi_parallel as paranet_npi
-import arm_network_pi_parallel as paranet_pi
+import tracking_paras as tkp
+import tracking_model as tkm
+import tracking_plot as tkplot
+import tracking_network_npi_parallel as paranet_npi
+import tracking_network_pi_parallel as paranet_pi
 import time
 
 
@@ -26,14 +26,14 @@ def one_step_model(rnnmodel):
     f_layers = []
 
     delkeys = ['return_sequences', 'return_state', 'go_backwards', 'stateful', 'unroll', 'time_major']
-    batch_ins = ap.Np
+    batch_ins = tkp.Np
 
-    input_x = layers.Input(shape=ap.nx)
-    input_x_ins = tf.convert_to_tensor(np.random.rand(batch_ins, ap.nx))
-    input_s = layers.Input(shape=ap.M)
-    input_s_ins = tf.convert_to_tensor(np.random.rand(batch_ins, ap.M))
-    input_z = layers.Input(shape=ap.nz)
-    input_z_ins = tf.convert_to_tensor(np.random.rand(batch_ins, ap.nz))
+    input_x = layers.Input(shape=tkp.nx)
+    input_x_ins = tf.convert_to_tensor(np.random.rand(batch_ins, tkp.nx))
+    input_s = layers.Input(shape=tkp.M)
+    input_s_ins = tf.convert_to_tensor(np.random.rand(batch_ins, tkp.M))
+    input_z = layers.Input(shape=tkp.nz)
+    input_z_ins = tf.convert_to_tensor(np.random.rand(batch_ins, tkp.nz))
 
     for li in layers_info:
         layer_config = li['config']
@@ -151,19 +151,19 @@ def one_step_model(rnnmodel):
 
 def compute_cmtp(nets, which_net, x, z, s, hidden):
     x = tf.convert_to_tensor(x)
-    z = tf.tile(z[None, :], (ap.Np, 1))
+    z = tf.tile(z[None, :], (tkp.Np, 1))
 
     if which_net == 'npi_int' or which_net == 'pi_int':
         net_int = nets[0]
-        s_cat = tf.tile(keras.utils.to_categorical(s, ap.M)[None, :], (ap.Np, 1))
+        s_cat = tf.tile(keras.utils.to_categorical(s, tkp.M)[None, :], (tkp.Np, 1))
         out = net_int([x, s_cat, z] + hidden)
         hidden_new = out[1:]
         if which_net == 'pi_int':
             soutdtr = out[0]
-            cmtp = np.zeros(shape=(M, ap.Np))
-            for l in range(ap.Np):
-                for t in range(1, ap.T_max_integrated + 1):
-                    tpm = am.tpm_arm(x[l, :], t)
+            cmtp = np.zeros(shape=(M, tkp.Np))
+            for l in range(tkp.Np):
+                for t in range(1, tkp.T_max_integrated + 1):
+                    tpm = tkm.tpm_arm(x[l, :], t)
                     tp = tpm[s, :]
                     cmtp[:, l] = cmtp[:, l] + tp * soutdtr[l, t - 1]
                 cmtp[:, l] = cmtp[:, l] / np.sum(cmtp[:, l])
@@ -177,10 +177,10 @@ def compute_cmtp(nets, which_net, x, z, s, hidden):
         hidden_new = out[1:]
         if which_net == 'pi_para':
             soutdtr = out[0]
-            cmtp = np.zeros(shape=(M, ap.Np))
-            for l in range(ap.Np):
-                for t in range(1, ap.T_max_parallel[s] + 1):
-                    tpm = am.tpm_arm(x[l, :], t)
+            cmtp = np.zeros(shape=(M, tkp.Np))
+            for l in range(tkp.Np):
+                for t in range(1, tkp.T_max_parallel[s] + 1):
+                    tpm = tkm.tpm_arm(x[l, :], t)
                     tp = tpm[s, :]
                     cmtp[:, l] = cmtp[:, l] + tp * soutdtr[l, t - 1]
                 cmtp[:, l] = cmtp[:, l] / np.sum(cmtp[:, l])
@@ -196,13 +196,13 @@ def compute_cmtp(nets, which_net, x, z, s, hidden):
 
 def compute_zcpredict_likelihood(x_pre, z, s):
     # t1=time.clock()
-    lam = am.dynamic_arm(sc=s+1, x_p=x_pre, q=np.zeros(ap.nx))
+    lam = tkm.dynamic_arm(sc=s + 1, x_p=x_pre, q=np.zeros(tkp.nx))
     # zli = am.compute_meas_likelihood(x=lam, z=z, s=s)
     # cli = am.compute_constraint_likelihood(x=lam)
     # li = zli*cli
     # t2 = time.clock()
-    zlogli = am.compute_meas_loglikelihood(x=lam, z=z, s=s)
-    clogli = am.compute_constraint_loglikelihood(x=lam)
+    zlogli = tkm.compute_meas_loglikelihood(x=lam, z=z, s=s)
+    clogli = tkm.compute_constraint_loglikelihood(x=lam)
     li = np.exp(zlogli + clogli)
     # t3 = time.clock()
     return li
@@ -212,15 +212,15 @@ def compute_zc_likelihood(x, z, s):
     # zli = am.compute_meas_likelihood(x=x, z=z, s=s)
     # cli = am.compute_constraint_likelihood(x=x)
     # li = zli*cli
-    zlogli = am.compute_meas_loglikelihood(x=x, z=z, s=s)
-    clogli = am.compute_constraint_loglikelihood(x=x)
+    zlogli = tkm.compute_meas_loglikelihood(x=x, z=z, s=s)
+    clogli = tkm.compute_constraint_loglikelihood(x=x)
     li = np.exp(zlogli + clogli)
     return li
 
 
 def sample_auxiliary_variables(v):
-    M = ap.M
-    Np = ap.Np
+    M = tkp.M
+    Np = tkp.Np
     if v.shape != (M, Np):
         raise ValueError('Incorrect probability dimension for v')
     v_flatten = np.reshape(v, (M * Np))
@@ -239,61 +239,73 @@ if __name__ == '__main__':
     which_net = 'pi_int'
     # mode_shift = 2  # No net for mode 1, so the index for net i is s-2.
 
-    T = ap.T
-    dt = ap.dt
+    T = tkp.T
+    dt = tkp.dt
     K = int(T / dt)
-    M = ap.M
-    Np = ap.Np
-    run_batch = ap.run_batch
+    M = tkp.M
+    Np = tkp.Np
+    run_batch = tkp.run_batch
 
     nets = list()
     # hiddens_ex = list()
     if which_net == 'pi_int':
-        net_pi_int = keras.models.load_model(ap.net_path_pi_int)
+        net_pi_int = keras.models.load_model(tkp.net_path_pi_int)
         one_step_net, hidden_ex = one_step_model(net_pi_int)
         nets.append(one_step_net)
     elif which_net == 'pi_para':
-        net_pi_para1 = keras.models.load_model(ap.net_path_pi_para1,
+        net_pi_para1 = keras.models.load_model(tkp.net_path_pi_para1,
                                                custom_objects={'loss_cce_mode1': paranet_pi.loss_cce_mode1})
-        net_pi_para2 = keras.models.load_model(ap.net_path_pi_para2,
+        net_pi_para2 = keras.models.load_model(tkp.net_path_pi_para2,
                                                custom_objects={'loss_cce_mode2': paranet_pi.loss_cce_mode2})
-        net_pi_para3 = keras.models.load_model(ap.net_path_pi_para3,
+        net_pi_para3 = keras.models.load_model(tkp.net_path_pi_para3,
                                                custom_objects={'loss_cce_mode3': paranet_pi.loss_cce_mode3})
+        net_pi_para4 = keras.models.load_model(tkp.net_path_pi_para4,
+                                               custom_objects={'loss_cce_mode4': paranet_pi.loss_cce_mode4})
+        net_pi_para5 = keras.models.load_model(tkp.net_path_pi_para5,
+                                               custom_objects={'loss_cce_mode5': paranet_pi.loss_cce_mode5})
         one_step_net1, hidden_ex1 = one_step_model(net_pi_para1)
         one_step_net2, hidden_ex2 = one_step_model(net_pi_para2)
         one_step_net3, hidden_ex3 = one_step_model(net_pi_para3)
-        nets.extend([one_step_net1, one_step_net2, one_step_net3])
-        hidden_ex = [hidden_ex1, hidden_ex2, hidden_ex3]
+        one_step_net4, hidden_ex4 = one_step_model(net_pi_para4)
+        one_step_net5, hidden_ex5 = one_step_model(net_pi_para5)
+        nets.extend([one_step_net1, one_step_net2, one_step_net3, one_step_net4, one_step_net5])
+        hidden_ex = [hidden_ex1, hidden_ex2, hidden_ex3, hidden_ex4, hidden_ex5]
     elif which_net == 'npi_int':
-        net_npi_int = keras.models.load_model(ap.net_path_npi_int)
+        net_npi_int = keras.models.load_model(tkp.net_path_npi_int)
         one_step_net, hidden_ex = one_step_model(net_npi_int)
         nets.append(one_step_net)
     elif which_net == 'npi_para':
-        net_npi_para1 = keras.models.load_model(ap.net_path_npi_para1,
+        net_npi_para1 = keras.models.load_model(tkp.net_path_npi_para1,
                                                 custom_objects={'loss_cce_mode1': paranet_npi.loss_cce_mode1})
-        net_npi_para2 = keras.models.load_model(ap.net_path_npi_para2,
+        net_npi_para2 = keras.models.load_model(tkp.net_path_npi_para2,
                                                 custom_objects={'loss_cce_mode2': paranet_npi.loss_cce_mode2})
-        net_npi_para3 = keras.models.load_model(ap.net_path_npi_para3,
+        net_npi_para3 = keras.models.load_model(tkp.net_path_npi_para3,
                                                 custom_objects={'loss_cce_mode3': paranet_npi.loss_cce_mode3})
+        net_npi_para4 = keras.models.load_model(tkp.net_path_npi_para4,
+                                                custom_objects={'loss_cce_mode4': paranet_npi.loss_cce_mode4})
+        net_npi_para5 = keras.models.load_model(tkp.net_path_npi_para5,
+                                                custom_objects={'loss_cce_mode5': paranet_npi.loss_cce_mode5})
         one_step_net1, hidden_ex1 = one_step_model(net_npi_para1)
         one_step_net2, hidden_ex2 = one_step_model(net_npi_para2)
         one_step_net3, hidden_ex3 = one_step_model(net_npi_para3)
-        nets.extend([one_step_net1, one_step_net2, one_step_net3])
-        hidden_ex = [hidden_ex1, hidden_ex2, hidden_ex3]
+        one_step_net4, hidden_ex4 = one_step_model(net_npi_para4)
+        one_step_net5, hidden_ex5 = one_step_model(net_npi_para5)
+        nets.extend([one_step_net1, one_step_net2, one_step_net3, one_step_net4, one_step_net5])
+        hidden_ex = [hidden_ex1, hidden_ex2, hidden_ex3, hidden_ex4, hidden_ex5]
     else:
         raise ValueError('Error net structure')
 
-    x0 = ap.x0
-    s0 = ap.s0
-    z0 = am.measurement_arm(x0, 0)
+    x0 = tkp.x0
+    s0 = tkp.s0
+    z0 = tkm.measurement_arm(x0, 0)
 
-    xtrue_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
+    xtrue_all = np.zeros(shape=(run_batch, K + 1, tkp.nx))
     strue_all = np.zeros(shape=(run_batch, K + 1))
-    xest_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
-    xp_all = np.zeros(shape=(run_batch, K + 1, M, Np, ap.nx))
+    xest_all = np.zeros(shape=(run_batch, K + 1, tkp.nx))
+    xp_all = np.zeros(shape=(run_batch, K + 1, M, Np, tkp.nx))
     w_all = np.zeros(shape=(run_batch, K + 1, M, Np))
     mu_all = np.zeros(shape=(run_batch, K + 1, M))
-    z_all = np.zeros(shape=(run_batch, K + 1, ap.nz))
+    z_all = np.zeros(shape=(run_batch, K + 1, tkp.nz))
     cmtp_all = np.zeros(shape=(run_batch, K + 1, M, M, Np))
     what_all = np.zeros(shape=(run_batch, K + 1, M, M, Np))
     what_sum_all = np.zeros(shape=(run_batch, K + 1, M))
@@ -301,11 +313,11 @@ if __name__ == '__main__':
     v_all = np.zeros(shape=(run_batch, K + 1, M, M, Np))
     xi_all = np.zeros(shape=(run_batch, K + 1, M, Np), dtype='int')
     zeta_all = np.zeros(shape=(run_batch, K + 1, M, Np), dtype='int')
-    q_proposal_all = np.random.multivariate_normal(mean=np.zeros(ap.nx), cov=ap.Q, size=(K+1, M, Np))
+    q_proposal_all = np.random.multivariate_normal(mean=np.zeros(tkp.nx), cov=tkp.Q, size=(K + 1, M, Np))
 
-    data = np.load(ap.data_path)
-    x_data, z_data, s_data, t_data, tpm_data, ifreach_data, time_steps_data = aplot.read_data(data)
-    size_run = int(x_data.shape[0] * ap.train_prop)
+    data = np.load(tkp.data_path)
+    x_data, z_data, s_data, t_data, tpm_data, ifreach_data, time_steps_data = tkplot.read_data(data)
+    size_run = int(x_data.shape[0] * tkp.train_prop)
     xtrue_batch = np.swapaxes(x_data[size_run:, :, :], 1, 2)
     ztrue_batch = np.swapaxes(z_data[size_run:, :, :], 1, 2)
     strue_batch = s_data[size_run:, 0, :]
@@ -329,7 +341,7 @@ if __name__ == '__main__':
         for j in range(M):
             for l in range(Np):
                 w_all[n, 0, j, l] = 1 / Np
-                xp_all[n, 0, j, l, :] = np.random.multivariate_normal(x0, ap.Q0)
+                xp_all[n, 0, j, l, :] = np.random.multivariate_normal(x0, tkp.Q0)
             mu_all[n, 0, j] = 1 if j == s0 else 0
         if which_net == 'pi_int' or which_net == 'npi_int':
             hidden0 = list()
@@ -393,7 +405,7 @@ if __name__ == '__main__':
                 for l in range(Np):
                     xi = xi_all[n, k - 1, j, l]
                     zeta = zeta_all[n, k - 1, j, l]
-                    xp = am.dynamic_arm(sc=j + 1, x_p=xp_all[n, k - 1, xi, zeta, :], q=q_proposal_all[k - 1, j, l, :])
+                    xp = tkm.dynamic_arm(sc=j + 1, x_p=xp_all[n, k - 1, xi, zeta, :], q=q_proposal_all[k - 1, j, l, :])
                     xp_all[n, k, j, l, :] = xp
                     zcli = compute_zc_likelihood(x=xp, z=z, s=j)
                     w_all[n, k, j, l] = zcli * what_all[n, k - 1, xi, j, zeta] / v_all[n, k - 1, xi, j, zeta]
@@ -406,16 +418,16 @@ if __name__ == '__main__':
                 mu_all[n, k, j] = mu
             mu_all[n, k, :] = mu_all[n, k, :] / sum(mu_all[n, k, :])
             # print(5)
-            xest = np.zeros(ap.nx)
+            xest = np.zeros(tkp.nx)
             for j in range(M):
-                xestj = np.zeros(ap.nx)
+                xestj = np.zeros(tkp.nx)
                 for l in range(Np):
                     xestj = xestj + w_all[n, k, j, l] * xp_all[n, k, j, l, :]
                 xest = xest + mu_all[n, k, j] * xestj
             xest_all[n, k, :] = xest
             # print(6)
 
-    np.savez(file=ap.filter_data_path+'_'+which_net+'.npz',
+    np.savez(file=tkp.filter_data_path + '_' + which_net + '.npz',
              xtrue_all=xtrue_all,
              strue_all=strue_all,
              xest_all=xest_all,

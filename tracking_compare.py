@@ -1,42 +1,42 @@
 import numpy as np
-import arm_model as am
-import arm_paras as ap
-import arm_plot as aplot
+import tracking_model as tkm
+import tracking_paras as tkp
+import tracking_plot as tkplot
 from tqdm import tqdm
 
 
 def one_step_EKF(mp, Pp, z, s):
     s = s+1
-    if s not in [1, 2, 3]:
+    if s not in [1, 2, 3, 4, 5]:
         raise ValueError("Invalid mode.")
-    Jaf = am.dynamic_Jacobian_arm(x=mp, s=s)
-    mt = am.dynamic_arm(x_p=mp, sc=s, q=np.zeros(shape=ap.nx))
-    Pt = Jaf @ Pp @ Jaf.transpose() + ap.Q
+    Jaf = tkm.dynamic_Jacobian_tracking(x=mp, s=s)
+    mt = tkm.dynamic_tracking(x_p=mp, sc=s, q=np.zeros(shape=tkp.nx))
+    Pt = Jaf @ Pp @ Jaf.transpose() + tkp.Q
 
-    Jah = am.measurement_Jacobian_arm(x=mt)
-    v = z - am.measurement_arm(x=mt, r=np.zeros(shape=ap.nz))
-    S = Jah @ Pt @ Jah.transpose() + ap.R
+    Jah = tkm.measurement_Jacobian_tracking(x=mt)
+    v = z - tkm.measurement_tracking(x=mt, r=np.zeros(shape=tkp.nz))
+    S = Jah @ Pt @ Jah.transpose() + tkp.R
     K = Pt @ Jah.transpose() @ np.linalg.inv(S)
 
     m = mt + K @ v
     P = Pt - K @ S @ K.transpose()
 
-    lam = am.pdf_Gaussian(x=v, mean=np.zeros(ap.nz), cov=S)
+    lam = tkm.pdf_Gaussian(x=v, mean=np.zeros(tkp.nz), cov=S)
 
     return m, P, lam
 
 
 def IMM(ztrue):
 
-    T = ap.T
-    dt = ap.dt
+    T = tkp.T
+    dt = tkp.dt
     K = int(T/dt)
-    M = ap.M
-    nx = ap.nx
-    nz = ap.nz
-    x0 = ap.x0
-    s0 = ap.s0
-    Pi = ap.Pi_IMM
+    M = tkp.M
+    nx = tkp.nx
+    nz = tkp.nz
+    x0 = tkp.x0
+    s0 = tkp.s0
+    Pi = tkp.Pi_IMM
 
     m_all = np.zeros(shape=(K+1, nx))
     P_all = np.zeros(shape=(K+1, nx, nx))
@@ -48,11 +48,11 @@ def IMM(ztrue):
     mu_mix_all = np.zeros(shape=(K+1, M, M))
 
     m_all[0, :] = x0
-    P_all[0, :, :] = ap.Q0
+    P_all[0, :, :] = tkp.Q0
     mu_all[0, s0-1] = 1
     for j in range(M):
         ml_all[0, j, :] = x0
-        Pl_all[0, j, :, :] = ap.Q0
+        Pl_all[0, j, :, :] = tkp.Q0
 
     for k in range(1, K+1):
         c = np.zeros(shape=M)
@@ -85,26 +85,14 @@ def IMM(ztrue):
     return m_all, mu_all
 
 
-def tpm_immpf_arm(x):
-    b = ap.b
-    tpm = np.zeros([3, 3])
-    ep = 0.99 if x[0] >= b else 0.01
-    tpm[0][0] = -1*ep + 1
-    tpm[0][1] = 1*ep
-    tpm[0][2] = 0
-    tpm[1][0] = -1*ep + 1
-    tpm[1][1] = 0.96 * ep
-    tpm[1][2] = 0.04 * ep
-    tpm[2][0] = -1 * ep + 1
-    tpm[2][1] = 0.05 * ep
-    tpm[2][2] = 0.95 * ep
-
+def tpm_immpf_tracking(x):
+    tpm = tkm.tpm_tracking(x, tkp.tlast+1)
     return tpm
 
 
 def resample(v):
-    M = ap.M
-    Np = ap.Np
+    M = tkp.M
+    Np = tkp.Np
     if v.shape != (M, Np):
         raise ValueError('Incorrect probability dimension for v')
     v_flatten = np.reshape(v, (M * Np))
@@ -117,40 +105,40 @@ def resample(v):
 
 
 def IMMPF(ztrue):
-    T = ap.T
-    dt = ap.dt
+    T = tkp.T
+    dt = tkp.dt
     K = int(T/dt)
-    M = ap.M
-    Np = ap.Np
-    nx = ap.nx
-    nz = ap.nz
-    x0 = ap.x0
-    s0 = ap.s0
+    M = tkp.M
+    Np = tkp.Np
+    nx = tkp.nx
+    nz = tkp.nz
+    x0 = tkp.x0
+    s0 = tkp.s0
 
-    xtrue_all = np.zeros(shape=(K + 1, ap.nx))
+    xtrue_all = np.zeros(shape=(K + 1, tkp.nx))
     strue_all = np.zeros(shape=(K + 1))
-    xest_all = np.zeros(shape=(K + 1, ap.nx))
-    xp_all = np.zeros(shape=(K + 1, M, Np, ap.nx))
+    xest_all = np.zeros(shape=(K + 1, tkp.nx))
+    xp_all = np.zeros(shape=(K + 1, M, Np, tkp.nx))
     w_all = np.zeros(shape=(K + 1, M, Np))
     what_all = np.zeros(shape=(K + 1, M, M, Np))
     mu_all = np.zeros(shape=(K + 1, M))
     gamma_all = np.zeros(shape=(K + 1, M))
-    z_all = np.zeros(shape=(K + 1, ap.nz))
+    z_all = np.zeros(shape=(K + 1, tkp.nz))
     xi_all = np.zeros(shape=(run_batch, K + 1, M, Np), dtype='int')
     zeta_all = np.zeros(shape=(run_batch, K + 1, M, Np), dtype='int')
-    q_proposal_all = np.random.multivariate_normal(mean=np.zeros(ap.nx), cov=ap.Q, size=(K + 1, M, Np))
+    q_proposal_all = np.random.multivariate_normal(mean=np.zeros(tkp.nx), cov=tkp.Q, size=(K + 1, M, Np))
 
     for j in range(M):
         for l in range(Np):
             w_all[0, j, l] = 1 / Np
-            xp_all[0, j, l, :] = np.random.multivariate_normal(x0, ap.Q0)
+            xp_all[0, j, l, :] = np.random.multivariate_normal(x0, tkp.Q0)
         mu_all[0, j] = 1 if j == s0 else 0
 
     for k in range(1, K + 1):
         z = z_all[k, :]
         for i in range(M):
             for l in range(Np):
-                tpm = tpm_immpf_arm(xp_all[k - 1, i, l, :])
+                tpm = tpm_immpf_tracking(xp_all[k - 1, i, l, :])
                 for j in range(M):
                     what_all[k, i, j, l] = tpm[i, j] * w_all[k-1, i, l]
         for j in range(M):
@@ -162,16 +150,16 @@ def IMMPF(ztrue):
             for l in range(Np):
                 xi = xi_all[n, k - 1, j, l]
                 zeta = zeta_all[n, k - 1, j, l]
-                xp_all[k, j, l, :] = am.dynamic_arm(sc=j+1, x_p=xp_all[k - 1, xi, zeta, :]
-                                                    , q=q_proposal_all[k - 1, j, l, :])
-                zli = am.compute_meas_likelihood(x=xp_all[k, j, l, :], z=z)
+                xp_all[k, j, l, :] = tkm.dynamic_tracking(sc=j + 1, x_p=xp_all[k - 1, xi, zeta, :]
+                                                     , q=q_proposal_all[k - 1, j, l, :])
+                zli = tkm.compute_meas_likelihood(x=xp_all[k, j, l, :], z=z)
                 w_all[k, j, l] = 1/Np*zli
             mu_all[k, j] = gamma_all[k, j] * np.sum(w_all[k, j, :])
             w_all[k, j, :] = w_all[k, j, :]/np.sum(w_all[k, j, :])
         mu_all[k, :] = mu_all[k, :]/np.sum(mu_all[k, :])
-        xest = np.zeros(ap.nx)
+        xest = np.zeros(tkp.nx)
         for j in range(M):
-            xestj = np.zeros(ap.nx)
+            xestj = np.zeros(tkp.nx)
             for l in range(Np):
                 xestj = xestj + w_all[k, j, l] * xp_all[k, j, l, :]
             xest = xest + mu_all[k, j] * xestj
@@ -181,9 +169,9 @@ def IMMPF(ztrue):
 
 
 if __name__ == '__main__':
-    data = np.load(ap.data_path)
-    x_data, z_data, s_data, t_data, tpm_data, ifreach_data, time_steps_data = aplot.read_data(data)
-    size_run = int(x_data.shape[0] * ap.train_prop)
+    data = np.load(tkp.data_path)
+    x_data, z_data, s_data, t_data, tpm_data, ifreach_data, time_steps_data = tkplot.read_data(data)
+    size_run = int(x_data.shape[0] * tkp.train_prop)
     xtrue_batch = np.swapaxes(x_data[size_run:, :, :], 1, 2)
     ztrue_batch = np.swapaxes(z_data[size_run:, :, :], 1, 2)
     strue_batch = s_data[size_run:, 0, :]
@@ -218,26 +206,26 @@ if __name__ == '__main__':
     #          z_all=z_all,
     #          time_steps=time_steps)
 
-    T = ap.T
-    dt = ap.dt
+    T = tkp.T
+    dt = tkp.dt
     K = int(T/dt)
-    run_batch = ap.run_batch
-    xtrue_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
+    run_batch = tkp.run_batch
+    xtrue_all = np.zeros(shape=(run_batch, K + 1, tkp.nx))
     strue_all = np.zeros(shape=(run_batch, K + 1))
-    xest_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
-    mu_all = np.zeros(shape=(run_batch, K + 1, ap.M))
-    z_all = np.zeros(shape=(run_batch, K + 1, ap.nz))
+    xest_all = np.zeros(shape=(run_batch, K + 1, tkp.nx))
+    mu_all = np.zeros(shape=(run_batch, K + 1, tkp.M))
+    z_all = np.zeros(shape=(run_batch, K + 1, tkp.nz))
 
     for n in tqdm(range(run_batch)):
-        xtrue_all[n, 0, :] = ap.x0
+        xtrue_all[n, 0, :] = tkp.x0
         xtrue_all[n, 1:, :] = xtrue_batch[n, :, :]
         # z_all[n, 0, :] = ap.z0
         z_all[n, 1:, :] = ztrue_batch[n, :, :]
-        strue_all[n, 0] = ap.s0
+        strue_all[n, 0] = tkp.s0
         strue_all[n, 1:] = strue_batch[n, :]
         xest_all[n, :, :], mu_all[n, :, :] = IMMPF(ztrue=z_all[n, :, :])
 
-    np.savez(file=ap.filter_data_path+'_'+'IMMPF'+'.npz',
+    np.savez(file=tkp.filter_data_path + '_' + 'IMMPF' + '.npz',
              xtrue_all=xtrue_all,
              strue_all=strue_all,
              xest_all=xest_all,

@@ -6,8 +6,8 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
-import arm_paras as ap
-import arm_plot as aplot
+import tracking_paras as tkp
+import tracking_plot as tkplot
 
 
 def create_model(units_mlp_x, units_lstm, units_mlp_c, mode):
@@ -38,7 +38,7 @@ def create_model(units_mlp_x, units_lstm, units_mlp_c, mode):
 
     out_c = layers.concatenate([out_x, out_z])
 
-    t_max = ap.T_max_parallel[mode-1]
+    t_max = tkp.T_max_parallel[mode - 1]
 
     for k in range(len(units_mlp_c)):
         unit = units_mlp_c[k]
@@ -66,7 +66,7 @@ def process_data(data, t_max):
     :param t_max: int
     :return: train_input, train_output, test_input, test_output
     """
-    x_all, z_all, s_all, t_all, tpm_all, ifreach_all, time_steps_all = aplot.read_data(data)
+    x_all, z_all, s_all, t_all, tpm_all, ifreach_all, time_steps_all = tkplot.read_data(data)
 
     s_oh = keras.utils.to_categorical(s_all-1)
 
@@ -82,7 +82,7 @@ def process_data(data, t_max):
     output_t = t_oh[:, 0, :, :]
 
     batch_size = input_x.shape[0]
-    batch_size_train = int(batch_size * ap.train_prop)
+    batch_size_train = int(batch_size * tkp.train_prop)
 
     train_input_x = input_x[0:batch_size_train, :, :]
     train_input_z = input_z[0:batch_size_train, :, :]
@@ -102,23 +102,39 @@ def process_data(data, t_max):
 
 
 def loss_cce_mode1(y_true, y_pred):
-    cce = keras.losses.categorical_crossentropy(y_true[:, :, 0:-3], y_pred[:, :, 0:-3])
+    cce = keras.losses.categorical_crossentropy(y_true[:, :, 0:-5], y_pred[:, :, 0:-5])
+    selected_cce = tf.multiply(y_true[:, :, -5], cce)
+    num = tf.reduce_sum(y_true[:, :, -5])
+    loss = tf.reduce_sum(selected_cce)/num
+    return loss
+
+
+def loss_cce_mode2(y_true, y_pred):
+    cce = keras.losses.categorical_crossentropy(y_true[:, :, 0:-5], y_pred[:, :, 0:-5])
+    selected_cce = tf.multiply(y_true[:, :, -4], cce)
+    num = tf.reduce_sum(y_true[:, :, -4])
+    loss = tf.reduce_sum(selected_cce)/num
+    return loss
+
+
+def loss_cce_mode3(y_true, y_pred):
+    cce = keras.losses.categorical_crossentropy(y_true[:, :, 0:-5], y_pred[:, :, 0:-5])
     selected_cce = tf.multiply(y_true[:, :, -3], cce)
     num = tf.reduce_sum(y_true[:, :, -3])
     loss = tf.reduce_sum(selected_cce)/num
     return loss
 
 
-def loss_cce_mode2(y_true, y_pred):
-    cce = keras.losses.categorical_crossentropy(y_true[:, :, 0:-3], y_pred[:, :, 0:-3])
+def loss_cce_mode4(y_true, y_pred):
+    cce = keras.losses.categorical_crossentropy(y_true[:, :, 0:-5], y_pred[:, :, 0:-5])
     selected_cce = tf.multiply(y_true[:, :, -2], cce)
     num = tf.reduce_sum(y_true[:, :, -2])
     loss = tf.reduce_sum(selected_cce)/num
     return loss
 
 
-def loss_cce_mode3(y_true, y_pred):
-    cce = keras.losses.categorical_crossentropy(y_true[:, :, 0:-3], y_pred[:, :, 0:-3])
+def loss_cce_mode5(y_true, y_pred):
+    cce = keras.losses.categorical_crossentropy(y_true[:, :, 0:-5], y_pred[:, :, 0:-5])
     selected_cce = tf.multiply(y_true[:, :, -1], cce)
     num = tf.reduce_sum(y_true[:, :, -1])
     loss = tf.reduce_sum(selected_cce)/num
@@ -131,49 +147,72 @@ if __name__ == '__main__':
     for device in gpu_devices:
         tf.config.experimental.set_memory_growth(device, True)
 
-    data_path = ap.data_path
+    data_path = tkp.data_path
     data = np.load(data_path)
 
-    train_input_1, train_output_1, test_input_1, test_output_1 = process_data(data, ap.T_max_parallel[0])
-    train_input_2, train_output_2, test_input_2, test_output_2 = process_data(data, ap.T_max_parallel[1])
-    train_input_3, train_output_3, test_input_3, test_output_3 = process_data(data, ap.T_max_parallel[2])
+    train_input_1, train_output_1, test_input_1, test_output_1 = process_data(data, tkp.T_max_parallel[0])
+    train_input_2, train_output_2, test_input_2, test_output_2 = process_data(data, tkp.T_max_parallel[1])
+    train_input_3, train_output_3, test_input_3, test_output_3 = process_data(data, tkp.T_max_parallel[2])
+    train_input_4, train_output_4, test_input_4, test_output_4 = process_data(data, tkp.T_max_parallel[3])
+    train_input_5, train_output_5, test_input_5, test_output_5 = process_data(data, tkp.T_max_parallel[4])
 
-    units1 = ap.units_pi_para1
+    units1 = tkp.units_pi_para1
     net1 = create_model(units1['mlp_x'], units1['lstm'], units1['mlp_c'], mode=1)
     net1.compile(optimizer='rmsprop',
                  loss=loss_cce_mode1,
                  metrics=loss_cce_mode1)
     net1.summary()
-
     print("========= Start training net1 =========")
-    net1.fit(x=train_input_1, y=train_output_1, epochs=10, batch_size=ap.bs)
+    net1.fit(x=train_input_1, y=train_output_1, epochs=10, batch_size=tkp.bs)
     print("========= Evaluate net1 =========")
     net1.evaluate(test_input_1, test_output_1)
 
-    units2 = ap.units_pi_para2
+    units2 = tkp.units_pi_para2
     net2 = create_model(units2['mlp_x'], units2['lstm'], units2['mlp_c'], mode=2)
     net2.compile(optimizer='rmsprop',
                  loss=loss_cce_mode2,
                  metrics=loss_cce_mode2)
     net2.summary()
-
     print("========= Start training net2 =========")
-    net2.fit(x=train_input_2, y=train_output_2, epochs=10, batch_size=ap.bs)
+    net2.fit(x=train_input_2, y=train_output_2, epochs=10, batch_size=tkp.bs)
     print("========= Evaluate net2 =========")
     net2.evaluate(test_input_2, test_output_2)
 
-    units3 = ap.units_pi_para3
+    units3 = tkp.units_pi_para3
     net3 = create_model(units3['mlp_x'], units3['lstm'], units3['mlp_c'], mode=3)
     net3.compile(optimizer='rmsprop',
                  loss=loss_cce_mode3,
                  metrics=loss_cce_mode3)
     net3.summary()
-
     print("========= Start training net3 =========")
-    net3.fit(x=train_input_3, y=train_output_3, epochs=10, batch_size=ap.bs)
+    net3.fit(x=train_input_3, y=train_output_3, epochs=10, batch_size=tkp.bs)
     print("========= Evaluate net3 =========")
     net3.evaluate(test_input_3, test_output_3)
+    
+    units4 = tkp.units_pi_para4
+    net4 = create_model(units4['mlp_x'], units4['lstm'], units4['mlp_c'], mode=4)
+    net4.compile(optimizer='rmsprop',
+                 loss=loss_cce_mode4,
+                 metrics=loss_cce_mode4)
+    net4.summary()
+    print("========= Start training net4 =========")
+    net4.fit(x=train_input_4, y=train_output_4, epochs=10, batch_size=tkp.bs)
+    print("========= Evaluate net4 =========")
+    net4.evaluate(test_input_4, test_output_4)
+    
+    units5 = tkp.units_pi_para5
+    net5 = create_model(units5['mlp_x'], units5['lstm'], units5['mlp_c'], mode=5)
+    net5.compile(optimizer='rmsprop',
+                 loss=loss_cce_mode5,
+                 metrics=loss_cce_mode5)
+    net5.summary()
+    print("========= Start training net5 =========")
+    net5.fit(x=train_input_5, y=train_output_5, epochs=10, batch_size=tkp.bs)
+    print("========= Evaluate net5 =========")
+    net5.evaluate(test_input_5, test_output_5)
 
-    net1.save(ap.net_path_pi_para1)
-    net2.save(ap.net_path_pi_para2)
-    net3.save(ap.net_path_pi_para3)
+    net1.save(tkp.net_path_pi_para1)
+    net2.save(tkp.net_path_pi_para2)
+    net3.save(tkp.net_path_pi_para3)
+    net4.save(tkp.net_path_pi_para4)
+    net5.save(tkp.net_path_pi_para5)

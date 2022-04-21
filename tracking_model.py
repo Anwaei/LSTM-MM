@@ -250,7 +250,7 @@ def tpm_tracking(x, t):
         tpm[0, 3] = tkp.alpha14 + tkp.nu14*tkp.psi14*np.exp(-tkp.psi14*velocity)
         tpm[3, 0] = tkp.alpha41 + tkp.nu41/(1+np.exp(-tkp.psi41*(velocity-tkp.ve)))
         tpm[0, 4] = tkp.alpha15 + tkp.nu15/(1+np.exp(-tkp.psi15*(velocity-tkp.vmax)))
-        tpm[4, 0] = tkp.alpha51 + tkp.nu51/(1+np.exp(-tkp.psi51*(velocity-tkp.ve)))
+        tpm[4, 0] = tkp.alpha51 + tkp.nu51/(1+np.exp(-tkp.psi51*(-velocity+tkp.ve)))
 
         tpm[0, 0] = 1 - tpm[0, 1] - tpm[0, 2] - tpm[0, 3] - tpm[0, 4]
         tpm[1, 1] = 1 - tpm[1, 0]
@@ -276,15 +276,22 @@ def switch_tracking(sp, xp, tp):
 
 
 def constraint_tracking(x):
-    px = x[0]
-    py = x[1]
+    px, py, vx, vy = x
     if py > tkp.ca3*px**3 + tkp.ca2*px**2 + tkp.ca1*px + tkp.ca0:
         py = tkp.ca3*px**3 + tkp.ca2*px**2 + tkp.ca1*px + tkp.ca0
         x[1] = py
+        v = np.sqrt(vx**2 + vy**2)
+        phi = np.arctan(3*tkp.ca3*px**2 + 2*tkp.ca2*px + tkp.ca1)
+        x[2] = v * np.cos(phi)
+        x[3] = v * np.sin(phi)
         if_reach_constraint = True
     elif py < tkp.cb3*px**3 + tkp.cb2*px**2 + tkp.cb1*px + tkp.cb0:
         py = tkp.cb3*px**3 + tkp.cb2*px**2 + tkp.cb1*px + tkp.cb0
         x[1] = py
+        v = np.sqrt(vx**2 + vy**2)
+        phi = np.arctan(3*tkp.cb3*px**2 + 2*tkp.cb2*px + tkp.cb1)
+        x[2] = v * np.cos(phi)
+        x[3] = v * np.sin(phi)
         if_reach_constraint = True
     else:
         if_reach_constraint = False
