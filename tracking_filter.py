@@ -163,7 +163,7 @@ def compute_cmtp(nets, which_net, x, z, s, hidden):
             cmtp = np.zeros(shape=(M, tkp.Np))
             for l in range(tkp.Np):
                 for t in range(1, tkp.T_max_integrated + 1):
-                    tpm = tkm.tpm_arm(x[l, :], t)
+                    tpm = tkm.tpm_tracking(x[l, :], t)
                     tp = tpm[s, :]
                     cmtp[:, l] = cmtp[:, l] + tp * soutdtr[l, t - 1]
                 cmtp[:, l] = cmtp[:, l] / np.sum(cmtp[:, l])
@@ -180,7 +180,7 @@ def compute_cmtp(nets, which_net, x, z, s, hidden):
             cmtp = np.zeros(shape=(M, tkp.Np))
             for l in range(tkp.Np):
                 for t in range(1, tkp.T_max_parallel[s] + 1):
-                    tpm = tkm.tpm_arm(x[l, :], t)
+                    tpm = tkm.tpm_tracking(x[l, :], t)
                     tp = tpm[s, :]
                     cmtp[:, l] = cmtp[:, l] + tp * soutdtr[l, t - 1]
                 cmtp[:, l] = cmtp[:, l] / np.sum(cmtp[:, l])
@@ -196,7 +196,7 @@ def compute_cmtp(nets, which_net, x, z, s, hidden):
 
 def compute_zcpredict_likelihood(x_pre, z, s):
     # t1=time.clock()
-    lam = tkm.dynamic_arm(sc=s + 1, x_p=x_pre, q=np.zeros(tkp.nx))
+    lam = tkm.dynamic_tracking(sc=s + 1, x_p=x_pre, q=np.zeros(tkp.nx))
     # zli = am.compute_meas_likelihood(x=lam, z=z, s=s)
     # cli = am.compute_constraint_likelihood(x=lam)
     # li = zli*cli
@@ -236,7 +236,7 @@ if __name__ == '__main__':
 
     # which_net = 'npi_int'
     # which_net = 'npi_para'
-    which_net = 'pi_int'
+    which_net = 'npi_int'
     # mode_shift = 2  # No net for mode 1, so the index for net i is s-2.
 
     T = tkp.T
@@ -297,7 +297,7 @@ if __name__ == '__main__':
 
     x0 = tkp.x0
     s0 = tkp.s0
-    z0 = tkm.measurement_arm(x0, 0)
+    z0 = tkm.measurement_tracking(x0, 0)
 
     xtrue_all = np.zeros(shape=(run_batch, K + 1, tkp.nx))
     strue_all = np.zeros(shape=(run_batch, K + 1))
@@ -405,7 +405,7 @@ if __name__ == '__main__':
                 for l in range(Np):
                     xi = xi_all[n, k - 1, j, l]
                     zeta = zeta_all[n, k - 1, j, l]
-                    xp = tkm.dynamic_arm(sc=j + 1, x_p=xp_all[n, k - 1, xi, zeta, :], q=q_proposal_all[k - 1, j, l, :])
+                    xp = tkm.dynamic_tracking(sc=j + 1, x_p=xp_all[n, k - 1, xi, zeta, :], q=q_proposal_all[k - 1, j, l, :])
                     xp_all[n, k, j, l, :] = xp
                     zcli = compute_zc_likelihood(x=xp, z=z, s=j)
                     w_all[n, k, j, l] = zcli * what_all[n, k - 1, xi, j, zeta] / v_all[n, k - 1, xi, j, zeta]
