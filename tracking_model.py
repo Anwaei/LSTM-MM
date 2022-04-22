@@ -235,9 +235,11 @@ def tpm_tracking(x, t):
         raise ValueError("Invalid sojourn time.")
 
     tpm = np.zeros([tkp.M, tkp.M])
+    ep = 0.999
     if t <= tkp.tlast:
+        tpm = tpm + (1-ep)/4
         for j in range(tkp.M):
-            tpm[j, j] = 1
+            tpm[j, j] = ep
     else:
         px, py, vx, vy = x
         angle = np.arctan(vy/vx)
@@ -253,12 +255,16 @@ def tpm_tracking(x, t):
         tpm[4, 0] = tkp.alpha51 + tkp.nu51/(1+np.exp(-tkp.psi51*(-velocity+tkp.ve)))
 
         tpm[0, 0] = 1 - tpm[0, 1] - tpm[0, 2] - tpm[0, 3] - tpm[0, 4]
-        tpm[1, 1] = 1 - tpm[1, 0]
-        tpm[2, 2] = 1 - tpm[2, 0]
-        tpm[3, 3] = 1 - tpm[3, 0]
-        tpm[4, 4] = 1 - tpm[4, 0]
         if tpm[0, 0] < 0:
             raise ValueError('Transition probability sum of mode 1 exceed 1')
+        for i in range(1, tkp.M):
+            for j in range(tkp.M):
+                if j == 0:
+                    tpm[i, j] = ep*tpm[i, j]
+                if j == i:
+                    tpm[i, j] = ep*(1 - tpm[i, 0])
+                else:
+                    tpm[i, j] = (1-ep)/3
 
     return tpm
 

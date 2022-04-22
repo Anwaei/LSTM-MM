@@ -149,7 +149,7 @@ def one_step_model(rnnmodel):
     return one_step_net, input_states_ins
 
 
-def compute_cmtp(nets, which_net, x, z, s, hidden):
+def compute_cmtp(nets, which_net, x, z, s, hidden, tpm_temp=None):
     x = tf.convert_to_tensor(x)
     z = tf.tile(z[None, :], (ap.Np, 1))
 
@@ -163,7 +163,7 @@ def compute_cmtp(nets, which_net, x, z, s, hidden):
             cmtp = np.zeros(shape=(M, ap.Np))
             for l in range(ap.Np):
                 for t in range(1, ap.T_max_integrated + 1):
-                    tpm = am.tpm_arm(x[l, :], t)
+                    tpm = am.tpm_arm(x[l, :], t, temp=[tpm_temp[0, t-1], tpm_temp[1, t-1]])
                     tp = tpm[s, :]
                     cmtp[:, l] = cmtp[:, l] + tp * soutdtr[l, t - 1]
                 cmtp[:, l] = cmtp[:, l] / np.sum(cmtp[:, l])
@@ -180,7 +180,7 @@ def compute_cmtp(nets, which_net, x, z, s, hidden):
             cmtp = np.zeros(shape=(M, ap.Np))
             for l in range(ap.Np):
                 for t in range(1, ap.T_max_parallel[s] + 1):
-                    tpm = am.tpm_arm(x[l, :], t)
+                    tpm = am.tpm_arm(x[l, :], t, temp=[tpm_temp[0, t-1], tpm_temp[1, t-1]])
                     tp = tpm[s, :]
                     cmtp[:, l] = cmtp[:, l] + tp * soutdtr[l, t - 1]
                 cmtp[:, l] = cmtp[:, l] / np.sum(cmtp[:, l])
@@ -314,6 +314,13 @@ if __name__ == '__main__':
     time_steps_batch = time_steps_data[size_run:, 0, :]
     time_steps = time_steps_batch[0, :]
 
+    tempT = K
+    tpm_temp = np.zeros(shape=(2, tempT))
+    for ti in range(tempT):
+        t = ti+1
+        tpm_temp[0, ti] = ap.q23**(t**ap.r23 - (t-1)**ap.r23)
+        tpm_temp[1, ti] = ap.q32**(t**ap.r32 - (t-1)**ap.r32)
+
     for n in tqdm(range(run_batch)):
         hidden_int_all = []
         hidden_para_all = [[]]
@@ -356,7 +363,7 @@ if __name__ == '__main__':
                     raise ValueError('Error net structure')
                 cmtp_pre, hidden_new = compute_cmtp(nets=nets, which_net=which_net,
                                                     x=xp_pre, z=z_pre, s=i,
-                                                    hidden=hidden_pre)
+                                                    hidden=hidden_pre, tpm_temp=tpm_temp)
                 cmtp_all[n, k - 1, i, :, :] = cmtp_pre
                 if which_net == 'pi_int' or which_net == 'npi_int':
                     if i == 0:

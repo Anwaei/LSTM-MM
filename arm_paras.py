@@ -13,7 +13,7 @@ net_path_npi_para3 = 'nets/arm_net_npi_para3'
 
 filter_data_path = 'data/arm_results'
 
-batch_size = 20000
+batch_size = 30000
 
 T = 5
 dt = 0.02
@@ -49,10 +49,10 @@ b = -0.2
 # q32 = 0.95
 # r32 = 1.5
 
-q23 = 0.8
-r23 = 0.5
-q32 = 0.7
-r32 = 0.2
+q23 = 0.7
+r23 = 0.6
+q32 = 0.5
+r32 = 0.3
 
 # Non switch situation
 # q23 = 1
@@ -85,7 +85,7 @@ Q0 = np.diag([0.001, 0.001])
 Network
 """""""""""""""""""""
 
-T_max_parallel = [50, 100, 120]  # \del{Mode 2 and 3, no mode 1} Including mode 1
+T_max_parallel = [3, 100, 120]  # \del{Mode 2 and 3, no mode 1} Including mode 1
 T_max_integrated = 100
 
 units_mlp_x = [10, 10, 10]

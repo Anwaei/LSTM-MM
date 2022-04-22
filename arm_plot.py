@@ -114,7 +114,7 @@ def plot_compare(datas):
         strue_all.append(data['strue_all'][:, 1:])
         mu_all.append(data['mu_all'][:, 1:, :])
 
-    index = 4
+    index = 3
     plt.figure(1)
     # plt.hold(True)
     plt.plot(time_steps, xtrue_all[0][index, :, 0])

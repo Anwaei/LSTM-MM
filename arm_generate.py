@@ -20,6 +20,13 @@ if __name__ == '__main__':
     ifreach_all = np.zeros([batch_size, 1, K], dtype='int')
     time_steps_all = np.zeros([batch_size, 1, K])
 
+    tempT = K
+    tpm_temp = np.zeros(shape=(2, tempT))
+    for ti in range(tempT):
+        t = ti+1
+        tpm_temp[0, ti] = ap.q23**(t**ap.r23 - (t-1)**ap.r23)
+        tpm_temp[1, ti] = ap.q32**(t**ap.r32 - (t-1)**ap.r32)
+
     for n in tqdm(range(batch_size)):
         tk = 1
         time_current = 0
@@ -27,7 +34,7 @@ if __name__ == '__main__':
             time_current = time_current + dt
             qk, rk = am.noise_arm()
             if k == 0:
-                tpm0 = am.tpm_arm(x=x0, t=tk)
+                tpm0 = am.tpm_arm(x=x0, t=tk, temp=[tpm_temp[0, tk-1], tpm_temp[1, tk-1]])
                 sk = am.switch_arm(sp=s0, xp=x0, tp=tk)
                 if sk == s0:
                     tk = tk + 1
@@ -36,7 +43,7 @@ if __name__ == '__main__':
                 xk = am.dynamic_arm(sk, x0, qk)
                 xk, ifreachk = am.constraint_arm(xk)
                 zk = am.measurement_arm(xk, rk)
-                tpmk = am.tpm_arm(x=xk, t=tk)
+                tpmk = am.tpm_arm(x=xk, t=tk, temp=[tpm_temp[0, tk-1], tpm_temp[1, tk-1]])
             else:
                 sp = s_all[n, 0, k - 1]
                 xp = x_all[n, :, k - 1]
@@ -49,7 +56,7 @@ if __name__ == '__main__':
                 xk = am.dynamic_arm(sk, xp, qk)
                 xk, ifreachk = am.constraint_arm(xk)
                 zk = am.measurement_arm(xk, rk)
-                tpmk = am.tpm_arm(x=xk, t=tk)
+                tpmk = am.tpm_arm(x=xk, t=tk, temp=[tpm_temp[0, tk-1], tpm_temp[1, tk-1]])
 
             x_all[n, :, k] = xk
             z_all[n, 0, k] = zk
