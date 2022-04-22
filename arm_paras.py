@@ -29,7 +29,7 @@ m = [1, 2.5, 5]
 J = [1, 2.5, 5]
 
 Q = np.diag([0.001, 0.001])
-R = np.diag([0.1])
+R = np.diag([0.03])
 
 nx = 2
 nz = 1
@@ -85,7 +85,7 @@ Q0 = np.diag([0.001, 0.001])
 Network
 """""""""""""""""""""
 
-T_max_parallel = [3, 100, 120]  # \del{Mode 2 and 3, no mode 1} Including mode 1
+T_max_parallel = [3, 30, 30]  # \del{Mode 2 and 3, no mode 1} Including mode 1
 T_max_integrated = 100
 
 units_mlp_x = [10, 10, 10]

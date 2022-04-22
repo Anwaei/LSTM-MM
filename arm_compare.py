@@ -122,8 +122,6 @@ def IMMPF(ztrue):
     K = int(T/dt)
     M = ap.M
     Np = ap.Np
-    nx = ap.nx
-    nz = ap.nz
     x0 = ap.x0
     s0 = ap.s0
 
@@ -142,7 +140,7 @@ def IMMPF(ztrue):
 
     for j in range(M):
         for l in range(Np):
-            w_all[0, j, l] = 1 / Np
+            w_all[0, j, l] = 1 / (Np*M)
             xp_all[0, j, l, :] = np.random.multivariate_normal(x0, ap.Q0)
         mu_all[0, j] = 1 if j == s0 else 0
 
@@ -165,15 +163,18 @@ def IMMPF(ztrue):
                 xp_all[k, j, l, :] = am.dynamic_arm(sc=j+1, x_p=xp_all[k - 1, xi, zeta, :]
                                                     , q=q_proposal_all[k - 1, j, l, :])
                 zli = am.compute_meas_likelihood(x=xp_all[k, j, l, :], z=z)
-                w_all[k, j, l] = 1/Np*zli
-            mu_all[k, j] = gamma_all[k, j] * np.sum(w_all[k, j, :])
-            w_all[k, j, :] = w_all[k, j, :]/np.sum(w_all[k, j, :])
-        mu_all[k, :] = mu_all[k, :]/np.sum(mu_all[k, :])
+                w_all[k, j, l] = gamma_all[k, j]/Np*zli
+        w_all[k, :, :] = w_all[k, :, :] / np.sum(w_all[k, :, :])
+            # mu_all[k, j] = gamma_all[k, j] * np.sum(w_all[k, j, :])
+            # w_all[k, j, :] = w_all[k, j, :]/np.sum(w_all[k, j, :])
+        for j in range(M):
+            mu_all[k, :] = np.sum(w_all[k, j, :])
+        # mu_all[k, :] = mu_all[k, :]/np.sum(mu_all[k, :])
         xest = np.zeros(ap.nx)
         for j in range(M):
             xestj = np.zeros(ap.nx)
             for l in range(Np):
-                xestj = xestj + w_all[k, j, l] * xp_all[k, j, l, :]
+                xestj = xestj + w_all[k, j, l]/gamma_all[k, j] * xp_all[k, j, l, :]
             xest = xest + mu_all[k, j] * xestj
         xest_all[k, :] = xest
 

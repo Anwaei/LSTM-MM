@@ -62,7 +62,7 @@ def measurement_Jacobian_arm(x):
 def compute_meas_likelihood(x, z, s=1):
     # Gaussian noise
     mean = measurement_arm(x, r=0)
-    li = pdf_Gaussian(x=z-mean, mean=np.zeros(ap.nz), cov=ap.R)
+    li = pdf_Gaussian(x=z, mean=mean, cov=ap.R)
     return li
 
 
