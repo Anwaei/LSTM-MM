@@ -196,7 +196,7 @@ def compute_cmtp(nets, which_net, x, z, s, hidden):
 
 def compute_zcpredict_likelihood(x_pre, z, s):
     # t1=time.clock()
-    lam = tkm.dynamic_tracking(sc=s + 1, x_p=x_pre, q=np.zeros(tkp.nx))
+    lam = tkm.dynamic_tracking(sc=s + 1, x_p=x_pre, q=np.zeros(tkp.nq))
     # zli = am.compute_meas_likelihood(x=lam, z=z, s=s)
     # cli = am.compute_constraint_likelihood(x=lam)
     # li = zli*cli
@@ -236,7 +236,7 @@ if __name__ == '__main__':
 
     # which_net = 'npi_int'
     # which_net = 'npi_para'
-    which_net = 'npi_int'
+    which_net = 'pi_int'
     # mode_shift = 2  # No net for mode 1, so the index for net i is s-2.
 
     T = tkp.T
@@ -313,7 +313,7 @@ if __name__ == '__main__':
     v_all = np.zeros(shape=(run_batch, K + 1, M, M, Np))
     xi_all = np.zeros(shape=(run_batch, K + 1, M, Np), dtype='int')
     zeta_all = np.zeros(shape=(run_batch, K + 1, M, Np), dtype='int')
-    q_proposal_all = np.random.multivariate_normal(mean=np.zeros(tkp.nx), cov=tkp.Q, size=(K + 1, M, Np))
+    q_proposal_all = np.random.multivariate_normal(mean=np.zeros(tkp.nq), cov=tkp.Q, size=(K + 1, M, Np))
 
     data = np.load(tkp.data_path)
     x_data, z_data, s_data, t_data, tpm_data, ifreach_data, time_steps_data = tkplot.read_data(data)

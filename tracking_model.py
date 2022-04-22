@@ -5,8 +5,8 @@ import time
 
 def dynamic_tracking(sc, x_p, q):
     """
-    :param sc: current mode, in {1,2,3}
-    :param x_p: np.array (2,)
+    :param sc: current mode, in {1,2,3,4,5}
+    :param x_p: np.array (4,)
     :param q: np.array (2,)
     :return:
     """
@@ -217,7 +217,7 @@ def compute_meas_loglikelihood(x, z, s):
         logli = -(z - mean) ** 2 / (2 * tkp.R)
     else:
         logli = -1/2 * np.matmul(np.matmul(z-mean, np.linalg.inv(tkp.R)), z-mean)
-    return logli[0, 0]
+    return logli.mean()
 
 
 def noise_tracking():
