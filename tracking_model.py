@@ -235,11 +235,11 @@ def tpm_tracking(x, t):
         raise ValueError("Invalid sojourn time.")
 
     tpm = np.zeros([tkp.M, tkp.M])
-    ep = 0.999
+    xep = 0.001
     if t <= tkp.tlast:
-        tpm = tpm + (1-ep)/4
+        tpm = tpm + xep
         for j in range(tkp.M):
-            tpm[j, j] = ep
+            tpm[j, j] = 1-xep*4
     else:
         px, py, vx, vy = x
         angle = np.arctan(vy/vx)
@@ -260,11 +260,11 @@ def tpm_tracking(x, t):
         for i in range(1, tkp.M):
             for j in range(tkp.M):
                 if j == 0:
-                    tpm[i, j] = ep*tpm[i, j]
-                if j == i:
-                    tpm[i, j] = ep*(1 - tpm[i, 0])
+                    tpm[i, j] = tpm[i, j]
+                elif j == i:
+                    tpm[i, j] = 1 - tpm[i, 0] - 3*xep
                 else:
-                    tpm[i, j] = (1-ep)/3
+                    tpm[i, j] = xep
 
     return tpm
 
