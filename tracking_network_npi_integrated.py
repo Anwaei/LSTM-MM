@@ -122,7 +122,7 @@ if __name__ == '__main__':
     net.summary()
 
     print("========= Start training =========")
-    net.fit(x=train_input, y=train_output, epochs=2, batch_size=tkp.bs)
+    net.fit(x=train_input, y=train_output, epochs=8, batch_size=tkp.bs)
 
     print("========= Evaluate =========")
     net.evaluate(test_input, test_output)

@@ -11,9 +11,9 @@ import tracking_plot as tkplot
 
 
 def create_model(units_mlp_x, units_lstm, units_mlp_c):
-    input_x = layers.Input(shape=(None, 2))
-    input_s = layers.Input(shape=(None, 3))
-    input_z = layers.Input(shape=(None, 1))
+    input_x = layers.Input(shape=(None, tkp.nx))
+    input_s = layers.Input(shape=(None, tkp.M))
+    input_z = layers.Input(shape=(None, tkp.nz))
 
     for k in range(len(units_mlp_x)):
         unit = units_mlp_x[k]
