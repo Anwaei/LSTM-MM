@@ -192,33 +192,6 @@ if __name__ == '__main__':
     time_steps_batch = time_steps_data[size_run:, 0, :]
     time_steps = time_steps_batch[0, :]
 
-    # T = ap.T
-    # dt = ap.dt
-    # K = int(T/dt)
-    # run_batch = ap.run_batch
-    # xtrue_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
-    # strue_all = np.zeros(shape=(run_batch, K + 1))
-    # xest_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
-    # mu_all = np.zeros(shape=(run_batch, K + 1, ap.M))
-    # z_all = np.zeros(shape=(run_batch, K + 1, ap.nz))
-    #
-    # for n in tqdm(range(run_batch)):
-    #     xtrue_all[n, 0, :] = ap.x0
-    #     xtrue_all[n, 1:, :] = xtrue_batch[n, :, :]
-    #     # z_all[n, 0, :] = ap.z0
-    #     z_all[n, 1:, :] = ztrue_batch[n, :, :]
-    #     strue_all[n, 0] = ap.s0
-    #     strue_all[n, 1:] = strue_batch[n, :]
-    #     xest_all[n, :, :], mu_all[n, :, :] = IMM(ztrue=z_all[n, :, :])
-    #
-    # np.savez(file=ap.filter_data_path+'_'+'IMM'+'.npz',
-    #          xtrue_all=xtrue_all,
-    #          strue_all=strue_all,
-    #          xest_all=xest_all,
-    #          mu_all=mu_all,
-    #          z_all=z_all,
-    #          time_steps=time_steps)
-
     T = ap.T
     dt = ap.dt
     K = int(T/dt)
@@ -236,13 +209,40 @@ if __name__ == '__main__':
         z_all[n, 1:, :] = ztrue_batch[n, :, :]
         strue_all[n, 0] = ap.s0
         strue_all[n, 1:] = strue_batch[n, :]
-        xest_all[n, :, :], mu_all[n, :, :] = IMMPF(ztrue=z_all[n, :, :])
+        xest_all[n, :, :], mu_all[n, :, :] = IMM(ztrue=z_all[n, :, :])
 
-    np.savez(file=ap.filter_data_path+'_'+'IMMPF'+'.npz',
+    np.savez(file=ap.filter_data_path+'_'+'IMM'+'.npz',
              xtrue_all=xtrue_all,
              strue_all=strue_all,
              xest_all=xest_all,
              mu_all=mu_all,
              z_all=z_all,
              time_steps=time_steps)
+
+    # T = ap.T
+    # dt = ap.dt
+    # K = int(T/dt)
+    # run_batch = ap.run_batch
+    # xtrue_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
+    # strue_all = np.zeros(shape=(run_batch, K + 1))
+    # xest_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
+    # mu_all = np.zeros(shape=(run_batch, K + 1, ap.M))
+    # z_all = np.zeros(shape=(run_batch, K + 1, ap.nz))
+    #
+    # for n in tqdm(range(run_batch)):
+    #     xtrue_all[n, 0, :] = ap.x0
+    #     xtrue_all[n, 1:, :] = xtrue_batch[n, :, :]
+    #     # z_all[n, 0, :] = ap.z0
+    #     z_all[n, 1:, :] = ztrue_batch[n, :, :]
+    #     strue_all[n, 0] = ap.s0
+    #     strue_all[n, 1:] = strue_batch[n, :]
+    #     xest_all[n, :, :], mu_all[n, :, :] = IMMPF(ztrue=z_all[n, :, :])
+    #
+    # np.savez(file=ap.filter_data_path+'_'+'IMMPF'+'.npz',
+    #          xtrue_all=xtrue_all,
+    #          strue_all=strue_all,
+    #          xest_all=xest_all,
+    #          mu_all=mu_all,
+    #          z_all=z_all,
+    #          time_steps=time_steps)
 

@@ -86,7 +86,7 @@ Network
 """""""""""""""""""""
 
 T_max_parallel = [3, 30, 30]  # \del{Mode 2 and 3, no mode 1} Including mode 1
-T_max_integrated = 100
+T_max_integrated = 30
 
 units_mlp_x = [10, 10, 10]
 units_lstm = [10, 10, 10]

@@ -236,7 +236,7 @@ if __name__ == '__main__':
 
     # which_net = 'npi_int'
     # which_net = 'npi_para'
-    which_net = 'npi_int'
+    which_net = 'pi_int'
     # mode_shift = 2  # No net for mode 1, so the index for net i is s-2.
 
     T = ap.T
@@ -350,7 +350,7 @@ if __name__ == '__main__':
                     hidden0.append(tf.convert_to_tensor(np.zeros(shape=hidden_ex[j][l].shape)))
                 hidden_para_all[0].append(hidden0)
 
-        for k in range(1, K + 1):
+        for k in tqdm(range(1, K + 1)):
             z_pre = z_all[n, k - 1, :]
             z = z_all[n, k, :]
             for i in range(M):
