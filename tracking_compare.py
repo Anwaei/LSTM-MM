@@ -10,8 +10,8 @@ def one_step_EKF(mp, Pp, z, s):
     if s not in [1, 2, 3, 4, 5]:
         raise ValueError("Invalid mode.")
     Jaf = tkm.dynamic_Jacobian_tracking(x=mp, s=s)
-    mt = tkm.dynamic_tracking(x_p=mp, sc=s, q=np.zeros(shape=tkp.nx))
-    Pt = Jaf @ Pp @ Jaf.transpose() + tkp.Q
+    mt = tkm.dynamic_tracking(x_p=mp, sc=s, q=np.zeros(shape=tkp.nq))
+    Pt = Jaf @ Pp @ Jaf.transpose() + tkp.G @ tkp.Q @ tkp.G.transpose()
 
     Jah = tkm.measurement_Jacobian_tracking(x=mt)
     v = z - tkm.measurement_tracking(x=mt, r=np.zeros(shape=tkp.nz))
@@ -126,7 +126,7 @@ def IMMPF(ztrue):
     z_all = np.zeros(shape=(K + 1, tkp.nz))
     xi_all = np.zeros(shape=(run_batch, K + 1, M, Np), dtype='int')
     zeta_all = np.zeros(shape=(run_batch, K + 1, M, Np), dtype='int')
-    q_proposal_all = np.random.multivariate_normal(mean=np.zeros(tkp.nx), cov=tkp.Q, size=(K + 1, M, Np))
+    q_proposal_all = np.random.multivariate_normal(mean=np.zeros(tkp.nq), cov=tkp.Q, size=(K + 1, M, Np))
 
     for j in range(M):
         for l in range(Np):
@@ -179,32 +179,32 @@ if __name__ == '__main__':
     time_steps_batch = time_steps_data[size_run:, 0, :]
     time_steps = time_steps_batch[0, :]
 
-    # T = ap.T
-    # dt = ap.dt
-    # K = int(T/dt)
-    # run_batch = ap.run_batch
-    # xtrue_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
-    # strue_all = np.zeros(shape=(run_batch, K + 1))
-    # xest_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
-    # mu_all = np.zeros(shape=(run_batch, K + 1, ap.M))
-    # z_all = np.zeros(shape=(run_batch, K + 1, ap.nz))
-    #
-    # for n in tqdm(range(run_batch)):
-    #     xtrue_all[n, 0, :] = ap.x0
-    #     xtrue_all[n, 1:, :] = xtrue_batch[n, :, :]
-    #     # z_all[n, 0, :] = ap.z0
-    #     z_all[n, 1:, :] = ztrue_batch[n, :, :]
-    #     strue_all[n, 0] = ap.s0
-    #     strue_all[n, 1:] = strue_batch[n, :]
-    #     xest_all[n, :, :], mu_all[n, :, :] = IMM(ztrue=z_all[n, :, :])
-    #
-    # np.savez(file=ap.filter_data_path+'_'+'IMM'+'.npz',
-    #          xtrue_all=xtrue_all,
-    #          strue_all=strue_all,
-    #          xest_all=xest_all,
-    #          mu_all=mu_all,
-    #          z_all=z_all,
-    #          time_steps=time_steps)
+    T = tkp.T
+    dt = tkp.dt
+    K = int(T/dt)
+    run_batch = tkp.run_batch
+    xtrue_all = np.zeros(shape=(run_batch, K + 1, tkp.nx))
+    strue_all = np.zeros(shape=(run_batch, K + 1))
+    xest_all = np.zeros(shape=(run_batch, K + 1, tkp.nx))
+    mu_all = np.zeros(shape=(run_batch, K + 1, tkp.M))
+    z_all = np.zeros(shape=(run_batch, K + 1, tkp.nz))
+
+    for n in tqdm(range(run_batch)):
+        xtrue_all[n, 0, :] = tkp.x0
+        xtrue_all[n, 1:, :] = xtrue_batch[n, :, :]
+        # z_all[n, 0, :] = tkp.z0
+        z_all[n, 1:, :] = ztrue_batch[n, :, :]
+        strue_all[n, 0] = tkp.s0
+        strue_all[n, 1:] = strue_batch[n, :]
+        xest_all[n, :, :], mu_all[n, :, :] = IMM(ztrue=z_all[n, :, :])
+
+    np.savez(file=tkp.filter_data_path+'_'+'IMM'+'.npz',
+             xtrue_all=xtrue_all,
+             strue_all=strue_all,
+             xest_all=xest_all,
+             mu_all=mu_all,
+             z_all=z_all,
+             time_steps=time_steps)
 
     T = tkp.T
     dt = tkp.dt

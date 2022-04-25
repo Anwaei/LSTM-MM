@@ -236,7 +236,7 @@ if __name__ == '__main__':
 
     # which_net = 'npi_int'
     # which_net = 'npi_para'
-    which_net = 'pi_int'
+    which_net = 'npi_para'
     # mode_shift = 2  # No net for mode 1, so the index for net i is s-2.
 
     T = tkp.T
