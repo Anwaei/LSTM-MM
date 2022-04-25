@@ -88,7 +88,7 @@ def IMM(ztrue):
 def tpm_immpf_arm(x):
     b = ap.b
     tpm = np.zeros([3, 3])
-    ep = 0.99 if x[0] >= b else 0.01
+    ep = 0.95 if x[0] >= b else 0.05
     tpm[0][0] = -1*ep + 1
     tpm[0][1] = 1*ep
     tpm[0][2] = 0
@@ -125,24 +125,26 @@ def IMMPF(ztrue):
     x0 = ap.x0
     s0 = ap.s0
 
-    xtrue_all = np.zeros(shape=(K + 1, ap.nx))
-    strue_all = np.zeros(shape=(K + 1))
+    # xtrue_all = np.zeros(shape=(K + 1, ap.nx))
+    # strue_all = np.zeros(shape=(K + 1))
     xest_all = np.zeros(shape=(K + 1, ap.nx))
     xp_all = np.zeros(shape=(K + 1, M, Np, ap.nx))
     w_all = np.zeros(shape=(K + 1, M, Np))
     what_all = np.zeros(shape=(K + 1, M, M, Np))
     mu_all = np.zeros(shape=(K + 1, M))
     gamma_all = np.zeros(shape=(K + 1, M))
-    z_all = np.zeros(shape=(K + 1, ap.nz))
+    # z_all = np.zeros(shape=(K + 1, ap.nz))
     xi_all = np.zeros(shape=(run_batch, K + 1, M, Np), dtype='int')
     zeta_all = np.zeros(shape=(run_batch, K + 1, M, Np), dtype='int')
     q_proposal_all = np.random.multivariate_normal(mean=np.zeros(ap.nx), cov=ap.Q, size=(K + 1, M, Np))
+
+    z_all = ztrue
 
     for j in range(M):
         for l in range(Np):
             w_all[0, j, l] = 1 / (Np*M)
             xp_all[0, j, l, :] = np.random.multivariate_normal(x0, ap.Q0)
-        mu_all[0, j] = 1 if j == s0 else 0
+        mu_all[0, j] = 0.98 if j == s0-1 else 0.01
 
     for k in range(1, K + 1):
         z = z_all[k, :]
@@ -150,7 +152,7 @@ def IMMPF(ztrue):
             for l in range(Np):
                 tpm = tpm_immpf_arm(xp_all[k - 1, i, l, :])
                 for j in range(M):
-                    what_all[k, i, j, l] = tpm[i, j] * w_all[k-1, i, l]
+                    what_all[k, i, j, l] = tpm[i, j] * mu_all[k-1, i] * w_all[k-1, i, l]
         for j in range(M):
             gamma_all[k, j] = np.sum(what_all[k, :, j, :])
             what_all[k, :, j, :] = what_all[k, :, j, :]/gamma_all[k, j]
@@ -169,14 +171,16 @@ def IMMPF(ztrue):
             # w_all[k, j, :] = w_all[k, j, :]/np.sum(w_all[k, j, :])
         for j in range(M):
             mu_all[k, :] = np.sum(w_all[k, j, :])
-        # mu_all[k, :] = mu_all[k, :]/np.sum(mu_all[k, :])
+        mu_all[k, :] = mu_all[k, :]/np.sum(mu_all[k, :])
         xest = np.zeros(ap.nx)
         for j in range(M):
             xestj = np.zeros(ap.nx)
             for l in range(Np):
-                xestj = xestj + w_all[k, j, l]/gamma_all[k, j] * xp_all[k, j, l, :]
+                # xestj = xestj + w_all[k, j, l]/gamma_all[k, j] * xp_all[k, j, l, :]
+                xestj = xestj + w_all[k, j, l] / w_all[k, j, :].sum() * xp_all[k, j, l, :]
             xest = xest + mu_all[k, j] * xestj
         xest_all[k, :] = xest
+        # xest_all[k, :] = xestj
 
     return xest_all, mu_all
 
@@ -191,33 +195,6 @@ if __name__ == '__main__':
     ttrue_batch = t_data[size_run:, 0, :]
     time_steps_batch = time_steps_data[size_run:, 0, :]
     time_steps = time_steps_batch[0, :]
-
-    T = ap.T
-    dt = ap.dt
-    K = int(T/dt)
-    run_batch = ap.run_batch
-    xtrue_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
-    strue_all = np.zeros(shape=(run_batch, K + 1))
-    xest_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
-    mu_all = np.zeros(shape=(run_batch, K + 1, ap.M))
-    z_all = np.zeros(shape=(run_batch, K + 1, ap.nz))
-
-    for n in tqdm(range(run_batch)):
-        xtrue_all[n, 0, :] = ap.x0
-        xtrue_all[n, 1:, :] = xtrue_batch[n, :, :]
-        # z_all[n, 0, :] = ap.z0
-        z_all[n, 1:, :] = ztrue_batch[n, :, :]
-        strue_all[n, 0] = ap.s0
-        strue_all[n, 1:] = strue_batch[n, :]
-        xest_all[n, :, :], mu_all[n, :, :] = IMM(ztrue=z_all[n, :, :])
-
-    np.savez(file=ap.filter_data_path+'_'+'IMM'+'.npz',
-             xtrue_all=xtrue_all,
-             strue_all=strue_all,
-             xest_all=xest_all,
-             mu_all=mu_all,
-             z_all=z_all,
-             time_steps=time_steps)
 
     # T = ap.T
     # dt = ap.dt
@@ -236,13 +213,40 @@ if __name__ == '__main__':
     #     z_all[n, 1:, :] = ztrue_batch[n, :, :]
     #     strue_all[n, 0] = ap.s0
     #     strue_all[n, 1:] = strue_batch[n, :]
-    #     xest_all[n, :, :], mu_all[n, :, :] = IMMPF(ztrue=z_all[n, :, :])
+    #     xest_all[n, :, :], mu_all[n, :, :] = IMM(ztrue=z_all[n, :, :])
     #
-    # np.savez(file=ap.filter_data_path+'_'+'IMMPF'+'.npz',
+    # np.savez(file=ap.filter_data_path+'_'+'IMM'+'.npz',
     #          xtrue_all=xtrue_all,
     #          strue_all=strue_all,
     #          xest_all=xest_all,
     #          mu_all=mu_all,
     #          z_all=z_all,
     #          time_steps=time_steps)
+
+    T = ap.T
+    dt = ap.dt
+    K = int(T/dt)
+    run_batch = ap.run_batch
+    xtrue_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
+    strue_all = np.zeros(shape=(run_batch, K + 1))
+    xest_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
+    mu_all = np.zeros(shape=(run_batch, K + 1, ap.M))
+    z_all = np.zeros(shape=(run_batch, K + 1, ap.nz))
+
+    for n in tqdm(range(run_batch)):
+        xtrue_all[n, 0, :] = ap.x0
+        xtrue_all[n, 1:, :] = xtrue_batch[n, :, :]
+        # z_all[n, 0, :] = ap.z0
+        z_all[n, 1:, :] = ztrue_batch[n, :, :]
+        strue_all[n, 0] = ap.s0
+        strue_all[n, 1:] = strue_batch[n, :]
+        xest_all[n, :, :], mu_all[n, :, :] = IMMPF(ztrue=z_all[n, :, :])
+
+    np.savez(file=ap.filter_data_path+'_'+'IMMPF'+'.npz',
+             xtrue_all=xtrue_all,
+             strue_all=strue_all,
+             xest_all=xest_all,
+             mu_all=mu_all,
+             z_all=z_all,
+             time_steps=time_steps)
 

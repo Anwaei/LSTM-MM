@@ -43,7 +43,7 @@ def dynamic_Jacobian_arm(x, s):
     Ja[0, 0] = 1
     Ja[0, 1] = dt
     Ja[1, 0] = -g*l0*m/J*np.cos(x[0])*dt
-    Ja[1, 1] = 1
+    Ja[1, 1] = 1 - B/J*dt
 
     return Ja
 
@@ -97,22 +97,34 @@ def tpm_arm(x, t, temp=None):
     r32 = ap.r32
 
     tpm = np.zeros([3, 3])
-    ep = 0.99 if x[0] >= b else 0.01
-    if temp is None:
-        temp23 = q23**(t**r23-(t-1)**r23)
-        temp32 = q32**(t**r32-(t-1)**r32)
+    if t <= ap.t_last:
+        epv = 0.005
+        tpm[0][0] = 1-2*epv
+        tpm[0][1] = epv
+        tpm[0][2] = epv
+        tpm[1][0] = epv
+        tpm[1][1] = 1-2*epv
+        tpm[1][2] = epv
+        tpm[2][0] = epv
+        tpm[2][1] = epv
+        tpm[2][2] = 1-2*epv
     else:
-        temp23 = temp[0]
-        temp32 = temp[1]
-    tpm[0][0] = -1*ep + 1
-    tpm[0][1] = 1*ep
-    tpm[0][2] = 0
-    tpm[1][0] = -1*ep + 1
-    tpm[1][1] = temp23 * ep
-    tpm[1][2] = (1-temp23) * ep
-    tpm[2][0] = -1 * ep + 1
-    tpm[2][1] = (1-temp32) * ep
-    tpm[2][2] = temp32 * ep
+        ep = 0.99 if x[0] >= b else 0.01
+        if temp is None:
+            temp23 = q23 ** (t ** r23 - (t - 1) ** r23)
+            temp32 = q32 ** (t ** r32 - (t - 1) ** r32)
+        else:
+            temp23 = temp[0]
+            temp32 = temp[1]
+        tpm[0][0] = -1 * ep + 1
+        tpm[0][1] = 1 * ep
+        tpm[0][2] = 0
+        tpm[1][0] = -1 * ep + 1
+        tpm[1][1] = temp23 * ep
+        tpm[1][2] = (1 - temp23) * ep
+        tpm[2][0] = -1 * ep + 1
+        tpm[2][1] = (1 - temp32) * ep
+        tpm[2][2] = temp32 * ep
 
     return tpm
 

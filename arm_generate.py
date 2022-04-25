@@ -20,7 +20,7 @@ if __name__ == '__main__':
     ifreach_all = np.zeros([batch_size, 1, K], dtype='int')
     time_steps_all = np.zeros([batch_size, 1, K])
 
-    tempT = K
+    tempT = K+1
     tpm_temp = np.zeros(shape=(2, tempT))
     for ti in range(tempT):
         t = ti+1

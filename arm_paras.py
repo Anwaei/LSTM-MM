@@ -13,7 +13,7 @@ net_path_npi_para3 = 'nets/arm_net_npi_para3'
 
 filter_data_path = 'data/arm_results'
 
-batch_size = 30000
+batch_size = 20000
 
 T = 5
 dt = 0.02
@@ -25,8 +25,8 @@ Model
 g = 9.81
 l0 = 0.6
 B = 2
-m = [1, 2.5, 5]
-J = [1, 2.5, 5]
+m = [0.1, 1, 10]
+J = [0.1, 1, 10]
 
 Q = np.diag([0.001, 0.001])
 R = np.diag([0.03])
@@ -39,6 +39,7 @@ Transition
 """""""""""""""""""""
 
 M = 3
+t_last = 20
 # Boundary of s1/s2
 b = -0.2
 # b = 0.53
@@ -49,9 +50,9 @@ b = -0.2
 # q32 = 0.95
 # r32 = 1.5
 
-q23 = 0.7
-r23 = 0.6
-q32 = 0.5
+q23 = 0.8
+r23 = 0.5
+q32 = 0.7
 r32 = 0.3
 
 # Non switch situation
@@ -78,7 +79,7 @@ Initial
 """""""""""""""""""""
 
 x0 = np.array([0, 2.0])
-s0 = 1
+s0 = 2
 Q0 = np.diag([0.001, 0.001])
 
 """""""""""""""""""""
@@ -139,10 +140,10 @@ units_pi_int = {'mlp_x': units_mlp_x,
                 'lstm': units_lstm,
                 'mlp_c': units_mlp_c}
 
-units_mlp_x = [32, 32, 32]
-units_mlp_s = [32, 32]
-units_lstm = [32, 32, 32]
-units_mlp_c = [32, 32, 32]  # Except last layer
+units_mlp_x = [16, 16, 16]
+units_mlp_s = [16, 16]
+units_lstm = [16, 16, 16]
+units_mlp_c = [16, 16, 16]  # Except last layer
 units_npi_int = {'mlp_x': units_mlp_x,
                  'mlp_s': units_mlp_s,
                  'lstm': units_lstm,
@@ -156,7 +157,7 @@ train_prop = 0.9  # Proportion of training data
 Filtering
 """""""""""""""""""""
 
-Np = 5000
-run_batch = 10
+Np = 200
+run_batch = 2
 
 Pi_IMM = np.array([[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]])

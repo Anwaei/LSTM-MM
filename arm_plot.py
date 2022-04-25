@@ -120,11 +120,11 @@ def plot_compare(datas):
         strue_all.append(data['strue_all'][:, 1:])
         mu_all.append(data['mu_all'][:, 1:, :])
 
-    index = 7
+    index = 0
     ztrue = datas[0]['z_all'][index][1:, 0]
     plt.figure(1)
     # plt.hold(True)
-    plt.plot(time_steps, xtrue_all[0][index, :, 0])
+    plt.plot(time_steps, xtrue_all[2][index, :, 0])
     for k in range(len(datas)):
         plt.plot(time_steps, xest_all[k][index, :, 0])
     # plt.plot(time_steps, ztrue)
@@ -137,18 +137,18 @@ def plot_compare(datas):
 
     plt.figure(2)
     # plt.hold(True)
-    plt.plot(time_steps, xtrue_all[0][index, :, 1])
+    plt.plot(time_steps, xtrue_all[2][index, :, 1])
     for k in range(len(datas)):
         plt.plot(time_steps, xest_all[k][index, :, 1])
     plt.xlabel('Time')
     plt.ylabel('Value')
-    legends=['True value', 'LSTM-MM Estimation', 'IMM Estimation', 'IMMPF Estimation']
+    legends = ['True value', 'LSTM-MM Estimation', 'IMM Estimation', 'IMMPF Estimation']
     plt.legend(legends[0: len(datas)+1])
     plt.title('Trajectory of state 2')
 
     plt.figure(3)
     # plt.hold(True)
-    plt.plot(time_steps, strue_all[0][index, :])
+    plt.plot(time_steps, strue_all[1][index, :])
     for k in range(len(datas)):
         plt.plot(time_steps, mu_all[k][index, :])
     plt.xlabel('Time')
@@ -183,8 +183,8 @@ def plot_compare(datas):
 
 
 if __name__ == '__main__':
-    # data_path = ap.data_path
-    # data = np.load(data_path)
+    data_path = ap.data_path
+    data = np.load(data_path)
     # plot_single_trajectory(data)
 
     which_net = 'pi_int'
@@ -196,6 +196,8 @@ if __name__ == '__main__':
     which_net = 'npi_int'
     data_path = ap.filter_data_path+'_'+which_net+'.npz'
     data_npi_int = np.load(data_path)
+    # plot_result_single(data_npi_int)
+    # plot_rmse(data_npi_int)
 
     # which_net = 'pi_para'
     # data_path = ap.filter_data_path+'_'+which_net+'.npz'

@@ -236,7 +236,7 @@ if __name__ == '__main__':
 
     # which_net = 'npi_int'
     # which_net = 'npi_para'
-    which_net = 'pi_int'
+    which_net = 'npi_int'
     # mode_shift = 2  # No net for mode 1, so the index for net i is s-2.
 
     T = ap.T
@@ -337,7 +337,7 @@ if __name__ == '__main__':
             for l in range(Np):
                 w_all[n, 0, j, l] = 1 / Np
                 xp_all[n, 0, j, l, :] = np.random.multivariate_normal(x0, ap.Q0)
-            mu_all[n, 0, j] = 1 if j == s0 else 0
+            mu_all[n, 0, j] = 1 if j == s0-1 else 0
         if which_net == 'pi_int' or which_net == 'npi_int':
             hidden0 = list()
             for l in range(len(hidden_ex)):
@@ -350,7 +350,7 @@ if __name__ == '__main__':
                     hidden0.append(tf.convert_to_tensor(np.zeros(shape=hidden_ex[j][l].shape)))
                 hidden_para_all[0].append(hidden0)
 
-        for k in tqdm(range(1, K + 1)):
+        for k in range(1, K + 1):
             z_pre = z_all[n, k - 1, :]
             z = z_all[n, k, :]
             for i in range(M):
