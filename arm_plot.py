@@ -107,12 +107,15 @@ def plot_rmse(data):
     plt.show()
 
 
-def plot_compare(datas):
+def plot_compare(datas, labels):
+    index = 0
+
     time_steps = datas[0]['time_steps']
     xtrue_all = []
     xest_all = []
     strue_all = []
     mu_all = []
+    ztrue = datas[0]['z_all'][index][1:, 0]
     for k in range(len(datas)):
         data = datas[k]
         xtrue_all.append(data['xtrue_all'][:, 1:, :])
@@ -120,60 +123,53 @@ def plot_compare(datas):
         strue_all.append(data['strue_all'][:, 1:])
         mu_all.append(data['mu_all'][:, 1:, :])
 
-    index = 0
-    ztrue = datas[0]['z_all'][index][1:, 0]
     plt.figure(1)
-    # plt.hold(True)
     plt.plot(time_steps, xtrue_all[2][index, :, 0])
+    legends = ['True value']
     for k in range(len(datas)):
         plt.plot(time_steps, xest_all[k][index, :, 0])
+        legends.append(labels[k] + ' Estimation')
     # plt.plot(time_steps, ztrue)
+    # legends.append('Measurement')
     plt.xlabel('Time')
     plt.ylabel('Value')
-    legends = ['True value', 'LSTM-MM Estimation', 'IMM Estimation', 'IMMPF Estimation']
-    legends.append('Measurement')
     plt.legend(legends[0: len(datas)+1])
     plt.title('Trajectory of state 1')
 
     plt.figure(2)
-    # plt.hold(True)
     plt.plot(time_steps, xtrue_all[2][index, :, 1])
+    legends = ['True value']
     for k in range(len(datas)):
         plt.plot(time_steps, xest_all[k][index, :, 1])
+        legends.append(labels[k] + ' Estimation')
     plt.xlabel('Time')
     plt.ylabel('Value')
-    legends = ['True value', 'LSTM-MM Estimation', 'IMM Estimation', 'IMMPF Estimation']
     plt.legend(legends[0: len(datas)+1])
     plt.title('Trajectory of state 2')
 
     plt.figure(3)
-    # plt.hold(True)
-    plt.plot(time_steps, strue_all[1][index, :])
+    for j in range(ap.M):
+        plt.subplot(j)
+        plt.plot(time_steps, strue_all[1][index, j])
+    legends = list()
+    legends.append('True Mode')
     for k in range(len(datas)):
         plt.plot(time_steps, mu_all[k][index, :])
+        for j in range(ap.M):
+            legends.append(labels[k] + ' Mode' + str(j + 1))
     plt.xlabel('Time')
     plt.ylabel('Value')
-    legends = []
-    legends.append('True Mode')
-    for j in range(ap.M):
-        legends.append('LSTM-MM Mode' + str(j+1))
-    for j in range(ap.M):
-        legends.append('IMM Mode' + str(j+1))
-    for j in range(ap.M):
-        legends.append('IMMPF Mode' + str(j+1))
     plt.legend(legends[0: ap.M*len(datas)+1], loc='upper right')
     plt.title('Mode probabilities')
 
     for n in range(ap.nx):
         plt.figure(4+n)
-        # plt.hold(True)
-        legends = []
+        legends = list()
         for k in range(len(datas)):
             rmse = np.sqrt(np.mean((xtrue_all[k] - xest_all[k]) ** 2, axis=0))
             plt.plot(time_steps, rmse[:, n])
-        legends.append('LSTM-MM rmse of state '+str(n+1))
-        legends.append('IMM rmse of state '+str(n+1))
-        legends.append('IMMPF rmse of state '+str(n+1))
+            legends.append(labels[k] + ' rmse of state ' + str(n + 1))
+            print(labels[k] + str(n + 1) + ':' + str(rmse[:, n].mean()))
         plt.xlabel('Time')
         plt.ylabel('Value')
         plt.legend(legends)
@@ -183,8 +179,8 @@ def plot_compare(datas):
 
 
 if __name__ == '__main__':
-    data_path = ap.data_path
-    data = np.load(data_path)
+    # data_path = ap.data_path
+    # data = np.load(data_path)
     # plot_single_trajectory(data)
 
     which_net = 'pi_int'
@@ -212,7 +208,14 @@ if __name__ == '__main__':
     # plot_result_single(data_imm)
     # plot_rmse(data_imm)
 
-    data_path = ap.filter_data_path + '_' + 'IMMPF' + '.npz'
-    data_immpf = np.load(data_path)
+    data_path = ap.filter_data_path + '_' + 'IMMPF-5000' + '.npz'
+    data_immpf_5000 = np.load(data_path)
 
-    plot_compare([data_npi_int, data_imm, data_immpf])
+    data_path = ap.filter_data_path + '_' + 'IMMPF-500' + '.npz'
+    data_immpf_500 = np.load(data_path)
+
+    data_path = ap.filter_data_path + '_' + 'optPF' + '.npz'
+    data_optpf = np.load(data_path)
+
+    plot_compare(datas=[data_npi_int, data_pi_int, data_imm, data_immpf_5000, data_immpf_500, data_optpf],
+                 labels=['LSTM-MM-NoPi', 'LSTM-MM-Pi', 'IMM-EKF', 'IMM-PF-5000', 'IMM-PF-500', 'Optimal PF'])

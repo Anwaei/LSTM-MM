@@ -79,7 +79,6 @@ def compute_meas_loglikelihood(x, z, s):
 def noise_arm():
     Q = ap.Q
     R = ap.R
-    # q = np.zeros(2)
     q = np.random.multivariate_normal([0, 0], Q)
     r = np.random.multivariate_normal([0], R)
     return q, r

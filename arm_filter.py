@@ -238,6 +238,7 @@ if __name__ == '__main__':
     # which_net = 'npi_para'
     which_net = 'npi_int'
     # mode_shift = 2  # No net for mode 1, so the index for net i is s-2.
+    print(which_net)
 
     T = ap.T
     dt = ap.dt

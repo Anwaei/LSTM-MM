@@ -28,8 +28,8 @@ B = 2
 m = [0.1, 1, 10]
 J = [0.1, 1, 10]
 
-Q = np.diag([0.001, 0.001])
-R = np.diag([0.03])
+Q = np.diag([0.001, 0.0003])
+R = np.diag([0.05])
 
 nx = 2
 nz = 1
@@ -41,7 +41,7 @@ Transition
 M = 3
 t_last = 20
 # Boundary of s1/s2
-b = -0.2
+b = -0.1
 # b = 0.53
 
 # Parameters of s2<->s3
@@ -51,9 +51,9 @@ b = -0.2
 # r32 = 1.5
 
 q23 = 0.8
-r23 = 0.5
-q32 = 0.7
-r32 = 0.3
+r23 = 0.6
+q32 = 0.6
+r32 = 0.4
 
 # Non switch situation
 # q23 = 1
@@ -65,7 +65,7 @@ r32 = 0.3
 Constraint
 """""""""""""""""""""
 x1_c = 0.5
-x2_c = 2.5
+x2_c = 2.2
 
 # Non constraint situation
 # x1_c = 1000
@@ -79,7 +79,7 @@ Initial
 """""""""""""""""""""
 
 x0 = np.array([0, 2.0])
-s0 = 2
+s0 = 3
 Q0 = np.diag([0.001, 0.001])
 
 """""""""""""""""""""
@@ -140,10 +140,10 @@ units_pi_int = {'mlp_x': units_mlp_x,
                 'lstm': units_lstm,
                 'mlp_c': units_mlp_c}
 
-units_mlp_x = [16, 16, 16]
-units_mlp_s = [16, 16]
-units_lstm = [16, 16, 16]
-units_mlp_c = [16, 16, 16]  # Except last layer
+units_mlp_x = [32, 32, 32]
+units_mlp_s = [32, 32, 32]
+units_lstm = [32, 32, 32, 32]
+units_mlp_c = [32, 32, 32]  # Except last layer
 units_npi_int = {'mlp_x': units_mlp_x,
                  'mlp_s': units_mlp_s,
                  'lstm': units_lstm,
@@ -157,7 +157,7 @@ train_prop = 0.9  # Proportion of training data
 Filtering
 """""""""""""""""""""
 
-Np = 200
-run_batch = 2
+Np = 500
+run_batch = 10
 
-Pi_IMM = np.array([[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]])
+Pi_IMM = np.array([[0.96, 0.02, 0.02], [0.02, 0.96, 0.02], [0.02, 0.02, 0.96]])
