@@ -235,8 +235,8 @@ def sample_auxiliary_variables(v):
 if __name__ == '__main__':
 
     # which_net = 'npi_int'
-    # which_net = 'npi_para'
     which_net = 'npi_para'
+    # which_net = 'npi_int'
     # mode_shift = 2  # No net for mode 1, so the index for net i is s-2.
 
     T = tkp.T
@@ -324,18 +324,18 @@ if __name__ == '__main__':
     ttrue_batch = t_data[size_run:, 0, :]
     ifreach_batch = ifreach_data[size_run:, 0, :]
     time_steps_batch = time_steps_data[size_run:, 0, :]
-    time_steps = time_steps_batch[0, :]
+    time_steps = time_steps_batch[0, 0:K]
 
     for n in tqdm(range(run_batch)):
         hidden_int_all = []
         hidden_para_all = [[]]
 
         xtrue_all[n, 0, :] = x0
-        xtrue_all[n, 1:, :] = xtrue_batch[n, :, :]
+        xtrue_all[n, 1:, :] = xtrue_batch[n, 0:K, :]
         z_all[n, 0, :] = z0
-        z_all[n, 1:, :] = ztrue_batch[n, :, :]
+        z_all[n, 1:, :] = ztrue_batch[n, 0:K, :]
         strue_all[n, 0] = s0
-        strue_all[n, 1:] = strue_batch[n, :]
+        strue_all[n, 1:] = strue_batch[n, 0:K]
 
         # k=0:
         for j in range(M):

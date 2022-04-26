@@ -18,7 +18,7 @@ filter_data_path = 'data/tracking_results'
 
 batch_size = 50000
 
-T = 40
+T = 30
 dt = 0.2
 
 """""""""""""""""""""
@@ -113,8 +113,8 @@ cb0 = 65.4109
 vmax = 12.5
 ve = 10
 
-lambda1 = 4
-lambda2 = 4
+lambda1 = 10
+lambda2 = 10
 lambda3 = 1
 
 """""""""""""""""""""
@@ -229,7 +229,7 @@ train_prop = 0.9  # Proportion of training data
 Filtering
 """""""""""""""""""""
 
-Np = 5000
+Np = 250
 run_batch = 10
 
 Pi_IMM = np.array([[0.9, 0.025, 0.025, 0.025, 0.025],

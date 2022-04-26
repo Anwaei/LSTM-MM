@@ -235,7 +235,7 @@ def plot_compare(datas):
         xest_all.append(data['xest_all'][:, 1:, :])
         strue_all.append(data['strue_all'][:, 1:])
         mu_all.append(data['mu_all'][:, 1:, :])
-    index = 5
+    index = 3
 
     plt.figure(1)
     # plt.hold(True)

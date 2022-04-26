@@ -128,6 +128,8 @@ def IMMPF(ztrue):
     zeta_all = np.zeros(shape=(run_batch, K + 1, M, Np), dtype='int')
     q_proposal_all = np.random.multivariate_normal(mean=np.zeros(tkp.nq), cov=tkp.Q, size=(K + 1, M, Np))
 
+    z_all = ztrue
+
     for j in range(M):
         for l in range(Np):
             w_all[0, j, l] = 1 / Np
@@ -140,28 +142,29 @@ def IMMPF(ztrue):
             for l in range(Np):
                 tpm = tpm_immpf_tracking(xp_all[k - 1, i, l, :])
                 for j in range(M):
-                    what_all[k, i, j, l] = tpm[i, j] * w_all[k-1, i, l]
+                    what_all[k, i, j, l] = tpm[i, j] * mu_all[k - 1, i] * w_all[k - 1, i, l]
         for j in range(M):
             gamma_all[k, j] = np.sum(what_all[k, :, j, :])
-            what_all[k, :, j, :] = what_all[k, :, j, :]/gamma_all[k, j]
+            what_all[k, :, j, :] = what_all[k, :, j, :] / gamma_all[k, j]
         for j in range(M):
             xi_all[n, k - 1, j, :], zeta_all[n, k - 1, j, :] = resample(what_all[k, :, j, :])
         for j in range(M):
             for l in range(Np):
                 xi = xi_all[n, k - 1, j, l]
                 zeta = zeta_all[n, k - 1, j, l]
-                xp_all[k, j, l, :] = tkm.dynamic_tracking(sc=j + 1, x_p=xp_all[k - 1, xi, zeta, :]
-                                                     , q=q_proposal_all[k - 1, j, l, :])
+                xp_all[k, j, l, :] = tkm.dynamic_tracking(sc=j + 1, x_p=xp_all[k - 1, xi, zeta, :],
+                                                     q=q_proposal_all[k - 1, j, l, :])
                 zli = tkm.compute_meas_likelihood(x=xp_all[k, j, l, :], z=z)
-                w_all[k, j, l] = 1/Np*zli
-            mu_all[k, j] = gamma_all[k, j] * np.sum(w_all[k, j, :])
-            w_all[k, j, :] = w_all[k, j, :]/np.sum(w_all[k, j, :])
-        mu_all[k, :] = mu_all[k, :]/np.sum(mu_all[k, :])
+                w_all[k, j, l] = gamma_all[k, j] / Np * zli
+        for j in range(M):
+            mu_all[k, j] = np.sum(w_all[k, j, :])
+        mu_all[k, :] = mu_all[k, :] / np.sum(mu_all[k, :])
+        w_all[k, :, :] = w_all[k, :, :] / np.sum(w_all[k, :, :])
         xest = np.zeros(tkp.nx)
         for j in range(M):
             xestj = np.zeros(tkp.nx)
             for l in range(Np):
-                xestj = xestj + w_all[k, j, l] * xp_all[k, j, l, :]
+                xestj = xestj + w_all[k, j, l] / w_all[k, j, :].sum() * xp_all[k, j, l, :]
             xest = xest + mu_all[k, j] * xestj
         xest_all[k, :] = xest
 
@@ -191,11 +194,11 @@ if __name__ == '__main__':
 
     for n in tqdm(range(run_batch)):
         xtrue_all[n, 0, :] = tkp.x0
-        xtrue_all[n, 1:, :] = xtrue_batch[n, :, :]
+        xtrue_all[n, 1:, :] = xtrue_batch[n, 0:K, :]
         # z_all[n, 0, :] = tkp.z0
-        z_all[n, 1:, :] = ztrue_batch[n, :, :]
+        z_all[n, 1:, :] = ztrue_batch[n, 0:K, :]
         strue_all[n, 0] = tkp.s0
-        strue_all[n, 1:] = strue_batch[n, :]
+        strue_all[n, 1:] = strue_batch[n, 0:K]
         xest_all[n, :, :], mu_all[n, :, :] = IMM(ztrue=z_all[n, :, :])
 
     np.savez(file=tkp.filter_data_path+'_'+'IMM'+'.npz',
@@ -218,11 +221,11 @@ if __name__ == '__main__':
 
     for n in tqdm(range(run_batch)):
         xtrue_all[n, 0, :] = tkp.x0
-        xtrue_all[n, 1:, :] = xtrue_batch[n, :, :]
+        xtrue_all[n, 1:, :] = xtrue_batch[n, 0:K, :]
         # z_all[n, 0, :] = ap.z0
-        z_all[n, 1:, :] = ztrue_batch[n, :, :]
+        z_all[n, 1:, :] = ztrue_batch[n, 0:K, :]
         strue_all[n, 0] = tkp.s0
-        strue_all[n, 1:] = strue_batch[n, :]
+        strue_all[n, 1:] = strue_batch[n, 0:K]
         xest_all[n, :, :], mu_all[n, :, :] = IMMPF(ztrue=z_all[n, :, :])
 
     np.savez(file=tkp.filter_data_path + '_' + 'IMMPF' + '.npz',
