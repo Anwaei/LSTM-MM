@@ -108,7 +108,7 @@ def plot_rmse(data):
 
 
 def plot_compare(datas, labels):
-    index = 0
+    index = 3
 
     time_steps = datas[0]['time_steps']
     xtrue_all = []
@@ -148,19 +148,31 @@ def plot_compare(datas, labels):
     plt.title('Trajectory of state 2')
 
     plt.figure(3)
-    for j in range(ap.M):
-        plt.subplot(j)
-        plt.plot(time_steps, strue_all[1][index, j])
-    legends = list()
-    legends.append('True Mode')
-    for k in range(len(datas)):
-        plt.plot(time_steps, mu_all[k][index, :])
-        for j in range(ap.M):
-            legends.append(labels[k] + ' Mode' + str(j + 1))
+    plt.subplot(ap.M+1, 1, 1)
+    plt.plot(time_steps, strue_all[2][index, :])
     plt.xlabel('Time')
     plt.ylabel('Value')
-    plt.legend(legends[0: ap.M*len(datas)+1], loc='upper right')
-    plt.title('Mode probabilities')
+    legends = list()
+    legends.append('True Mode')
+    plt.legend(legends, loc='upper right')
+    for j in range(ap.M):
+        legends = list()
+        plt.subplot(ap.M+1, 1, j+2)
+        for k in range(len(datas)):
+            plt.plot(time_steps, mu_all[k][index, :, j])
+            legends.append(labels[k] + ' Mode' + str(j + 1))
+        plt.xlabel('Time')
+        plt.ylabel('Value')
+        plt.legend(legends, loc='upper right')
+    #
+    # for k in range(len(datas)):
+    #     plt.plot(time_steps, mu_all[k][index, :])
+    #     for j in range(ap.M):
+    #         legends.append(labels[k] + ' Mode' + str(j + 1))
+    # plt.xlabel('Time')
+    # plt.ylabel('Value')
+    # plt.legend(legends[0: ap.M*len(datas)+1], loc='upper right')
+    # plt.title('Mode probabilities')
 
     for n in range(ap.nx):
         plt.figure(4+n)
