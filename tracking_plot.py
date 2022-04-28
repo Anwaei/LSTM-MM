@@ -235,7 +235,7 @@ def plot_compare(datas):
         xest_all.append(data['xest_all'][:, 1:, :])
         strue_all.append(data['strue_all'][:, 1:])
         mu_all.append(data['mu_all'][:, 1:, :])
-    index = 3
+    index = 4
 
     plt.figure(1)
     # plt.hold(True)
@@ -364,6 +364,10 @@ if __name__ == '__main__':
     # plot_result_single(data_npi_int)
     # plot_rmse(data_npi_int)
 
+    which_net = 'npi_para'
+    data_path = tkp.filter_data_path + '_' + which_net + '.npz'
+    data_npi_para = np.load(data_path)
+
     data_path = tkp.filter_data_path + '_' + 'IMM' + '.npz'
     data_imm = np.load(data_path)
     # plot_result_single(data_imm)
@@ -372,4 +376,4 @@ if __name__ == '__main__':
     data_path = tkp.filter_data_path + '_' + 'IMMPF' + '.npz'
     data_immpf = np.load(data_path)
     #
-    plot_compare([data_npi_int, data_imm, data_immpf])
+    plot_compare([data_npi_para, data_imm, data_immpf])

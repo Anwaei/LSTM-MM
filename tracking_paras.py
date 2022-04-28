@@ -229,7 +229,7 @@ train_prop = 0.9  # Proportion of training data
 Filtering
 """""""""""""""""""""
 
-Np = 250
+Np = 3000
 run_batch = 10
 
 Pi_IMM = np.array([[0.9, 0.025, 0.025, 0.025, 0.025],
