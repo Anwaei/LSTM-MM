@@ -124,7 +124,7 @@ def noise_arm():
 def noise_gene_arm():
     Q = ap.Q_gene
     R = ap.R
-    if Q == 0:
+    if Q is 0:
         q = np.zeros(ap.nx)
     else:
         q = np.random.multivariate_normal([0, 0], Q)

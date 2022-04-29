@@ -30,11 +30,11 @@ B = 2
 m = [0.5, 5, 50]
 J = [0.5, 5, 50]
 
-# Q_gene = np.diag([0.001, 0.001])
-Q_gene = 0
+Q_gene = np.diag([0.001, 0.001])
+# Q_gene = 0
 Q = np.diag([0.001, 0.001])
 # R = np.diag([0.05, 0.05])
-R = np.diag([0.001])
+R = np.diag([0.0005])
 R_filter = np.diag([0.05])
 
 nx = 2
@@ -77,14 +77,14 @@ x2_c = 1.2
 # x1_c = 1000
 # x2_c = 1000
 
-lambda1 = 15
-lambda2 = 10
+lambda1 = 100
+lambda2 = 50
 
 """""""""""""""""""""
 Initial
 """""""""""""""""""""
 
-x0 = np.array([0, 1.5])
+x0 = np.array([0, 1.2])
 s0 = 3
 Q0 = np.diag([0.001, 0.001])
 
@@ -163,7 +163,7 @@ train_prop = 0.9  # Proportion of training data
 Filtering
 """""""""""""""""""""
 
-Np = 500
+Np = 3000
 run_batch = 5
 
 Pi_IMM = np.array([[0.96, 0.02, 0.02], [0.02, 0.96, 0.02], [0.02, 0.02, 0.96]])
