@@ -18,7 +18,7 @@ def plot_single_trajectory(data):
     x_all, z_all, s_all, t_all, tpm_all, ifreach_all, time_steps_all = read_data(data)
     index = np.random.randint(0, time_steps_all.shape[0])
     x_s = x_all[index, :, :]
-    z_s = z_all[index, 0, :]
+    z_s = z_all[index, :, :]
     s_s = s_all[index, 0, :]
     t_s = t_all[index, 0, :]
     tpm_s = tpm_all[index, :, :]
@@ -46,11 +46,19 @@ def plot_single_trajectory(data):
     plt.xlabel('Time')
     plt.ylabel('Sojourn time')
 
-    plt.figure(5)
-    plt.plot(time_steps_s, x_s[0, :], time_steps_s, z_s)
-    plt.xlabel('Time')
-    plt.ylabel('Value')
-    plt.legend(['State 1', 'Measurement'])
+    if ap.nz == 1:
+        plt.figure(5)
+        plt.plot(time_steps_s, x_s[0, :])
+        plt.scatter(time_steps_s, z_s, s=12, c='tab:orange')
+        plt.xlabel('Time')
+        plt.ylabel('Value')
+        plt.legend(['State 1', 'Measurement'])
+    else:
+        plt.figure(5)
+        plt.plot(time_steps_s, z_s[0, :], time_steps_s, z_s[1, :])
+        plt.xlabel('Time')
+        plt.ylabel('Value')
+        plt.legend(['Measurement 1', 'Measurement 2'])
 
     plt.show()
 
@@ -108,14 +116,14 @@ def plot_rmse(data):
 
 
 def plot_compare(datas, labels):
-    index = 3
+    index = 1
 
     time_steps = datas[0]['time_steps']
     xtrue_all = []
     xest_all = []
     strue_all = []
     mu_all = []
-    ztrue = datas[0]['z_all'][index][1:, 0]
+    ztrue = datas[-1]['z_all'][index][1:, 0]
     for k in range(len(datas)):
         data = datas[k]
         xtrue_all.append(data['xtrue_all'][:, 1:, :])
@@ -124,20 +132,21 @@ def plot_compare(datas, labels):
         mu_all.append(data['mu_all'][:, 1:, :])
 
     plt.figure(1)
-    plt.plot(time_steps, xtrue_all[2][index, :, 0])
+    plt.plot(time_steps, xtrue_all[-1][index, :, 0])
     legends = ['True value']
     for k in range(len(datas)):
         plt.plot(time_steps, xest_all[k][index, :, 0])
         legends.append(labels[k] + ' Estimation')
-    # plt.plot(time_steps, ztrue)
-    # legends.append('Measurement')
+    if ap.nz == 1:
+        plt.scatter(time_steps, ztrue, s=12, c='tab:orange')
+    legends.append('Measurement')
     plt.xlabel('Time')
     plt.ylabel('Value')
-    plt.legend(legends[0: len(datas)+1])
+    plt.legend(legends)
     plt.title('Trajectory of state 1')
 
     plt.figure(2)
-    plt.plot(time_steps, xtrue_all[2][index, :, 1])
+    plt.plot(time_steps, xtrue_all[-1][index, :, 1])
     legends = ['True value']
     for k in range(len(datas)):
         plt.plot(time_steps, xest_all[k][index, :, 1])
@@ -149,7 +158,7 @@ def plot_compare(datas, labels):
 
     plt.figure(3)
     plt.subplot(ap.M+1, 1, 1)
-    plt.plot(time_steps, strue_all[2][index, :])
+    plt.plot(time_steps, strue_all[-1][index, :])
     plt.xlabel('Time')
     plt.ylabel('Value')
     legends = list()
@@ -164,15 +173,6 @@ def plot_compare(datas, labels):
         plt.xlabel('Time')
         plt.ylabel('Value')
         plt.legend(legends, loc='upper right')
-    #
-    # for k in range(len(datas)):
-    #     plt.plot(time_steps, mu_all[k][index, :])
-    #     for j in range(ap.M):
-    #         legends.append(labels[k] + ' Mode' + str(j + 1))
-    # plt.xlabel('Time')
-    # plt.ylabel('Value')
-    # plt.legend(legends[0: ap.M*len(datas)+1], loc='upper right')
-    # plt.title('Mode probabilities')
 
     for n in range(ap.nx):
         plt.figure(4+n)
@@ -191,9 +191,9 @@ def plot_compare(datas, labels):
 
 
 if __name__ == '__main__':
-    # data_path = ap.data_path
-    # data = np.load(data_path)
-    # plot_single_trajectory(data)
+    data_path = ap.data_path
+    data = np.load(data_path)
+    plot_single_trajectory(data)
 
     which_net = 'pi_int'
     data_path = ap.filter_data_path+'_'+which_net+'.npz'
@@ -229,5 +229,8 @@ if __name__ == '__main__':
     data_path = ap.filter_data_path + '_' + 'optPF' + '.npz'
     data_optpf = np.load(data_path)
 
-    plot_compare(datas=[data_npi_int, data_pi_int, data_imm, data_immpf_5000, data_immpf_500, data_optpf],
-                 labels=['LSTM-MM-NoPi', 'LSTM-MM-Pi', 'IMM-EKF', 'IMM-PF-5000', 'IMM-PF-500', 'Optimal PF'])
+    # plot_compare(datas=[data_npi_int, data_pi_int, data_imm, data_immpf_5000, data_immpf_500, data_optpf],
+    #              labels=['LSTM-MM-NoPi', 'LSTM-MM-Pi', 'IMM-EKF', 'IMM-PF-5000', 'IMM-PF-500', 'Optimal PF'])
+
+    plot_compare(datas=[data_npi_int, data_imm, data_immpf_500],
+                 labels=['LSTM-MM-NoPi', 'IMM-EKF', 'IMM-PF-500'])

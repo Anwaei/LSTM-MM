@@ -48,39 +48,87 @@ def dynamic_Jacobian_arm(x, s):
     return Ja
 
 
-def measurement_arm(x, r):
-    return x[0] + r
+def measurement_arm(x, r, s):
+    # l0 = ap.l0
+    # B = ap.B
+    # J = ap.J[s-1]
+    # m = ap.m[s-1]
+    # g = ap.g
+    #
+    # x1 = x[0]
+    # x2 = x[1]
+    # sx = np.sin(x1)
+    # cx = np.cos(x1)
+    #
+    # z1 = -l0*x2*cx - (l0*B/J)*x2*sx - (l0*l0*g*m/J)*(sx**2)
+    # z2 = -l0*x2*sx - (l0*B/J)*x2*cx - (l0*l0*g*m/J)*(sx*cx)
+    # z = np.array([z1, z2]) + r
+
+    z = x[0] + r
+
+    return z
 
 
-def measurement_Jacobian_arm(x):
+
+def measurement_Jacobian_arm(x, s):
     Ja = np.zeros(shape=(ap.nz, ap.nx))
+
     Ja[0, 0] = 1
     Ja[0, 1] = 0
+
+    # l0 = ap.l0
+    # B = ap.B
+    # J = ap.J[s-1]
+    # m = ap.m[s-1]
+    # g = ap.g
+    #
+    # x1 = x[0]
+    # x2 = x[1]
+    # sx = np.sin(x1)
+    # cx = np.cos(x1)
+    # s2 = np.sin(2*x1)
+    # c2 = np.cos(2*x1)
+    #
+    # Ja[0, 0] = l0*x2*sx - (l0*B/J)*x2*cx - (l0*l0*g*m/J)*s2
+    # Ja[0, 1] = -l0*cx - (l0*B/J)*sx
+    # Ja[1, 0] = -l0*x2*cx + (l0*B/J)*x2*sx - (l0*l0*g*m/J)*c2
+    # Ja[1, 1] = -l0*sx - (l0*B/J)*cx
     return Ja
 
 
 def compute_meas_likelihood(x, z, s=1):
     # Gaussian noise
-    mean = measurement_arm(x, r=0)
+    mean = measurement_arm(x, r=0, s=s)
     li = pdf_Gaussian(x=z, mean=mean, cov=ap.R)
     return li
 
 
 def compute_meas_loglikelihood(x, z, s):
     # Gaussian noise
-    mean = measurement_arm(x, r=0)
+    mean = measurement_arm(x, r=0, s=s)
     if mean.size == 1:
         logli = -(z - mean) ** 2 / (2 * ap.R)
     else:
         logli = -1/2 * np.matmul(np.matmul(z-mean, np.linalg.inv(ap.R)), z-mean)
-    return logli[0, 0]
+    return logli.mean()
 
 
 def noise_arm():
     Q = ap.Q
     R = ap.R
-    q = np.random.multivariate_normal([0, 0], Q)
-    r = np.random.multivariate_normal([0], R)
+    q = np.random.multivariate_normal(np.zeros(ap.nx), Q)
+    r = np.random.multivariate_normal(np.zeros(ap.nz), R)
+    return q, r
+
+
+def noise_gene_arm():
+    Q = ap.Q_gene
+    R = ap.R
+    if Q == 0:
+        q = np.zeros(ap.nx)
+    else:
+        q = np.random.multivariate_normal([0, 0], Q)
+    r = np.random.multivariate_normal(np.zeros(ap.nz), R)
     return q, r
 
 
@@ -178,7 +226,7 @@ def compute_constraint_loglikelihood(x):
     h2 = abs(x[1]) - ap.x2_c
     logli1 = -ap.lambda1 * h1 if h1 > 0 else 0
     logli2 = -ap.lambda2 * h2 if h2 > 0 else 0
-    return logli1*logli2
+    return logli1 + logli2
 
 
 def pdf_Gaussian(x, mean, cov):
@@ -187,7 +235,7 @@ def pdf_Gaussian(x, mean, cov):
     else:
         pdf = np.power(2*np.pi, -mean.size/2) * np.power(np.linalg.det(cov), -1/2) \
               * np.exp(-1/2 * np.matmul(np.matmul(x-mean, np.linalg.inv(cov)), x-mean))
-    return pdf[0, 0]
+    return pdf.mean()
 
 
 def cdf_expon(x, lam):

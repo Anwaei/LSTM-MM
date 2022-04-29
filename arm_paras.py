@@ -13,10 +13,10 @@ net_path_npi_para3 = 'nets/arm_net_npi_para3'
 
 filter_data_path = 'data/arm_results'
 
-batch_size = 20000
+batch_size = 60000
 
-T = 5
-dt = 0.02
+T = 10
+dt = 0.1
 
 """""""""""""""""""""
 Model
@@ -25,11 +25,17 @@ Model
 g = 9.81
 l0 = 0.6
 B = 2
-m = [0.1, 1, 10]
-J = [0.1, 1, 10]
+# m = [0.1, 1, 10]
+# J = [0.1, 1, 10]
+m = [0.5, 5, 50]
+J = [0.5, 5, 50]
 
-Q = np.diag([0.001, 0.0003])
-R = np.diag([0.05])
+# Q_gene = np.diag([0.001, 0.001])
+Q_gene = 0
+Q = np.diag([0.001, 0.001])
+# R = np.diag([0.05, 0.05])
+R = np.diag([0.001])
+R_filter = np.diag([0.05])
 
 nx = 2
 nz = 1
@@ -39,9 +45,9 @@ Transition
 """""""""""""""""""""
 
 M = 3
-t_last = 20
+t_last = 15
 # Boundary of s1/s2
-b = -0.1
+b = -0.25
 # b = 0.53
 
 # Parameters of s2<->s3
@@ -64,8 +70,8 @@ r32 = 0.4
 """""""""""""""""""""
 Constraint
 """""""""""""""""""""
-x1_c = 0.5
-x2_c = 2.2
+x1_c = 0.3
+x2_c = 1.2
 
 # Non constraint situation
 # x1_c = 1000
@@ -78,7 +84,7 @@ lambda2 = 10
 Initial
 """""""""""""""""""""
 
-x0 = np.array([0, 2.0])
+x0 = np.array([0, 1.5])
 s0 = 3
 Q0 = np.diag([0.001, 0.001])
 
@@ -158,6 +164,6 @@ Filtering
 """""""""""""""""""""
 
 Np = 500
-run_batch = 10
+run_batch = 5
 
 Pi_IMM = np.array([[0.96, 0.02, 0.02], [0.02, 0.96, 0.02], [0.02, 0.02, 0.96]])

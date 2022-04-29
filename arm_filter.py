@@ -237,7 +237,6 @@ if __name__ == '__main__':
     # which_net = 'npi_int'
     # which_net = 'npi_para'
     which_net = 'npi_int'
-    # mode_shift = 2  # No net for mode 1, so the index for net i is s-2.
     print(which_net)
 
     T = ap.T
@@ -286,7 +285,7 @@ if __name__ == '__main__':
 
     x0 = ap.x0
     s0 = ap.s0
-    z0 = am.measurement_arm(x0, 0)
+    z0 = am.measurement_arm(x0, 0, s=s0)
 
     xtrue_all = np.zeros(shape=(run_batch, K + 1, ap.nx))
     strue_all = np.zeros(shape=(run_batch, K + 1))
@@ -395,6 +394,9 @@ if __name__ == '__main__':
                                                 * what_all[n, k - 1, i, j, l]
                 v_pre_sum = np.sum(v_all[n, k - 1, :, j, :])
                 v_all[n, k - 1, :, j, :] = v_all[n, k - 1, :, j, :] / v_pre_sum
+                if True in np.isnan(v_all[n, k - 1, :, j, :]):
+                    print('NaN occurred in v')
+                    pass
             # print(3)
             for j in range(M):
                 xi_all[n, k - 1, j, :], zeta_all[n, k - 1, j, :] = sample_auxiliary_variables(v_all[n, k - 1, :, j, :])
@@ -406,6 +408,9 @@ if __name__ == '__main__':
                     zcli = compute_zc_likelihood(x=xp, z=z, s=j)
                     w_all[n, k, j, l] = zcli * what_all[n, k - 1, xi, j, zeta] / v_all[n, k - 1, xi, j, zeta]
                 w_all[n, k, j, :] = w_all[n, k, j, :] / np.sum(w_all[n, k, j, :])
+                if True in np.isnan(w_all[n, k, j, :]):
+                    print('NaN occurred in w')
+                    pass
             # print(4)
             for j in range(M):
                 mu = 0
