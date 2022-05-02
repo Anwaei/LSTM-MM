@@ -116,7 +116,7 @@ def plot_rmse(data):
 
 
 def plot_compare(datas, labels):
-    index = 1
+    index = 4
 
     time_steps = datas[0]['time_steps']
     xtrue_all = []
@@ -234,3 +234,6 @@ if __name__ == '__main__':
 
     plot_compare(datas=[data_npi_int, data_imm, data_immpf_500],
                  labels=['LSTM-MM-NoPi', 'IMM-EKF', 'IMM-PF-500'])
+
+    # plot_compare(datas=[data_imm, data_immpf_500],
+    #              labels=['IMM-EKF', 'IMM-PF-500'])

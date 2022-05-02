@@ -13,7 +13,7 @@ net_path_npi_para3 = 'nets/arm_net_npi_para3'
 
 filter_data_path = 'data/arm_results'
 
-batch_size = 60000
+batch_size = 50000
 
 T = 10
 dt = 0.1
@@ -45,7 +45,7 @@ Transition
 """""""""""""""""""""
 
 M = 3
-t_last = 15
+t_last = 10
 # Boundary of s1/s2
 b = -0.25
 # b = 0.53
@@ -163,7 +163,7 @@ train_prop = 0.9  # Proportion of training data
 Filtering
 """""""""""""""""""""
 
-Np = 3000
+Np = 2000
 run_batch = 5
 
 Pi_IMM = np.array([[0.96, 0.02, 0.02], [0.02, 0.96, 0.02], [0.02, 0.02, 0.96]])

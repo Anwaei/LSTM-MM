@@ -204,6 +204,7 @@ def compute_zcpredict_likelihood(x_pre, z, s):
     zlogli = am.compute_meas_loglikelihood(x=lam, z=z, s=s)
     clogli = am.compute_constraint_loglikelihood(x=lam)
     li = np.exp(zlogli + clogli)
+    # li = np.exp(zlogli)
     # t3 = time.clock()
     return li
 
@@ -293,6 +294,7 @@ if __name__ == '__main__':
     xp_all = np.zeros(shape=(run_batch, K + 1, M, Np, ap.nx))
     w_all = np.zeros(shape=(run_batch, K + 1, M, Np))
     mu_all = np.zeros(shape=(run_batch, K + 1, M))
+    mutrue_all = np.zeros(shape=(run_batch, K + 1, M))
     z_all = np.zeros(shape=(run_batch, K + 1, ap.nz))
     cmtp_all = np.zeros(shape=(run_batch, K + 1, M, M, Np))
     what_all = np.zeros(shape=(run_batch, K + 1, M, M, Np))
@@ -331,6 +333,9 @@ if __name__ == '__main__':
         z_all[n, 1:, :] = ztrue_batch[n, :, :]
         strue_all[n, 0] = s0
         strue_all[n, 1:] = strue_batch[n, :]
+        for k in range(K+1):
+            st = int(strue_all[n, k]-1)
+            mutrue_all[n, k, st] = 1
 
         # k=0:
         for j in range(M):
@@ -351,6 +356,8 @@ if __name__ == '__main__':
                 hidden_para_all[0].append(hidden0)
 
         for k in range(1, K + 1):
+            zcli = np.zeros(shape=(M, Np))
+
             z_pre = z_all[n, k - 1, :]
             z = z_all[n, k, :]
             for i in range(M):
@@ -378,11 +385,13 @@ if __name__ == '__main__':
                     for l in range(Np):
                         # what_pre = cmtp_all[n, k - 1, i, j, l] * mu_all[n, k - 1, i] * w_all[n, k - 1, i, l]
                         # what_all[n, k - 1, i, j, l] = what_pre
-                        what_all[n, k - 1, i, j, l] = cmtp_all[n, k - 1, i, j, l] * mu_all[n, k - 1, i] * w_all[n, k - 1, i, l]
-                what_pre_sum = np.sum(what_all[n, k - 1, :, j, :])
-                what_sum_all[n, k - 1, j] = what_pre_sum
-                what_all[n, k - 1, :, j, :] = what_all[n, k - 1, :, j, :] / what_pre_sum
+                        what_all[n, k-1, i, j, l] = cmtp_all[n, k-1, i, j, l] * mu_all[n, k-1, i] * w_all[n, k-1, i, l]
+                        # what_all[n, k-1, i, j, l] = cmtp_all[n, k-1, i, j, l] * mutrue_all[n, k-1, i] * w_all[n, k-1, i, l]
+                what_pre_sum = np.sum(what_all[n, k-1, :, j, :])
+                what_sum_all[n, k-1, j] = what_pre_sum
+                what_all[n, k-1, :, j, :] = what_all[n, k-1, :, j, :] / what_pre_sum
             # print(2)
+            v_pre_sum = np.zeros(M)
             for j in range(M):
                 for i in range(M):
                     for l in range(Np):
@@ -392,8 +401,8 @@ if __name__ == '__main__':
                         # v_all[n, k - 1, i, j, l] = v_pre
                         v_all[n, k - 1, i, j, l] = compute_zcpredict_likelihood(x_pre=xp_all[n, k - 1, i, l, :], z=z, s=j) \
                                                 * what_all[n, k - 1, i, j, l]
-                v_pre_sum = np.sum(v_all[n, k - 1, :, j, :])
-                v_all[n, k - 1, :, j, :] = v_all[n, k - 1, :, j, :] / v_pre_sum
+                v_pre_sum[j] = np.sum(v_all[n, k - 1, :, j, :])
+                v_all[n, k - 1, :, j, :] = v_all[n, k - 1, :, j, :] / v_pre_sum[j]
                 if True in np.isnan(v_all[n, k - 1, :, j, :]):
                     print('NaN occurred in v')
                     pass
@@ -405,19 +414,21 @@ if __name__ == '__main__':
                     zeta = zeta_all[n, k - 1, j, l]
                     xp = am.dynamic_arm(sc=j + 1, x_p=xp_all[n, k - 1, xi, zeta, :], q=q_proposal_all[k - 1, j, l, :])
                     xp_all[n, k, j, l, :] = xp
-                    zcli = compute_zc_likelihood(x=xp, z=z, s=j)
-                    w_all[n, k, j, l] = zcli * what_all[n, k - 1, xi, j, zeta] / v_all[n, k - 1, xi, j, zeta]
+                    zcli[j, l] = compute_zc_likelihood(x=xp, z=z, s=j)
+                    w_all[n, k, j, l] = zcli[j, l] * what_all[n, k - 1, xi, j, zeta] / v_all[n, k - 1, xi, j, zeta]
                 w_all[n, k, j, :] = w_all[n, k, j, :] / np.sum(w_all[n, k, j, :])
                 if True in np.isnan(w_all[n, k, j, :]):
                     print('NaN occurred in w')
                     pass
             # print(4)
             for j in range(M):
-                mu = 0
-                for l2 in range(Np):
-                    mu = mu + w_all[n, k, j, l2] * what_sum_all[n, k - 1, j]
+                li = np.sum(zcli[j, :])/Np
+                mu = li * what_sum_all[n, k - 1, j]
+                # mu = v_pre_sum[j] * what_sum_all[n, k - 1, j]
+                # for l2 in range(Np):
+                #     mu = mu + w_all[n, k, j, l2] * what_sum_all[n, k - 1, j]
                 mu_all[n, k, j] = mu
-            mu_all[n, k, :] = mu_all[n, k, :] / sum(mu_all[n, k, :])
+            mu_all[n, k, :] = mu_all[n, k, :] / np.sum(mu_all[n, k, :])
             # print(5)
             xest = np.zeros(ap.nx)
             for j in range(M):
@@ -425,6 +436,7 @@ if __name__ == '__main__':
                 for l in range(Np):
                     xestj = xestj + w_all[n, k, j, l] * xp_all[n, k, j, l, :]
                 xest = xest + mu_all[n, k, j] * xestj
+                # xest = xest + mutrue_all[n, k, j] * xestj
             xest_all[n, k, :] = xest
             # print(6)
 

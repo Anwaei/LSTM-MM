@@ -41,7 +41,7 @@ if __name__ == '__main__':
                 else:
                     tk = 1
                 xk = am.dynamic_arm(sk, x0, qk)
-                xk, ifreachk = am.constraint_arm(xk)
+                xkn, ifreachk = am.constraint_arm(xk)
                 zk = am.measurement_arm(xk, rk, s=sk)
                 tpmk = am.tpm_arm(x=xk, t=tk, temp=[tpm_temp[0, tk-1], tpm_temp[1, tk-1]])
             else:
@@ -54,7 +54,7 @@ if __name__ == '__main__':
                 else:
                     tk = 1
                 xk = am.dynamic_arm(sk, xp, qk)
-                xk, ifreachk = am.constraint_arm(xk)
+                xkn, ifreachk = am.constraint_arm(xk)
                 zk = am.measurement_arm(xk, rk, s=sk)
                 tpmk = am.tpm_arm(x=xk, t=tk, temp=[tpm_temp[0, tk-1], tpm_temp[1, tk-1]])
 

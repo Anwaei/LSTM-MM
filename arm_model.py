@@ -25,6 +25,33 @@ def dynamic_arm(sc, x_p, q):
     x2 = x_p[1] - g*l0*m/J*np.sin(x_p[0])*dt - B/J*x_p[1]*dt + q[1]
 
     x = np.array([x1, x2])
+    x, ifreachk = constraint_arm(x)
+
+    return x
+
+
+def dynamic_arm_nc(sc, x_p, q):
+    """
+    :param sc: current mode, in {1,2,3}
+    :param x_p: np.array (2,)
+    :param q: np.array (2,)
+    :return:
+    """
+
+    if sc not in [1, 2, 3]:
+        raise ValueError("Invalid mode.")
+
+    dt = ap.dt
+    g = ap.g
+    l0 = ap.l0
+    B = ap.B
+    m = ap.m[sc - 1]
+    J = ap.J[sc - 1]
+
+    x1 = x_p[0] + x_p[1]*dt + q[0]
+    x2 = x_p[1] - g*l0*m/J*np.sin(x_p[0])*dt - B/J*x_p[1]*dt + q[1]
+
+    x = np.array([x1, x2])
 
     return x
 
@@ -197,8 +224,10 @@ def constraint_arm(x):
     else:
         if x[0] > x1_c:
             x[0] = x1_c
+            x[1] = 0
         if x[0] < -x1_c:
             x[0] = -x1_c
+            x[1] = 0
         if x[1] > x2_c:
             x[1] = x2_c
         if x[1] < -x2_c:

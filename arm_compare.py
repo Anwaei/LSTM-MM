@@ -10,7 +10,7 @@ def one_step_EKF(mp, Pp, z, s):
     if s not in [1, 2, 3]:
         raise ValueError("Invalid mode.")
     Jaf = am.dynamic_Jacobian_arm(x=mp, s=s)
-    mt = am.dynamic_arm(x_p=mp, sc=s, q=np.zeros(shape=ap.nx))
+    mt = am.dynamic_arm_nc(x_p=mp, sc=s, q=np.zeros(shape=ap.nx))
     Pt = Jaf @ Pp @ Jaf.transpose() + ap.Q
 
     Jah = am.measurement_Jacobian_arm(x=mt, s=s)
@@ -164,7 +164,7 @@ def IMMPF(ztrue, scale=1):
             for l in range(Np):
                 xi = xi_all[n, k - 1, j, l]
                 zeta = zeta_all[n, k - 1, j, l]
-                xp_all[k, j, l, :] = am.dynamic_arm(sc=j+1, x_p=xp_all[k - 1, xi, zeta, :]
+                xp_all[k, j, l, :] = am.dynamic_arm_nc(sc=j+1, x_p=xp_all[k - 1, xi, zeta, :]
                                                     , q=q_proposal_all[k - 1, j, l, :])
                 zli = am.compute_meas_likelihood(x=xp_all[k, j, l, :], z=z, s=j+1)
                 w_all[k, j, l] = gamma_all[k, j]*zli
