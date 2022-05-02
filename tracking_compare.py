@@ -104,12 +104,12 @@ def resample(v):
     return xi, zeta
 
 
-def IMMPF(ztrue):
+def IMMPF(ztrue, scale=1):
     T = tkp.T
     dt = tkp.dt
     K = int(T/dt)
     M = tkp.M
-    Np = tkp.Np
+    Np = tkp.Np*scale
     nx = tkp.nx
     nz = tkp.nz
     x0 = tkp.x0

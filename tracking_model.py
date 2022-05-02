@@ -318,7 +318,7 @@ def compute_constraint_likelihood(x):
     p2 = np.exp(-tkp.lambda2*h2) if h2 > 0 else 1
     p3 = np.exp(-tkp.lambda3*h3) if h3 > 0 else 1
     # t3 = time.clock()
-    return p1*p2*p3
+    return p1+p2+p3
 
 
 def compute_constraint_loglikelihood(x):
