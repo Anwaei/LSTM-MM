@@ -45,7 +45,7 @@ Transition
 """""""""""""""""""""
 
 M = 3
-t_last = 10
+t_last = 15
 # Boundary of s1/s2
 b = -0.25
 # b = 0.53

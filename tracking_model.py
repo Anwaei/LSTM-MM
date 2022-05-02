@@ -60,6 +60,68 @@ def dynamic_tracking(sc, x_p, q):
         raise ValueError("Invalid mode.")
 
     x = np.array([x1, x2, x3, x4]) + qc
+    x, ifreachk = constraint_tracking(x)
+
+    return x
+
+
+def dynamic_tracking_nc(sc, x_p, q):
+    """
+    :param sc: current mode, in {1,2,3,4,5}
+    :param x_p: np.array (4,)
+    :param q: np.array (2,)
+    :return:
+    """
+
+    if sc not in [1, 2, 3, 4, 5]:
+        raise ValueError("Invalid mode.")
+
+    dt = tkp.dt
+    px = x_p[0]
+    py = x_p[1]
+    vx = x_p[2]
+    vy = x_p[3]
+    qc = tkp.G @ q
+
+    if sc == 1:
+        x1 = px + vx*dt
+        x2 = py + vy*dt
+        x3 = vx
+        x4 = vy
+    elif sc == 2:
+        w = tkp.omegar
+        sw = tkp.swr
+        cw = tkp.cwr
+        x1 = px + sw/w*vx - (1-cw)/w*vy
+        x2 = py + (1-cw)/w*vx + sw/w*vy
+        x3 = cw*vx - sw*vy
+        x4 = sw*vx + cw*vy
+    elif sc == 3:
+        w = tkp.omegal
+        sw = tkp.swl
+        cw = tkp.cwl
+        x1 = px + sw/w*vx - (1-cw)/w*vy
+        x2 = py + (1-cw)/w*vx + sw/w*vy
+        x3 = cw*vx - sw*vy
+        x4 = sw*vx + cw*vy
+    elif sc == 4:
+        a = tkp.apos
+        v = np.sqrt(vx**2 + vy**2)
+        x1 = px + vx*dt + vx/(2*v)*a*dt**2
+        x2 = py + vy*dt + vy/(2*v)*a*dt**2
+        x3 = vx + vx/v*a*dt
+        x4 = vy + vy/v*a*dt
+    elif sc == 5:
+        a = tkp.aneg
+        v = np.sqrt(vx**2 + vy**2)
+        x1 = px + vx*dt + vx/(2*v)*a*dt**2
+        x2 = py + vy*dt + vy/(2*v)*a*dt**2
+        x3 = vx + vx/v*a*dt
+        x4 = vy + vy/v*a*dt
+    else:
+        raise ValueError("Invalid mode.")
+
+    x = np.array([x1, x2, x3, x4]) + qc
 
     return x
 
@@ -318,7 +380,7 @@ def compute_constraint_likelihood(x):
     p2 = np.exp(-tkp.lambda2*h2) if h2 > 0 else 1
     p3 = np.exp(-tkp.lambda3*h3) if h3 > 0 else 1
     # t3 = time.clock()
-    return p1+p2+p3
+    return p1*p2*p3
 
 
 def compute_constraint_loglikelihood(x):
@@ -329,7 +391,7 @@ def compute_constraint_loglikelihood(x):
     logli1 = -tkp.lambda1 * h1 if h1 > 0 else 0
     logli2 = -tkp.lambda2 * h2 if h2 > 0 else 0
     logli3 = -tkp.lambda3 * h3 if h3 > 0 else 0
-    return logli1*logli2*logli3
+    return logli1+logli2+logli3
 
 
 def pdf_Gaussian(x, mean, cov):

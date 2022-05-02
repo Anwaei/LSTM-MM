@@ -34,7 +34,7 @@ if __name__ == '__main__':
                 else:
                     tk = 1
                 xk = tkm.dynamic_tracking(sk, x0, qk)
-                xk, ifreachk = tkm.constraint_tracking(xk)
+                xkn, ifreachk = tkm.constraint_tracking(xk)
                 zk = tkm.measurement_tracking(xk, rk)
                 tpmk = tkm.tpm_tracking(x=xk, t=tk)
             else:
@@ -47,7 +47,7 @@ if __name__ == '__main__':
                 else:
                     tk = 1
                 xk = tkm.dynamic_tracking(sk, xp, qk)
-                xk, ifreachk = tkm.constraint_tracking(xk)
+                xkn, ifreachk = tkm.constraint_tracking(xk)
                 zk = tkm.measurement_tracking(xk, rk)
                 tpmk = tkm.tpm_tracking(x=xk, t=tk)
 

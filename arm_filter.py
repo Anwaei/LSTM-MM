@@ -357,7 +357,6 @@ if __name__ == '__main__':
 
         for k in range(1, K + 1):
             zcli = np.zeros(shape=(M, Np))
-
             z_pre = z_all[n, k - 1, :]
             z = z_all[n, k, :]
             for i in range(M):
