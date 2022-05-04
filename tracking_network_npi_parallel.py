@@ -1,6 +1,6 @@
-import os
-os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+# import os
+# os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+# os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 import numpy as np
 import tensorflow as tf
@@ -157,10 +157,11 @@ if __name__ == '__main__':
                  metrics=loss_cce_mode1)
     net1.summary()
     print("========= Start training net1 =========")
-    net1.fit(x=train_input_1, y=train_output_1, epochs=10, batch_size=tkp.bs)
+    net1.fit(x=train_input_1, y=train_output_1, epochs=15, batch_size=tkp.bs)
     print("========= Evaluate net1 =========")
     net1.evaluate(test_input_1, test_output_1)
-    
+    net1.save(tkp.net_path_npi_para1)
+
     units2 = tkp.units_npi_para2
     net2 = create_model(units2['mlp_x'], units2['lstm'], units2['mlp_c'])
     net2.compile(optimizer='rmsprop',
@@ -171,6 +172,7 @@ if __name__ == '__main__':
     net2.fit(x=train_input_2, y=train_output_2, epochs=10, batch_size=tkp.bs)
     print("========= Evaluate net2 =========")
     net2.evaluate(test_input_2, test_output_2)
+    net2.save(tkp.net_path_npi_para2)
 
     units3 = tkp.units_npi_para3
     net3 = create_model(units3['mlp_x'], units3['lstm'], units3['mlp_c'])
@@ -182,7 +184,8 @@ if __name__ == '__main__':
     net3.fit(x=train_input_3, y=train_output_3, epochs=10, batch_size=tkp.bs)
     print("========= Evaluate net3 =========")
     net3.evaluate(test_input_3, test_output_3)
-    
+    net3.save(tkp.net_path_npi_para3)
+
     units4 = tkp.units_npi_para4
     net4 = create_model(units4['mlp_x'], units4['lstm'], units4['mlp_c'])
     net4.compile(optimizer='rmsprop',
@@ -193,6 +196,7 @@ if __name__ == '__main__':
     net4.fit(x=train_input_4, y=train_output_4, epochs=10, batch_size=tkp.bs)
     print("========= Evaluate net4 =========")
     net4.evaluate(test_input_4, test_output_4)
+    net4.save(tkp.net_path_npi_para4)
     
     units5 = tkp.units_npi_para5
     net5 = create_model(units5['mlp_x'], units5['lstm'], units5['mlp_c'])
@@ -201,12 +205,7 @@ if __name__ == '__main__':
                  metrics=loss_cce_mode5)
     net5.summary()
     print("========= Start training net5 =========")
-    net5.fit(x=train_input_5, y=train_output_5, epochs=10, batch_size=tkp.bs)
+    net5.fit(x=train_input_5, y=train_output_5, epochs=10, batch_size=100)
     print("========= Evaluate net5 =========")
     net5.evaluate(test_input_5, test_output_5)
-
-    net1.save(tkp.net_path_npi_para1)
-    net2.save(tkp.net_path_npi_para2)
-    net3.save(tkp.net_path_npi_para3)
-    net4.save(tkp.net_path_npi_para4)
     net5.save(tkp.net_path_npi_para5)

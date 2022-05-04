@@ -134,7 +134,7 @@ def IMMPF(ztrue, scale=1):
         for l in range(Np):
             w_all[0, j, l] = 1 / Np
             xp_all[0, j, l, :] = np.random.multivariate_normal(x0, tkp.Q0)
-        mu_all[0, j] = 1 if j == s0 else 0
+        mu_all[0, j] = 0.96 if j == s0-1 else 0.01
 
     for k in range(1, K + 1):
         z = z_all[k, :]
@@ -143,16 +143,25 @@ def IMMPF(ztrue, scale=1):
                 tpm = tpm_immpf_tracking(xp_all[k - 1, i, l, :])
                 for j in range(M):
                     what_all[k, i, j, l] = tpm[i, j] * mu_all[k - 1, i] * w_all[k - 1, i, l]
+                    pass
         for j in range(M):
             gamma_all[k, j] = np.sum(what_all[k, :, j, :])
+            gamma = np.sum(what_all[k, :, j, :])
+            # print(gamma)
+            # print(np.isnan(gamma))
+            # if np.isnan(gamma):
+            #     print('NaN occured')
+            #     pass
             what_all[k, :, j, :] = what_all[k, :, j, :] / gamma_all[k, j]
         for j in range(M):
+            if True in np.isnan(what_all[k, :, j, :]):
+                pass
             xi_all[n, k - 1, j, :], zeta_all[n, k - 1, j, :] = resample(what_all[k, :, j, :])
         for j in range(M):
             for l in range(Np):
                 xi = xi_all[n, k - 1, j, l]
                 zeta = zeta_all[n, k - 1, j, l]
-                xp_all[k, j, l, :] = tkm.dynamic_tracking(sc=j + 1, x_p=xp_all[k - 1, xi, zeta, :],
+                xp_all[k, j, l, :] = tkm.dynamic_tracking_nc(sc=j + 1, x_p=xp_all[k - 1, xi, zeta, :],
                                                      q=q_proposal_all[k - 1, j, l, :])
                 zli = tkm.compute_meas_likelihood(x=xp_all[k, j, l, :], z=z)
                 w_all[k, j, l] = gamma_all[k, j] / Np * zli

@@ -234,10 +234,10 @@ def sample_auxiliary_variables(v):
 
 if __name__ == '__main__':
 
+    which_net = 'npi_int'
+    # which_net = 'npi_para'
     # which_net = 'npi_int'
-    which_net = 'npi_para'
-    # which_net = 'npi_int'
-    # mode_shift = 2  # No net for mode 1, so the index for net i is s-2.
+    print(which_net)
 
     T = tkp.T
     dt = tkp.dt
@@ -342,7 +342,7 @@ if __name__ == '__main__':
             for l in range(Np):
                 w_all[n, 0, j, l] = 1 / Np
                 xp_all[n, 0, j, l, :] = np.random.multivariate_normal(x0, tkp.Q0)
-            mu_all[n, 0, j] = 1 if j == s0-1 else 0
+            mu_all[n, 0, j] = 0.96 if j == s0-1 else 0.01
         if which_net == 'pi_int' or which_net == 'npi_int':
             hidden0 = list()
             for l in range(len(hidden_ex)):
