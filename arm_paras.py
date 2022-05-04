@@ -30,8 +30,8 @@ B = 2
 m = [0.5, 5, 50]
 J = [0.5, 5, 50]
 
-Q_gene = np.diag([0.001, 0.001])
-# Q_gene = 0
+# Q_gene = np.diag([0.001, 0.001])
+Q_gene = 0
 Q = np.diag([0.001, 0.001])
 # R = np.diag([0.05, 0.05])
 R = np.diag([0.0005])
@@ -163,7 +163,7 @@ train_prop = 0.9  # Proportion of training data
 Filtering
 """""""""""""""""""""
 
-Np = 2000
-run_batch = 5
+Np = 500
+run_batch = 10
 
 Pi_IMM = np.array([[0.96, 0.02, 0.02], [0.02, 0.96, 0.02], [0.02, 0.02, 0.96]])

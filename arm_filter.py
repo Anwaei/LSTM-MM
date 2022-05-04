@@ -237,7 +237,7 @@ if __name__ == '__main__':
 
     # which_net = 'npi_int'
     # which_net = 'npi_para'
-    which_net = 'npi_int'
+    which_net = 'pi_int'
     print(which_net)
 
     T = ap.T
