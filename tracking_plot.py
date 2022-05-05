@@ -119,6 +119,7 @@ def plot_model():
 def plot_single_trajectory(data):
     x_all, z_all, s_all, t_all, tpm_all, ifreach_all, time_steps_all = read_data(data)
     index = np.random.randint(0, time_steps_all.shape[0])
+    print(index)
     x_s = x_all[index, :, :]
     z_s = z_all[index, :, :]
     s_s = s_all[index, 0, :]
@@ -224,7 +225,7 @@ def plot_rmse(data):
 
 
 def plot_compare(datas, labels):
-    index = 0
+    index = 8
     dend = 100
 
     time_steps = datas[0]['time_steps'][1:dend]
@@ -240,21 +241,21 @@ def plot_compare(datas, labels):
         strue_all.append(data['strue_all'][:, 1:dend])
         mu_all.append(data['mu_all'][:, 1:dend, :])
 
-    for n in range(tkp.nx):
-        plt.figure(n+1)
-        plt.plot(time_steps, xtrue_all[-1][index, :, n])
-        legends = ['True value']
-        for k in range(len(datas)):
-            plt.plot(time_steps, xest_all[k][index, :, n])
-            legends.append(labels[k] + ' Estimation')
-        plt.xlabel('Time')
-        plt.ylabel('Value')
-        # if n<2:
-        #     plt.axis([None, None, -100, 200])
-        # else:
-        #     plt.axis([None, None, -15, 15])
-        plt.legend(legends)
-        plt.title('Trajectory of state ' + str(n+1))
+    # for n in range(tkp.nx):
+    #     plt.figure(n+1)
+    #     plt.plot(time_steps, xtrue_all[-1][index, :, n])
+    #     legends = ['True value']
+    #     for k in range(len(datas)):
+    #         plt.plot(time_steps, xest_all[k][index, :, n])
+    #         legends.append(labels[k] + ' Estimation')
+    #     plt.xlabel('Time')
+    #     plt.ylabel('Value')
+    #     # if n<2:
+    #     #     plt.axis([None, None, -100, 200])
+    #     # else:
+    #     #     plt.axis([None, None, -15, 15])
+    #     plt.legend(legends)
+    #     plt.title('Trajectory of state ' + str(n+1))
 
     plt.figure(6)
     plt.subplot(tkp.M+1, 1, 1)
@@ -268,7 +269,9 @@ def plot_compare(datas, labels):
         legends = list()
         plt.subplot(tkp.M+1, 1, j+2)
         for k in range(len(datas)):
-            plt.plot(time_steps, mu_all[k][index, :, j])
+            w = 1.5 if 'IMM' in labels[k] else 2
+            s = '--' if 'IMM' in labels[k] else '-'
+            plt.plot(time_steps, mu_all[k][index, :, j], ls=s, lw=w)
             legends.append(labels[k] + ' Mode' + str(j + 1))
         plt.xlabel('Time')
         plt.ylabel('Value')
@@ -305,45 +308,23 @@ def plot_compare(datas, labels):
 
     plt.figure(9)
     legends = []
-    plt.plot(xtrue_all[-1][index, :, 0], xtrue_all[-1][index, :, 1])
+    plt.plot(xtrue_all[-1][index, :, 0], xtrue_all[-1][index, :, 1], c='darkgoldenrod', ls='-', lw=2)
     legends.append('True trajectory')
     for k in range(len(datas)):
-        plt.plot(xest_all[k][index, :, 0], xest_all[k][index, :, 1])
+        if 'DLMM' in labels[k]:
+            plt.plot(xest_all[k][index, :, 0], xest_all[k][index, :, 1], ls='-.', lw=1.5)
+        else:
+            plt.plot(xest_all[k][index, :, 0], xest_all[k][index, :, 1], ls='-.', lw=1)
         legends.append(labels[k] + ' trajectory')
     plt.scatter(tkp.x0[0], tkp.x0[1])
-    plt.axis([-100, 160, 0, 130])
-    px = np.arange(start=-80, stop=140, step=1)
+    plt.axis([-100, 180, 0, 130])
+    px = np.arange(start=-80, stop=160, step=1)
     py_above = tkp.ca3 * px ** 3 + tkp.ca2 * px ** 2 + tkp.ca1 * px + tkp.ca0
     py_below = tkp.cb3 * px ** 3 + tkp.cb2 * px ** 2 + tkp.cb1 * px + tkp.cb0
-    plt.plot(px, py_above, px, py_below, alpha=0.5)
+    plt.plot(px, py_above, px, py_below, alpha=0.5, c='tab:olive', ls='--')
     plt.xlabel('x')
     plt.ylabel('y')
     plt.legend(legends)
-
-    plt.figure(10)
-    velocity = np.sqrt(np.power(xtrue_all[-1][index, :, 2], 2) + np.power(xtrue_all[-1][index, :, 3], 2))
-    plt.plot(time_steps, xtrue_all[-1][index, :, 2])
-    plt.xlabel('time')
-    plt.ylabel('velocity')
-
-    # for n in range(tkp.nx):
-    #     plt.figure(4+n)
-    #     # plt.hold(True)
-    #     legends = []
-    #     for k in range(len(datas)):
-    #         rmse = np.sqrt(np.mean((xtrue_all[k] - xest_all[k]) ** 2, axis=0))
-    #         plt.plot(time_steps, rmse[:, n])
-    #     legends.append('LSTM-MM rmse of state '+str(n+1))
-    #     legends.append('IMM rmse of state '+str(n+1))
-    #     legends.append('IMMPF rmse of state '+str(n+1))
-    #     if n<2:
-    #         plt.axis([None, None, 0, 150])
-    #     else:
-    #         plt.axis([None, None, 0, 30])
-    #     plt.xlabel('Time')
-    #     plt.ylabel('Value')
-    #     plt.legend(legends)
-    #     plt.title('RMSE of state'+str(n+1))
 
     plt.show()
 
@@ -352,7 +333,7 @@ if __name__ == '__main__':
     # data_path = tkp.data_path
     # data = np.load(data_path)
     # plot_single_trajectory(data)
-    plot_model()
+    # plot_model()
 
     which_net = 'npi_int'
     data_path = tkp.filter_data_path + '_' + which_net + '.npz'
@@ -372,5 +353,8 @@ if __name__ == '__main__':
     data_path = tkp.filter_data_path + '_' + 'IMMPF' + '.npz'
     data_immpf = np.load(data_path)
     #
-    plot_compare([data_npi_int, data_npi_para, data_imm, data_immpf],
-                 labels=['npi_int', 'npi_para', 'IMM-EKF', 'IMMPF-5000'])
+    plot_compare([data_imm, data_immpf, data_npi_int, data_npi_para],
+                 labels=['IMM-EKF', 'IMMPF-500', 'DLMM-Int', 'DLMM-Para'])
+
+    # plot_compare([data_npi_int, data_imm, data_immpf],
+    #              labels=['npi_int', 'IMM-EKF', 'IMMPF-5000'])

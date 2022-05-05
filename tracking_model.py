@@ -318,7 +318,15 @@ def tpm_tracking(x, t):
 
         tpm[0, 0] = 1 - tpm[0, 1] - tpm[0, 2] - tpm[0, 3] - tpm[0, 4]
         if tpm[0, 0] < 0:
-            raise ValueError('Transition probability sum of mode 1 exceed 1')
+            # raise ValueError('Transition probability sum of mode 1 exceed 1')
+            tpm[0, 0] = 0.05
+            temp = tpm[0, 1] + tpm[0, 2] + tpm[0, 3] + tpm[0, 4]
+            tpm[0, 1] = 0.95 * tpm[0, 1] / temp
+            tpm[0, 2] = 0.95 * tpm[0, 2] / temp
+            tpm[0, 3] = 0.95 * tpm[0, 3] / temp
+            tpm[0, 4] = 0.95 * tpm[0, 4] / temp
+            # print('Transition probability sum of mode 1 exceed 1')
+
         for i in range(1, tkp.M):
             for j in range(tkp.M):
                 if j == 0:

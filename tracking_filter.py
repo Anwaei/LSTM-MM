@@ -318,6 +318,8 @@ if __name__ == '__main__':
     data = np.load(tkp.data_path)
     x_data, z_data, s_data, t_data, tpm_data, ifreach_data, time_steps_data = tkplot.read_data(data)
     size_run = int(x_data.shape[0] * tkp.train_prop)
+    size_run = int(x_data.shape[0] * tkp.train_prop) + 200
+    # size_run = 600
     xtrue_batch = np.swapaxes(x_data[size_run:, :, :], 1, 2)
     ztrue_batch = np.swapaxes(z_data[size_run:, :, :], 1, 2)
     strue_batch = s_data[size_run:, 0, :]

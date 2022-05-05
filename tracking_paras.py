@@ -16,10 +16,10 @@ net_path_npi_para5 = 'nets/tracking_net_npi_para5'
 
 filter_data_path = 'data/tracking_results'
 
-batch_size = 500
+batch_size = 50000
 
-T = 40
-dt = 0.4
+T = 30
+dt = 0.3
 
 """""""""""""""""""""
 Model
@@ -169,41 +169,41 @@ units_pi_para5 = {'mlp_x': units_mlp_x,
                   'mlp_c': units_mlp_c}
 
 units_mlp_x = [32, 32, 32, 32]
-units_lstm = [64, 64, 64, 64]
-units_mlp_c = [32, 32, 64]  # Except last layer
+units_lstm = [64, 64, 64, 64, 64]
+units_mlp_c = [64, 64, 64, 64, 64]  # Except last layer
 units_npi_para1 = {'mlp_x': units_mlp_x,
                   'lstm': units_lstm,
                   'mlp_c': units_mlp_c}
 
-units_mlp_x = [16, 16, 16]
+units_mlp_x = [16, 32, 32]
 units_lstm = [32, 32]
 units_mlp_c = [32, 32, 64]  # Except last layer
 units_npi_para2 = {'mlp_x': units_mlp_x,
                   'lstm': units_lstm,
                   'mlp_c': units_mlp_c}
 
-units_mlp_x = [16, 16, 16]
+units_mlp_x = [16, 32, 32]
 units_lstm = [32, 32]
 units_mlp_c = [32, 32, 64]  # Except last layer
 units_npi_para3 = {'mlp_x': units_mlp_x,
                   'lstm': units_lstm,
                   'mlp_c': units_mlp_c}
 
-units_mlp_x = [16, 16, 16]
+units_mlp_x = [16, 32, 32]
 units_lstm = [32, 32]
 units_mlp_c = [32, 32, 64]  # Except last layer
 units_npi_para4 = {'mlp_x': units_mlp_x,
                   'lstm': units_lstm,
                   'mlp_c': units_mlp_c}
 
-units_mlp_x = [16, 16, 16]
+units_mlp_x = [16, 32, 32]
 units_lstm = [32, 32]
 units_mlp_c = [32, 32, 64]  # Except last layer
 units_npi_para5 = {'mlp_x': units_mlp_x,
                   'lstm': units_lstm,
                   'mlp_c': units_mlp_c}
 
-units_mlp_x = [32, 32, 32]
+units_mlp_x = [16, 32, 32]
 units_mlp_s = [32, 32, 32]
 units_lstm = [64, 64, 64, 64]
 units_mlp_c = [32, 32, 64]  # Except last layer
@@ -221,7 +221,7 @@ units_npi_int = {'mlp_x': units_mlp_x,
                  'lstm': units_lstm,
                  'mlp_c': units_mlp_c}
 
-bs = 64
+bs = 100
 
 train_prop = 0.9  # Proportion of training data
 
@@ -230,7 +230,7 @@ Filtering
 """""""""""""""""""""
 
 Np = 500
-run_batch = 5
+run_batch = 10
 
 Pi_IMM = np.array([[0.9, 0.025, 0.025, 0.025, 0.025],
                    [0.025, 0.9, 0.025, 0.025, 0.025],
