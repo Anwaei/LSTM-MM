@@ -1,6 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 import arm_paras as ap
+from tensorflow import keras
 
 
 def read_data(data):
@@ -168,6 +169,8 @@ def plot_compare(datas, labels):
     legends = list()
     legends.append('True Mode')
     plt.legend(legends, loc='upper right')
+    ce = np.zeros(len(datas))
+    strue_oh = keras.utils.to_categorical(strue_all[0][index, :]-1)
     for j in range(ap.M):
         legends = list()
         plt.subplot(ap.M+1, 1, j+2)
@@ -179,7 +182,10 @@ def plot_compare(datas, labels):
         plt.xlabel('Time')
         plt.ylabel('Value')
         plt.legend(legends, loc='upper right')
-    plt.suptitle('Mode Probabilities')
+    # plt.suptitle('Mode Probabilities')
+    for k in range(len(datas)):
+        ce[k] = np.mean(keras.losses.categorical_crossentropy(strue_oh, mu_all[k][index, :, :]))
+        print(labels[k] + ' CCE: ' + str(ce[k]))
 
     for n in range(ap.nx):
         plt.figure(4+n, figsize=(6.4, 4.8))

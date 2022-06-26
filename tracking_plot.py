@@ -1,8 +1,8 @@
 import numpy as np
 from matplotlib import pyplot as plt
-from mpl_toolkits import mplot3d
 import tracking_paras as tkp
 import tracking_model as tkm
+from tensorflow import keras
 
 
 def read_data(data):
@@ -241,22 +241,6 @@ def plot_compare(datas, labels):
         strue_all.append(data['strue_all'][:, 1:dend])
         mu_all.append(data['mu_all'][:, 1:dend, :])
 
-    # for n in range(tkp.nx):
-    #     plt.figure(n+1)
-    #     plt.plot(time_steps, xtrue_all[-1][index, :, n])
-    #     legends = ['True value']
-    #     for k in range(len(datas)):
-    #         plt.plot(time_steps, xest_all[k][index, :, n])
-    #         legends.append(labels[k] + ' Estimation')
-    #     plt.xlabel('Time')
-    #     plt.ylabel('Value')
-    #     # if n<2:
-    #     #     plt.axis([None, None, -100, 200])
-    #     # else:
-    #     #     plt.axis([None, None, -15, 15])
-    #     plt.legend(legends)
-    #     plt.title('Trajectory of state ' + str(n+1))
-
     plt.figure(6)
     plt.subplot(tkp.M+1, 1, 1)
     plt.plot(time_steps, strue_all[0][index, :])
@@ -265,6 +249,7 @@ def plot_compare(datas, labels):
     legends = list()
     legends.append('True Mode')
     plt.legend(legends, loc='upper right')
+    ce = np.zeros(shape=(len(datas), tkp.run_batch))
     for j in range(tkp.M):
         legends = list()
         plt.subplot(tkp.M+1, 1, j+2)
@@ -277,6 +262,11 @@ def plot_compare(datas, labels):
         plt.ylabel('Value')
         plt.axis([None, None, 0, 1.1])
         plt.legend(legends, loc='upper right')
+    for k in range(len(datas)):
+        for i in range(tkp.run_batch):
+            strue_oh = keras.utils.to_categorical(strue_all[0][i, :]-1, 5)
+            ce[k, i] = np.mean(keras.losses.categorical_crossentropy(strue_oh, mu_all[k][i, :, :]))
+        print(labels[k] + ' CCE: ' + str(np.mean(ce[k, :])))
 
     plt.figure(7)
     legends = []
@@ -352,9 +342,12 @@ if __name__ == '__main__':
 
     data_path = tkp.filter_data_path + '_' + 'IMMPF' + '.npz'
     data_immpf = np.load(data_path)
+
+    data_path = tkp.filter_data_path + '_' + 'IMMPF-5000' + '.npz'
+    data_immpf5000 = np.load(data_path)
     #
-    plot_compare([data_imm, data_immpf, data_npi_int, data_npi_para],
-                 labels=['IMM-EKF', 'IMMPF-500', 'DLMM-Int', 'DLMM-Para'])
+    plot_compare([data_imm, data_immpf, data_immpf5000, data_npi_int, data_npi_para],
+                 labels=['IMM-EKF', 'IMMPF-500', 'IMMPF-5000', 'DLMM-Int', 'DLMM-Para'])
 
     # plot_compare([data_npi_int, data_imm, data_immpf],
     #              labels=['npi_int', 'IMM-EKF', 'IMMPF-5000'])
